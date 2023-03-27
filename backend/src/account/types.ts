@@ -1,0 +1,23 @@
+import { z } from "zod";
+
+export enum Role {
+  STUDENT,
+  TEACHER,
+}
+
+export const accountSchema = z.object({
+  id: z.string().nonempty(),
+  name: z.string().nonempty(),
+  role: z.nativeEnum(Role),
+});
+
+export type Account = z.infer<typeof accountSchema>;
+
+export const loginReqSchema = z.object({
+  body: z.object({
+    id: z.string().nonempty(),
+    password: z.string().nonempty(),
+  }),
+});
+
+export type LoginReq = z.infer<typeof loginReqSchema>;
