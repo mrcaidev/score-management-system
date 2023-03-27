@@ -59,7 +59,7 @@ async function requireReview(
   next: NextFunction
 ) {
   try {
-    await scoreService.requireReview(req.params.id, res.locals.userId);
+    await scoreService.requireReview(req.params.id, res.locals.user.id);
     return res.status(204).end();
   } catch (error) {
     return next(error);

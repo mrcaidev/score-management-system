@@ -4,12 +4,12 @@ import { z } from "zod";
 import { JWT_SECRET } from "./env";
 import { HttpError } from "./error";
 
-export const payloadSchema = z.object({
+const payloadSchema = z.object({
   id: z.string().nonempty(),
   role: z.nativeEnum(Role),
 });
 
-export type Payload = z.infer<typeof payloadSchema>;
+type Payload = z.infer<typeof payloadSchema>;
 
 export async function generateJwt(payload: Payload) {
   try {

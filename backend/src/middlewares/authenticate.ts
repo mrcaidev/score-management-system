@@ -11,13 +11,13 @@ export function authenticate(expectation: Role) {
         return res.status(401).json({ error: "未登录" });
       }
 
-      const { id, role } = await decodeJwt(token);
+      const payload = await decodeJwt(token);
 
-      if (role !== expectation) {
+      if (payload.role !== expectation) {
         return res.status(403).json({ error: "没有权限访问" });
       }
 
-      res.locals.userId = id;
+      res.locals.user = payload;
 
       return next();
     } catch (error) {
