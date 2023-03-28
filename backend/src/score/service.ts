@@ -6,7 +6,7 @@ import {
   NotFoundError,
   UnprocessableContentError,
 } from "utils/http-error";
-import { AuthPayload } from "utils/jwt";
+import { Auth } from "utils/jwt";
 import { scoreRepository } from "./repository";
 import {
   CreateReq,
@@ -26,7 +26,7 @@ export const scoreService = {
   handleReview,
 };
 
-async function findAll(dto: FindAllReq["query"], auth: AuthPayload) {
+async function findAll(dto: FindAllReq["query"], auth: Auth) {
   const { studentId } = dto;
   const { id: authId, role: authRole } = auth;
 

@@ -8,9 +8,9 @@ export const authSchema = z.object({
   role: z.number().int(),
 });
 
-export type AuthPayload = z.infer<typeof authSchema>;
+export type Auth = z.infer<typeof authSchema>;
 
-export async function generateJwt(payload: AuthPayload) {
+export async function generateJwt(payload: Auth) {
   try {
     const token = await new Promise<string>((resolve, reject) => {
       sign(payload, JWT_SECRET, { expiresIn: "1d" }, (error, token) => {
@@ -28,7 +28,7 @@ export async function generateJwt(payload: AuthPayload) {
 
 export async function decodeJwt(token: string) {
   try {
-    const payload = await new Promise<AuthPayload>((resolve, reject) => {
+    const payload = await new Promise<Auth>((resolve, reject) => {
       verify(token, JWT_SECRET, (error, payload) => {
         if (error || !payload) {
           return reject(error);
