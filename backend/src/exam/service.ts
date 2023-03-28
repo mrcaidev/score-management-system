@@ -15,6 +15,14 @@ async function findAll() {
 }
 
 async function create(dto: CreateReq["body"]) {
+  const { name } = dto;
+
+  const oldExam = await examRepository.findByName(name);
+
+  if (oldExam) {
+    throw new HttpError(409, "考试已存在");
+  }
+
   const exam = await examRepository.create(dto);
   return exam;
 }

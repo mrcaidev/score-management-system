@@ -1,4 +1,4 @@
-import { Role } from "account/types";
+import { Role } from "account";
 import { sign, verify } from "jsonwebtoken";
 import { z } from "zod";
 import { JWT_SECRET } from "./env";
@@ -23,7 +23,7 @@ export async function generateJwt(payload: Payload) {
     });
     return token;
   } catch {
-    throw new HttpError(500, "Token 生成失败，请稍后再试");
+    throw new HttpError(500, "登录失败，请稍后再试");
   }
 }
 
@@ -39,6 +39,6 @@ export async function decodeJwt(token: string) {
     });
     return payload;
   } catch {
-    throw new HttpError(401, "无效的 token");
+    throw new HttpError(401, "登录信息无效");
   }
 }

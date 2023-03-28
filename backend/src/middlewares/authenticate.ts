@@ -2,7 +2,7 @@ import { Role } from "account";
 import { NextFunction, Request, Response } from "express";
 import { decodeJwt } from "utils/jwt";
 
-export function authenticate(expectation: Role) {
+export function authenticate(expectation?: Role | Role[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { token } = req.cookies;
@@ -13,7 +13,7 @@ export function authenticate(expectation: Role) {
 
       const payload = await decodeJwt(token);
 
-      if (payload.role !== expectation) {
+      if (!matchExpectation(payload.role, expectation)) {
         return res.status(403).json({ error: "没有权限访问" });
       }
 
@@ -24,4 +24,16 @@ export function authenticate(expectation: Role) {
       return next(error);
     }
   };
+}
+
+function matchExpectation(role: Role, expectation: Role | Role[] | undefined) {
+  if (!expectation) {
+    return true;
+  }
+
+  if (Array.isArray(expectation)) {
+    return expectation.includes(role);
+  }
+
+  return role === expectation;
 }

@@ -5,6 +5,7 @@ import { CreateReq, Exam } from "./types";
 export const examRepository = {
   findAll,
   findById,
+  findByName,
   create,
   updateById,
   deleteById,
@@ -34,6 +35,19 @@ async function findById(id: string) {
   return rows[0];
 }
 
+async function findByName(name: string) {
+  const { rows } = await database.query<Exam>(
+    `
+      SELECT id, name, held_at "heldAt"
+      FROM exam
+      WHERE name = $1
+    `,
+    [name]
+  );
+
+  return rows[0];
+}
+
 async function create(dto: CreateReq["body"]) {
   const { name, heldAt } = dto;
 
@@ -47,7 +61,7 @@ async function create(dto: CreateReq["body"]) {
   );
 
   if (!rows[0]) {
-    throw new HttpError(500, "创建考试失败，请稍后再试");
+    throw new HttpError(500, "添加考试失败，请稍后再试");
   }
 
   return rows[0];
@@ -56,7 +70,7 @@ async function create(dto: CreateReq["body"]) {
 async function updateById(id: string, dto: Exam) {
   const { name, heldAt } = dto;
 
-  const { rowCount } = await database.query<Exam>(
+  const { rowCount } = await database.query(
     `
       UPDATE exam
       SET name = $2, held_at = $3

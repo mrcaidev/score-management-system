@@ -86,7 +86,7 @@ async function requireReview(id: string, studentId: string) {
     throw new HttpError(422, "已经申请过复查");
   }
 
-  const newScore = { ...oldScore, reviewStatus: ReviewStatus.PENDING } as Score;
+  const newScore = { ...oldScore, reviewStatus: ReviewStatus.PENDING };
 
   await scoreRepository.updateById(id, newScore);
 
@@ -97,11 +97,11 @@ async function handleReview(id: string, dto: HandleReviewReq["body"]) {
   const { reviewStatus } = dto;
 
   if (reviewStatus === ReviewStatus.NONE) {
-    throw new HttpError(403, "教师不能取消复查");
+    throw new HttpError(422, "教师不能取消复查");
   }
 
   if (reviewStatus === ReviewStatus.PENDING) {
-    throw new HttpError(403, "教师不能主动申请复查");
+    throw new HttpError(422, "教师不能主动申请复查");
   }
 
   const oldScore = await scoreRepository.findById(id);
@@ -138,10 +138,10 @@ async function handleReview(id: string, dto: HandleReviewReq["body"]) {
   }
 
   if (oldScore.reviewStatus === ReviewStatus.FINISHED) {
-    throw new HttpError(422, "已完成的复查不可再变更状态");
+    throw new HttpError(422, "已完成的复查不能再变更状态");
   }
 
-  const newScore = { ...oldScore, reviewStatus } as Score;
+  const newScore = { ...oldScore, reviewStatus };
 
   await scoreRepository.updateById(id, newScore);
 
