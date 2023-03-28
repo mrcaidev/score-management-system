@@ -1,6 +1,0 @@
-ALTER SEQUENCE course_id_seq RESTART WITH 1;
-
-DELETE FROM course;
-DELETE FROM exam;
-DELETE FROM account;
-DELETE FROM score;
