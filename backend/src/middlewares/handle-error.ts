@@ -13,9 +13,7 @@ export async function handleError(
   }
 
   if (error instanceof ZodError) {
-    return res.status(400).json({
-      error: error.issues[0]?.path + " 格式错误" ?? "请求格式错误",
-    });
+    return res.status(400).json({ error: "请求格式错误" });
   }
 
   if (error instanceof HttpError) {
