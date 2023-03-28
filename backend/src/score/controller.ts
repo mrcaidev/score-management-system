@@ -20,7 +20,7 @@ export const scoreController = {
 
 async function findAll(req: FindAllReq, res: Response, next: NextFunction) {
   try {
-    const scores = await scoreService.findAll(req.query, res.locals.user);
+    const scores = await scoreService.findAll(req.query, res.locals.auth);
     return res.status(200).json({ data: scores });
   } catch (error) {
     return next(error);
@@ -60,7 +60,7 @@ async function requireReview(
   next: NextFunction
 ) {
   try {
-    await scoreService.requireReview(req.params.id, res.locals.user.id);
+    await scoreService.requireReview(req.params.id, res.locals.auth.id);
     return res.status(204).end();
   } catch (error) {
     return next(error);

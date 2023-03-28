@@ -17,7 +17,7 @@ export function authenticate(expectation?: Role | Role[]) {
         return res.status(403).json({ error: "没有权限访问" });
       }
 
-      res.locals.user = payload;
+      res.locals.auth = payload;
 
       return next();
     } catch (error) {

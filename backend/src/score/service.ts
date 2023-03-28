@@ -22,11 +22,11 @@ export const scoreService = {
   handleReview,
 };
 
-async function findAll(dto: FindAllReq["query"], user: AuthPayload) {
+async function findAll(dto: FindAllReq["query"], auth: AuthPayload) {
   const { studentId } = dto;
-  const { id: userId, role: userRole } = user;
+  const { id: authId, role: authRole } = auth;
 
-  if (userRole === Role.STUDENT && userId !== studentId) {
+  if (authRole === Role.STUDENT && authId !== studentId) {
     throw new HttpError(403, "学生只能查询自己的成绩");
   }
 
