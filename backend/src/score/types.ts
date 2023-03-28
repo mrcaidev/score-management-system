@@ -11,7 +11,7 @@ export enum ReviewStatus {
 export const scoreSchema = z.object({
   id: z.string().uuid(),
   examId: z.string().uuid(),
-  courseId: z.number(),
+  courseId: z.number().min(1),
   studentId: z.string().nonempty(),
   score: z.number().min(0),
   isAbsent: z.boolean(),
@@ -19,6 +19,14 @@ export const scoreSchema = z.object({
 });
 
 export type Score = z.infer<typeof scoreSchema>;
+
+export const findAllReqSchema = z.object({
+  query: scoreSchema
+    .pick({ examId: true, courseId: true, studentId: true, reviewStatus: true })
+    .partial(),
+});
+
+export type FindAllReq = z.infer<typeof findAllReqSchema>;
 
 export const createReqSchema = z.object({
   body: scoreSchema.omit({ id: true, reviewStatus: true }),

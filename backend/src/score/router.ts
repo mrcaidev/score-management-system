@@ -6,6 +6,7 @@ import { scoreController } from "./controller";
 import {
   createReqSchema,
   deleteReqSchema,
+  findAllReqSchema,
   handleReviewReqSchema,
   requireReviewReqSchema,
   updateReqSchema,
@@ -13,7 +14,12 @@ import {
 
 export const scoreRouter: Router = Router();
 
-scoreRouter.get("/", scoreController.findAll);
+scoreRouter.get(
+  "/",
+  authenticate(),
+  validate(findAllReqSchema),
+  scoreController.findAll
+);
 
 scoreRouter.post(
   "/",

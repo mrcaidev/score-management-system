@@ -4,14 +4,14 @@ import { z } from "zod";
 import { JWT_SECRET } from "./env";
 import { HttpError } from "./error";
 
-const payloadSchema = z.object({
+export const authSchema = z.object({
   id: z.string().nonempty(),
   role: z.nativeEnum(Role),
 });
 
-type Payload = z.infer<typeof payloadSchema>;
+export type AuthPayload = z.infer<typeof authSchema>;
 
-export async function generateJwt(payload: Payload) {
+export async function generateJwt(payload: AuthPayload) {
   try {
     const token = await new Promise<string>((resolve, reject) => {
       sign(payload, JWT_SECRET, { expiresIn: "1d" }, (error, token) => {
@@ -29,12 +29,12 @@ export async function generateJwt(payload: Payload) {
 
 export async function decodeJwt(token: string) {
   try {
-    const payload = await new Promise<Payload>((resolve, reject) => {
+    const payload = await new Promise<AuthPayload>((resolve, reject) => {
       verify(token, JWT_SECRET, (error, payload) => {
         if (error || !payload) {
           return reject(error);
         }
-        return resolve(payloadSchema.parse(payload));
+        return resolve(authSchema.parse(payload));
       });
     });
     return payload;

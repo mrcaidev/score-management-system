@@ -1,8 +1,9 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { scoreService } from "./service";
 import {
   CreateReq,
   DeleteReq,
+  FindAllReq,
   HandleReviewReq,
   RequireReviewReq,
   UpdateReq,
@@ -17,9 +18,9 @@ export const scoreController = {
   handleReview,
 };
 
-async function findAll(_: Request, res: Response, next: NextFunction) {
+async function findAll(req: FindAllReq, res: Response, next: NextFunction) {
   try {
-    const scores = await scoreService.findAll();
+    const scores = await scoreService.findAll(req.query, res.locals.user);
     return res.status(200).json({ data: scores });
   } catch (error) {
     return next(error);

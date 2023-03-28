@@ -1,6 +1,6 @@
 import { database } from "utils/database";
 import { HttpError } from "utils/error";
-import { CreateReq, Score } from "./types";
+import { CreateReq, FindAllReq, Score } from "./types";
 
 export const scoreRepository = {
   findAll,
@@ -10,7 +10,9 @@ export const scoreRepository = {
   deleteById,
 };
 
-async function findAll() {
+async function findAll(dto: FindAllReq["query"]) {
+  const { courseId, examId, reviewStatus, studentId } = dto;
+
   const { rows } = await database.query<Score>(
     `
       SELECT
@@ -22,7 +24,12 @@ async function findAll() {
         is_absent "isAbsent",
         review_status "reviewStatus"
       FROM score
-    `
+      WHERE ($1::UUID IS NULL OR exam_id = $1)
+        AND ($2::SMALLINT IS NULL OR course_id = $2)
+        AND ($3::TEXT IS NULL OR student_id = $3)
+        AND ($4::SMALLINT IS NULL OR review_status = $4)
+    `,
+    [examId, courseId, studentId, reviewStatus]
   );
 
   return rows;

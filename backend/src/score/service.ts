@@ -2,9 +2,11 @@ import { accountRepository, Role } from "account";
 import { courseRepository } from "course";
 import { examRepository } from "exam";
 import { HttpError } from "utils/error";
+import { AuthPayload } from "utils/jwt";
 import { scoreRepository } from "./repository";
 import {
   CreateReq,
+  FindAllReq,
   HandleReviewReq,
   ReviewStatus,
   Score,
@@ -20,8 +22,15 @@ export const scoreService = {
   handleReview,
 };
 
-async function findAll() {
-  const scores = await scoreRepository.findAll();
+async function findAll(dto: FindAllReq["query"], user: AuthPayload) {
+  const { studentId } = dto;
+  const { id: userId, role: userRole } = user;
+
+  if (userRole === Role.STUDENT && userId !== studentId) {
+    throw new HttpError(403, "学生只能查询自己的成绩");
+  }
+
+  const scores = await scoreRepository.findAll(dto);
   return scores;
 }
 
