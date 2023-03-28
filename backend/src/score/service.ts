@@ -1,3 +1,6 @@
+import { accountRepository, Role } from "account";
+import { courseRepository } from "course";
+import { examRepository } from "exam";
 import { HttpError } from "utils/error";
 import { scoreRepository } from "./repository";
 import {
@@ -23,6 +26,23 @@ async function findAll() {
 }
 
 async function create(dto: CreateReq["body"]) {
+  const { courseId, examId, studentId } = dto;
+
+  const course = await courseRepository.findById(courseId);
+  if (!course) {
+    throw new HttpError(404, "课程不存在");
+  }
+
+  const exam = await examRepository.findById(examId);
+  if (!exam) {
+    throw new HttpError(404, "考试不存在");
+  }
+
+  const student = await accountRepository.findById(studentId);
+  if (!student || student.role !== Role.STUDENT) {
+    throw new HttpError(404, "学生不存在");
+  }
+
   const score = await scoreRepository.create(dto);
   return score;
 }
