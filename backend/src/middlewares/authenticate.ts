@@ -1,4 +1,4 @@
-import { Role } from "account";
+import { accountRepository, Role } from "account";
 import { NextFunction, Request, Response } from "express";
 import { decodeJwt } from "utils/jwt";
 
@@ -11,13 +11,19 @@ export function authenticate(expectation?: Role | Role[]) {
         return res.status(401).json({ error: "未登录" });
       }
 
-      const auth = await decodeJwt(token);
+      const id = await decodeJwt(token);
 
-      if (!isExpectedRole(auth.role, expectation)) {
+      const account = await accountRepository.findById(id);
+
+      if (!account) {
+        return res.status(401).json({ error: "登录信息无效" });
+      }
+
+      if (!isExpectedRole(account.role, expectation)) {
         return res.status(403).json({ error: "没有权限访问" });
       }
 
-      res.locals.auth = auth;
+      res.locals.auth = { id, role: account.role };
 
       return next();
     } catch (error) {

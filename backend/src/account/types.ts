@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export enum Role {
-  STUDENT,
-  TEACHER,
+  STUDENT = 1,
+  TEACHER = 2,
 }
 
 export const accountSchema = z.object({

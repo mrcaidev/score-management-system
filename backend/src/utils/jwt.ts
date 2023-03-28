@@ -3,17 +3,10 @@ import { z } from "zod";
 import { JWT_SECRET } from "./env";
 import { InternalServerError, UnauthorizedError } from "./http-error";
 
-export const authSchema = z.object({
-  id: z.string().nonempty(),
-  role: z.number().int(),
-});
-
-export type Auth = z.infer<typeof authSchema>;
-
-export async function generateJwt(payload: Auth) {
+export async function generateJwt(id: string) {
   try {
     const token = await new Promise<string>((resolve, reject) => {
-      sign(payload, JWT_SECRET, { expiresIn: "1d" }, (error, token) => {
+      sign(id, JWT_SECRET, { expiresIn: "1d" }, (error, token) => {
         if (error || !token) {
           return reject(error);
         }
@@ -28,15 +21,15 @@ export async function generateJwt(payload: Auth) {
 
 export async function decodeJwt(token: string) {
   try {
-    const payload = await new Promise<Auth>((resolve, reject) => {
-      verify(token, JWT_SECRET, (error, payload) => {
-        if (error || !payload) {
+    const id = await new Promise<string>((resolve, reject) => {
+      verify(token, JWT_SECRET, (error, id) => {
+        if (error || !id) {
           return reject(error);
         }
-        return resolve(authSchema.parse(payload));
+        return resolve(z.string().parse(id));
       });
     });
-    return payload;
+    return id;
   } catch {
     throw new UnauthorizedError("登录信息无效");
   }

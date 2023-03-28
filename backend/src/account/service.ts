@@ -16,6 +16,6 @@ async function login(dto: LoginReq["body"]) {
     throw new UnauthorizedError("账号或密码错误");
   }
 
-  const token = await generateJwt({ id, role: account.role });
+  const token = await generateJwt(id);
   return token;
 }
