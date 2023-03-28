@@ -1,7 +1,7 @@
 import { sign, verify } from "jsonwebtoken";
 import { z } from "zod";
 import { JWT_SECRET } from "./env";
-import { HttpError } from "./error";
+import { InternalServerError, UnauthorizedError } from "./http-error";
 
 export const authSchema = z.object({
   id: z.string().nonempty(),
@@ -22,7 +22,7 @@ export async function generateJwt(payload: AuthPayload) {
     });
     return token;
   } catch {
-    throw new HttpError(500, "登录失败，请稍后再试");
+    throw new InternalServerError("登录失败，请稍后再试");
   }
 }
 
@@ -38,6 +38,6 @@ export async function decodeJwt(token: string) {
     });
     return payload;
   } catch {
-    throw new HttpError(401, "登录信息无效");
+    throw new UnauthorizedError("登录信息无效");
   }
 }

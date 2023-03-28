@@ -1,4 +1,4 @@
-import { HttpError } from "utils/error";
+import { UnauthorizedError } from "utils/http-error";
 import { generateJwt } from "utils/jwt";
 import { accountRepository } from "./repository";
 import { LoginReq } from "./types";
@@ -13,7 +13,7 @@ async function login(dto: LoginReq["body"]) {
   const account = await accountRepository.findByIdAndPassword(id, password);
 
   if (!account) {
-    throw new HttpError(401, "账号或密码错误");
+    throw new UnauthorizedError("账号或密码错误");
   }
 
   const token = await generateJwt({ id, role: account.role });

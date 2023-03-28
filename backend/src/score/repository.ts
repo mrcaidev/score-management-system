@@ -1,5 +1,5 @@
 import { database } from "utils/database";
-import { HttpError } from "utils/error";
+import { InternalServerError } from "utils/http-error";
 import { CreateReq, FindAllReq, FullScore, Score } from "./types";
 
 export const scoreRepository = {
@@ -100,13 +100,13 @@ async function create(dto: CreateReq["body"]) {
   );
 
   if (!rows[0]) {
-    throw new HttpError(500, "添加成绩失败，请稍后再试");
+    throw new InternalServerError("添加成绩失败，请稍后再试");
   }
 
   const fullScore = await findById(rows[0].id);
 
   if (!fullScore) {
-    throw new HttpError(500, "添加成绩失败，请稍后再试");
+    throw new InternalServerError("添加成绩失败，请稍后再试");
   }
 
   return fullScore;
@@ -131,7 +131,7 @@ async function updateById(id: string, dto: Score) {
   );
 
   if (rowCount !== 1) {
-    throw new HttpError(500, "更新成绩失败，请稍后再试");
+    throw new InternalServerError("更新成绩失败，请稍后再试");
   }
 }
 
@@ -145,6 +145,6 @@ async function deleteById(id: string) {
   );
 
   if (rowCount !== 1) {
-    throw new HttpError(500, "删除成绩失败，请稍后再试");
+    throw new InternalServerError("删除成绩失败，请稍后再试");
   }
 }

@@ -1,5 +1,5 @@
 import { database } from "utils/database";
-import { HttpError } from "utils/error";
+import { InternalServerError } from "utils/http-error";
 import { CreateReq, Exam } from "./types";
 
 export const examRepository = {
@@ -61,7 +61,7 @@ async function create(dto: CreateReq["body"]) {
   );
 
   if (!rows[0]) {
-    throw new HttpError(500, "添加考试失败，请稍后再试");
+    throw new InternalServerError("添加考试失败，请稍后再试");
   }
 
   return rows[0];
@@ -80,7 +80,7 @@ async function updateById(id: string, dto: Exam) {
   );
 
   if (rowCount !== 1) {
-    throw new HttpError(500, "更新考试失败，请稍后再试");
+    throw new InternalServerError("更新考试失败，请稍后再试");
   }
 }
 
@@ -94,6 +94,6 @@ async function deleteById(id: string) {
   );
 
   if (rowCount !== 1) {
-    throw new HttpError(500, "删除考试失败，请稍后再试");
+    throw new InternalServerError("删除考试失败，请稍后再试");
   }
 }

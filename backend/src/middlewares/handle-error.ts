@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { HttpError } from "utils/error";
+import { HttpError } from "utils/http-error";
 import { ZodError } from "zod";
 
 export async function handleError(
