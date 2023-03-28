@@ -1,4 +1,3 @@
-import { Role } from "account";
 import { sign, verify } from "jsonwebtoken";
 import { z } from "zod";
 import { JWT_SECRET } from "./env";
@@ -6,7 +5,7 @@ import { HttpError } from "./error";
 
 export const authSchema = z.object({
   id: z.string().nonempty(),
-  role: z.union([z.literal(Role.STUDENT), z.literal(Role.TEACHER)]),
+  role: z.number().int(),
 });
 
 export type AuthPayload = z.infer<typeof authSchema>;
@@ -34,7 +33,6 @@ export async function decodeJwt(token: string) {
         if (error || !payload) {
           return reject(error);
         }
-        console.log(payload);
         return resolve(authSchema.parse(payload));
       });
     });
