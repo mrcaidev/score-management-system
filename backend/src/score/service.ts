@@ -26,7 +26,7 @@ async function findAll() {
 }
 
 async function create(dto: CreateReq["body"]) {
-  const { courseId, examId, studentId } = dto;
+  const { courseId, examId, studentId, score } = dto;
 
   const course = await courseRepository.findById(courseId);
   if (!course) {
@@ -43,15 +43,31 @@ async function create(dto: CreateReq["body"]) {
     throw new HttpError(404, "学生不存在");
   }
 
-  const score = await scoreRepository.create(dto);
-  return score;
+  if (score > course.maxScore) {
+    throw new HttpError(422, "分数超出最高分");
+  }
+
+  const scoreObject = await scoreRepository.create(dto);
+  return scoreObject;
 }
 
 async function updateById(id: string, dto: UpdateReq["body"]) {
+  const { score } = dto;
+
   const oldScore = await scoreRepository.findById(id);
 
   if (!oldScore) {
     throw new HttpError(404, "成绩不存在");
+  }
+
+  const course = await courseRepository.findById(oldScore.courseId);
+
+  if (!course) {
+    throw new HttpError(404, "课程不存在");
+  }
+
+  if (score && score > course.maxScore) {
+    throw new HttpError(422, "分数超出最高分");
   }
 
   const newScore = { ...oldScore, ...dto } as Score;

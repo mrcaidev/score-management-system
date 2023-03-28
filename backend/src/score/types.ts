@@ -13,7 +13,7 @@ export const scoreSchema = z.object({
   examId: z.string().uuid(),
   courseId: z.number(),
   studentId: z.string().nonempty(),
-  score: z.number(),
+  score: z.number().min(0),
   isAbsent: z.boolean(),
   reviewStatus: z.nativeEnum(ReviewStatus),
 });
