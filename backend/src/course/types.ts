@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const courseSchema = z.object({
-  id: z.number().positive(),
+  id: z.number().int().positive(),
   name: z.string().nonempty(),
   maxScore: z.number().positive(),
 });
