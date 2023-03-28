@@ -11,13 +11,13 @@ export function authenticate(expectation?: Role | Role[]) {
         return res.status(401).json({ error: "未登录" });
       }
 
-      const payload = await decodeJwt(token);
+      const auth = await decodeJwt(token);
 
-      if (!matchExpectation(payload.role, expectation)) {
+      if (!isExpectedRole(auth.role, expectation)) {
         return res.status(403).json({ error: "没有权限访问" });
       }
 
-      res.locals.auth = payload;
+      res.locals.auth = auth;
 
       return next();
     } catch (error) {
@@ -26,7 +26,7 @@ export function authenticate(expectation?: Role | Role[]) {
   };
 }
 
-function matchExpectation(role: Role, expectation: Role | Role[] | undefined) {
+function isExpectedRole(role: Role, expectation: Role | Role[] | undefined) {
   if (!expectation) {
     return true;
   }
