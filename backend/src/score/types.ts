@@ -1,3 +1,6 @@
+import { Account } from "account";
+import { Course } from "course";
+import { Exam } from "exam";
 import { z } from "zod";
 
 export enum ReviewStatus {
@@ -19,6 +22,15 @@ export const scoreSchema = z.object({
 });
 
 export type Score = z.infer<typeof scoreSchema>;
+
+export type FullScore = Pick<
+  Score,
+  "id" | "score" | "isAbsent" | "reviewStatus"
+> & {
+  exam: Pick<Exam, "id" | "name">;
+  course: Pick<Course, "id" | "name">;
+  student: Pick<Account, "id" | "name">;
+};
 
 export const findAllReqSchema = z.object({
   query: scoreSchema

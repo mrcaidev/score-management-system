@@ -6,7 +6,7 @@ import { HttpError } from "./error";
 
 export const authSchema = z.object({
   id: z.string().nonempty(),
-  role: z.nativeEnum(Role),
+  role: z.union([z.literal(Role.STUDENT), z.literal(Role.TEACHER)]),
 });
 
 export type AuthPayload = z.infer<typeof authSchema>;
@@ -34,6 +34,7 @@ export async function decodeJwt(token: string) {
         if (error || !payload) {
           return reject(error);
         }
+        console.log(payload);
         return resolve(authSchema.parse(payload));
       });
     });

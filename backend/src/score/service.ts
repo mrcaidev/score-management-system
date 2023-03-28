@@ -30,8 +30,8 @@ async function findAll(dto: FindAllReq["query"], auth: AuthPayload) {
     throw new HttpError(403, "学生只能查询自己的成绩");
   }
 
-  const scores = await scoreRepository.findAll(dto);
-  return scores;
+  const fullScores = await scoreRepository.findAllAsFull(dto);
+  return fullScores;
 }
 
 async function create(dto: CreateReq["body"]) {
@@ -56,8 +56,8 @@ async function create(dto: CreateReq["body"]) {
     throw new HttpError(422, "分数超出最高分");
   }
 
-  const scoreObject = await scoreRepository.create(dto);
-  return scoreObject;
+  const fullScore = await scoreRepository.create(dto);
+  return fullScore;
 }
 
 async function updateById(id: string, dto: UpdateReq["body"]) {

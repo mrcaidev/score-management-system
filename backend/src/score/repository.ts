@@ -1,14 +1,40 @@
 import { database } from "utils/database";
 import { HttpError } from "utils/error";
-import { CreateReq, FindAllReq, Score } from "./types";
+import { CreateReq, FindAllReq, FullScore, Score } from "./types";
 
 export const scoreRepository = {
+  findAllAsFull,
   findAll,
   findById,
   create,
   updateById,
   deleteById,
 };
+
+async function findAllAsFull(dto: FindAllReq["query"]) {
+  const { courseId, examId, reviewStatus, studentId } = dto;
+
+  const { rows } = await database.query<FullScore>(
+    `
+      SELECT
+        id,
+        exam,
+        course,
+        student,
+        score,
+        is_absent "isAbsent",
+        review_status "reviewStatus"
+      FROM full_score
+      WHERE ($1::UUID IS NULL OR (exam->>'id')::UUID = $1)
+        AND ($2::SMALLINT IS NULL OR (course->>'id')::SMALLINT = $2)
+        AND ($3::TEXT IS NULL OR (student->>'id')::TEXT = $3)
+        AND ($4::SMALLINT IS NULL OR review_status = $4)
+    `,
+    [examId, courseId, studentId, reviewStatus]
+  );
+
+  return rows;
+}
 
 async function findAll(dto: FindAllReq["query"]) {
   const { courseId, examId, reviewStatus, studentId } = dto;
@@ -58,7 +84,7 @@ async function findById(id: string) {
 async function create(dto: CreateReq["body"]) {
   const { courseId, examId, isAbsent, score, studentId } = dto;
 
-  const { rows } = await database.query<Score>(
+  const { rows } = await database.query<{ id: string }>(
     `
       INSERT INTO score (
         exam_id,
@@ -68,14 +94,7 @@ async function create(dto: CreateReq["body"]) {
         is_absent
       )
       VALUES ($1, $2, $3, $4, $5)
-      RETURNING
-        id,
-        exam_id "examId",
-        course_id "courseId",
-        student_id "studentId",
-        score,
-        is_absent "isAbsent",
-        review_status "reviewStatus"
+      RETURNING id
     `,
     [examId, courseId, studentId, score, isAbsent]
   );
@@ -84,13 +103,19 @@ async function create(dto: CreateReq["body"]) {
     throw new HttpError(500, "添加成绩失败，请稍后再试");
   }
 
-  return rows[0];
+  const fullScore = await findById(rows[0].id);
+
+  if (!fullScore) {
+    throw new HttpError(500, "添加成绩失败，请稍后再试");
+  }
+
+  return fullScore;
 }
 
 async function updateById(id: string, dto: Score) {
   const { examId, courseId, studentId, score, isAbsent, reviewStatus } = dto;
 
-  const { rowCount } = await database.query<Score>(
+  const { rowCount } = await database.query(
     `
       UPDATE score
       SET
@@ -101,14 +126,6 @@ async function updateById(id: string, dto: Score) {
         is_absent = $6,
         review_status = $7
       WHERE id = $1
-      RETURNING
-        id,
-        exam_id "examId",
-        course_id "courseId",
-        student_id "studentId",
-        score,
-        is_absent "isAbsent",
-        review_status "reviewStatus"
     `,
     [id, examId, courseId, studentId, score, isAbsent, reviewStatus]
   );
@@ -119,18 +136,10 @@ async function updateById(id: string, dto: Score) {
 }
 
 async function deleteById(id: string) {
-  const { rowCount } = await database.query<Score>(
+  const { rowCount } = await database.query(
     `
       DELETE FROM score
       WHERE id = $1
-      RETURNING
-        id,
-        exam_id "examId",
-        course_id "courseId",
-        student_id "studentId",
-        score,
-        is_absent "isAbsent",
-        review_status "reviewStatus"
     `,
     [id]
   );
