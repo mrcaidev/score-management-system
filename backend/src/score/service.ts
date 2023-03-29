@@ -34,8 +34,8 @@ async function findAll(dto: FindAllReq["query"], auth: Auth) {
     throw new ForbiddenError("学生只能查询自己的成绩");
   }
 
-  const fullScores = await scoreRepository.findAllAsFull(dto);
-  return fullScores;
+  const namedScores = await scoreRepository.findAllAsNamed(dto);
+  return namedScores;
 }
 
 async function create(dto: CreateReq["body"]) {
@@ -60,8 +60,8 @@ async function create(dto: CreateReq["body"]) {
     throw new UnprocessableContentError("分数超出最高分");
   }
 
-  const fullScore = await scoreRepository.create(dto);
-  return fullScore;
+  const namedScore = await scoreRepository.create(dto);
+  return namedScore;
 }
 
 async function updateById(id: string, dto: UpdateReq["body"]) {

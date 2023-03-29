@@ -1,12 +1,12 @@
 import { database } from "utils/database";
 import { InternalServerError } from "utils/http-error";
-import { CreateReq, FindAllReq, FullScore, Score } from "./types";
+import { CreateReq, FindAllReq, NamedScore, Score } from "./types";
 
 export const scoreRepository = {
   findAll,
-  findAllAsFull,
+  findAllAsNamed,
   findById,
-  findByIdAsFull,
+  findByIdAsNamed,
   create,
   updateById,
   deleteById,
@@ -37,23 +37,26 @@ async function findAll(dto: FindAllReq["query"]) {
   return rows;
 }
 
-async function findAllAsFull(dto: FindAllReq["query"]) {
+async function findAllAsNamed(dto: FindAllReq["query"]) {
   const { examId, courseId, studentId, reviewStatus } = dto;
 
-  const { rows } = await database.query<FullScore>(
+  const { rows } = await database.query<NamedScore>(
     `
       SELECT
-        id,
-        exam,
-        course,
-        student,
-        score,
-        is_absent "isAbsent",
-        review_status "reviewStatus"
-      FROM full_score
-      WHERE ($1::UUID IS NULL OR (exam->>'id')::UUID = $1)
-        AND ($2::SMALLINT IS NULL OR (course->>'id')::SMALLINT = $2)
-        AND ($3::TEXT IS NULL OR (student->>'id')::TEXT = $3)
+        score.id,
+        exam.name "examName",
+        course.name "courseName",
+        account.name "studentName",
+        score.score,
+        score.is_absent "isAbsent",
+        score.review_status "reviewStatus"
+      FROM score
+      LEFT OUTER JOIN exam ON exam.id = score.exam_id
+      LEFT OUTER JOIN course ON course.id = score.course_id
+      LEFT OUTER JOIN account ON account.id = score.student_id
+      WHERE ($1::UUID IS NULL OR exam.id = $1)
+        AND ($2::SMALLINT IS NULL OR course.id = $2)
+        AND ($3::TEXT IS NULL OR account.id = $3)
         AND ($4::SMALLINT IS NULL OR review_status = $4)
         `,
     [examId, courseId, studentId, reviewStatus]
@@ -82,19 +85,22 @@ async function findById(id: string) {
   return rows[0];
 }
 
-async function findByIdAsFull(id: string) {
-  const { rows } = await database.query<FullScore>(
+async function findByIdAsNamed(id: string) {
+  const { rows } = await database.query<NamedScore>(
     `
       SELECT
-        id,
-        exam,
-        course,
-        student,
-        score,
-        is_absent "isAbsent",
-        review_status "reviewStatus"
-      FROM full_score
-      WHERE id = $1
+        score.id,
+        exam.name "examName",
+        course.name "courseName",
+        account.name "studentName",
+        score.score,
+        score.is_absent "isAbsent",
+        score.review_status "reviewStatus"
+      FROM score
+      LEFT OUTER JOIN exam ON exam.id = score.exam_id
+      LEFT OUTER JOIN course ON course.id = score.course_id
+      LEFT OUTER JOIN account ON account.id = score.student_id
+      WHERE score.id = $1
     `,
     [id]
   );
@@ -124,13 +130,13 @@ async function create(dto: CreateReq["body"]) {
     throw new InternalServerError("添加成绩失败，请稍后再试");
   }
 
-  const fullScore = await findById(rows[0].id);
+  const namedScore = await findByIdAsNamed(rows[0].id);
 
-  if (!fullScore) {
+  if (!namedScore) {
     throw new InternalServerError("添加成绩失败，请稍后再试");
   }
 
-  return fullScore;
+  return namedScore;
 }
 
 async function updateById(id: string, dto: Score) {

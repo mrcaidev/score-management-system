@@ -20,8 +20,8 @@ export const scoreController = {
 
 async function findAll(req: FindAllReq, res: Response, next: NextFunction) {
   try {
-    const fullScores = await scoreService.findAll(req.query, res.locals.auth);
-    return res.status(200).json({ data: fullScores });
+    const namedScores = await scoreService.findAll(req.query, res.locals.auth);
+    return res.status(200).json({ data: namedScores });
   } catch (error) {
     return next(error);
   }
@@ -29,8 +29,8 @@ async function findAll(req: FindAllReq, res: Response, next: NextFunction) {
 
 async function create(req: CreateReq, res: Response, next: NextFunction) {
   try {
-    const fullScore = await scoreService.create(req.body);
-    return res.status(201).json({ data: fullScore });
+    const namedScore = await scoreService.create(req.body);
+    return res.status(201).json({ data: namedScore });
   } catch (error) {
     return next(error);
   }

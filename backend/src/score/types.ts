@@ -23,10 +23,10 @@ export const scoreSchema = z.object({
 
 export type Score = z.infer<typeof scoreSchema>;
 
-export type FullScore = Omit<Score, "examId" | "courseId" | "studentId"> & {
-  exam: Pick<Exam, "id" | "name">;
-  course: Pick<Course, "id" | "name">;
-  student: Pick<Account, "id" | "name">;
+export type NamedScore = Omit<Score, "examId" | "courseId" | "studentId"> & {
+  examName: Exam["name"];
+  courseName: Course["name"];
+  studentName: Account["name"];
 };
 
 export const findAllReqSchema = z.object({
