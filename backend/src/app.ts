@@ -1,7 +1,6 @@
 import "utils/env";
 
 import { authRouter } from "auth";
-import cookieParser from "cookie-parser";
 import cors from "cors";
 import { courseRouter } from "course";
 import { examRouter } from "exam";
@@ -14,7 +13,6 @@ export const app: Express = express();
 
 app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 
 app.use("/", rootRouter);
 app.use("/auth", authRouter);

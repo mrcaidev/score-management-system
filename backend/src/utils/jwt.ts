@@ -1,3 +1,4 @@
+import { IncomingHttpHeaders } from "http";
 import { sign, verify } from "jsonwebtoken";
 import { z } from "zod";
 import { JWT_SECRET } from "./env";
@@ -39,4 +40,20 @@ export async function decodeJwt(token: string) {
   } catch {
     throw new UnauthorizedError("登录信息无效");
   }
+}
+
+export function extractJwtFromHeader(headers: IncomingHttpHeaders) {
+  const authorization = headers.authorization;
+
+  if (!authorization) {
+    return;
+  }
+
+  const [type, token] = authorization.split(" ");
+
+  if (type !== "Bearer") {
+    return;
+  }
+
+  return token;
 }

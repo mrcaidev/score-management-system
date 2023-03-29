@@ -9,7 +9,7 @@ export const authController = {
 async function login(req: LoginReq, res: Response, next: NextFunction) {
   try {
     const token = await authService.login(req.body);
-    return res.status(204).cookie("token", token, { httpOnly: true }).end();
+    return res.status(200).json({ data: token });
   } catch (error) {
     return next(error);
   }

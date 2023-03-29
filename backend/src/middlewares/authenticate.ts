@@ -1,12 +1,12 @@
 import { accountRepository } from "account";
 import { Role } from "auth";
 import { NextFunction, Request, Response } from "express";
-import { decodeJwt } from "utils/jwt";
+import { decodeJwt, extractJwtFromHeader } from "utils/jwt";
 
 export function authenticate(expectation?: Role | Role[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { token } = req.cookies;
+      const token = extractJwtFromHeader(req.headers);
 
       if (!token) {
         return res.status(401).json({ error: "未登录" });
