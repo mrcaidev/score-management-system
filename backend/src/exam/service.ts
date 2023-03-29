@@ -23,8 +23,8 @@ async function create(dto: CreateReq["body"]) {
     throw new ConflictError("考试已存在");
   }
 
-  const exam = await examRepository.create(dto);
-  return exam;
+  const newExam = await examRepository.create(dto);
+  return newExam;
 }
 
 async function updateById(id: string, dto: UpdateReq["body"]) {
@@ -37,8 +37,6 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
   const newExam = { ...oldExam, ...dto } as Exam;
 
   await examRepository.updateById(id, newExam);
-
-  return newExam;
 }
 
 async function deleteById(id: string) {

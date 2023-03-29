@@ -1,6 +1,6 @@
 import "utils/env";
 
-import { accountRouter } from "account";
+import { authRouter } from "auth";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { courseRouter } from "course";
@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/", rootRouter);
-app.use("/account", accountRouter);
+app.use("/auth", authRouter);
 app.use("/courses", courseRouter);
 app.use("/exams", examRouter);
 app.use("/scores", scoreRouter);

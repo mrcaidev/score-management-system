@@ -1,4 +1,5 @@
-import { accountRepository, Role } from "account";
+import { accountRepository } from "account";
+import { Auth, Role } from "auth";
 import { courseRepository } from "course";
 import { examRepository } from "exam";
 import {
@@ -25,10 +26,7 @@ export const scoreService = {
   handleReview,
 };
 
-async function findAll(
-  dto: FindAllReq["query"],
-  auth: { id: string; role: number }
-) {
+async function findAll(dto: FindAllReq["query"], auth: Auth) {
   const { studentId } = dto;
   const { id: authId, role: authRole } = auth;
 
@@ -88,8 +86,6 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
   const newScore = { ...oldScore, ...dto } as Score;
 
   await scoreRepository.updateById(id, newScore);
-
-  return newScore;
 }
 
 async function deleteById(id: string) {
@@ -102,14 +98,14 @@ async function deleteById(id: string) {
   await scoreRepository.deleteById(id);
 }
 
-async function requireReview(id: string, studentId: string) {
+async function requireReview(id: string, authId: string) {
   const oldScore = await scoreRepository.findById(id);
 
   if (!oldScore) {
     throw new NotFoundError("成绩不存在");
   }
 
-  if (oldScore.studentId !== studentId) {
+  if (oldScore.studentId !== authId) {
     throw new ForbiddenError("只能申请复查自己的成绩");
   }
 
@@ -120,8 +116,6 @@ async function requireReview(id: string, studentId: string) {
   const newScore = { ...oldScore, reviewStatus: ReviewStatus.PENDING };
 
   await scoreRepository.updateById(id, newScore);
-
-  return newScore;
 }
 
 async function handleReview(id: string, dto: HandleReviewReq["body"]) {
@@ -175,6 +169,4 @@ async function handleReview(id: string, dto: HandleReviewReq["body"]) {
   const newScore = { ...oldScore, reviewStatus };
 
   await scoreRepository.updateById(id, newScore);
-
-  return newScore;
 }

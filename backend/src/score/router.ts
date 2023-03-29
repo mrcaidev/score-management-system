@@ -1,4 +1,4 @@
-import { Role } from "account";
+import { Role } from "auth";
 import { Router } from "express";
 import { authenticate } from "middlewares/authenticate";
 import { validate } from "middlewares/validate";

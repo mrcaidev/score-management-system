@@ -1,4 +1,9 @@
+DROP TABLE IF EXISTS score;
+DROP TABLE IF EXISTS account;
 DROP TABLE IF EXISTS course;
+DROP TABLE IF EXISTS exam;
+
+-----------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS course (
   id SMALLINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -24,85 +29,6 @@ USING (true);
 
 -----------------------------------------------------------
 
-DROP TABLE IF EXISTS review_status;
-
-CREATE TABLE IF NOT EXISTS review_status (
-  id SMALLINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name TEXT UNIQUE NOT NULL
-);
-
-INSERT INTO review_status (name) VALUES
-('无'),
-('待处理'),
-('已受理'),
-('已驳回'),
-('已完成');
-
-ALTER TABLE review_status ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Enable all access to service_role" ON review_status
-AS PERMISSIVE
-FOR ALL
-TO service_role
-USING (true);
-
------------------------------------------------------------
-
-DROP TABLE IF EXISTS role;
-
-CREATE TABLE IF NOT EXISTS role (
-  id SMALLINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name TEXT UNIQUE NOT NULL
-);
-
-INSERT INTO role (name) VALUES
-('学生'),
-('教师');
-
-ALTER TABLE role ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Enable all access to service_role" ON role
-AS PERMISSIVE
-FOR ALL
-TO service_role
-USING (true);
-
------------------------------------------------------------
-
-DROP TABLE IF EXISTS account;
-
-CREATE TABLE IF NOT EXISTS account (
-  id TEXT PRIMARY KEY,
-  name TEXT NOT NULL,
-  password TEXT NOT NULL,
-  role_id SMALLINT NOT NULL REFERENCES role(id)
-);
-
-INSERT INTO account (id, name, password, role_id) VALUES
-('101', '朱震', CRYPT('101', GEN_SALT('bf')), 2),
-('2020010801001','蔚怡香', CRYPT('2020010801001', GEN_SALT('bf')), 1),
-('2020010801002','巫睿杰', CRYPT('2020010801002', GEN_SALT('bf')), 1),
-('2020010801003','桑月婵', CRYPT('2020010801003', GEN_SALT('bf')), 1),
-('2020010801004','廉俊誉', CRYPT('2020010801004', GEN_SALT('bf')), 1),
-('2020010801005','翁思宏', CRYPT('2020010801005', GEN_SALT('bf')), 1),
-('2020010801006','国哲恒', CRYPT('2020010801006', GEN_SALT('bf')), 1),
-('2020010801007','越睿杰', CRYPT('2020010801007', GEN_SALT('bf')), 1),
-('2020010801008','符鑫蕾', CRYPT('2020010801008', GEN_SALT('bf')), 1),
-('2020010801009','舒萧然', CRYPT('2020010801009', GEN_SALT('bf')), 1),
-('2020010801010','濮晧宇', CRYPT('2020010801010', GEN_SALT('bf')), 1);
-
-ALTER TABLE account ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY "Enable all access to service_role" ON account
-AS PERMISSIVE
-FOR ALL
-TO service_role
-USING (true);
-
------------------------------------------------------------
-
-DROP TABLE IF EXISTS exam;
-
 CREATE TABLE IF NOT EXISTS exam (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   name TEXT UNIQUE NOT NULL,
@@ -122,7 +48,35 @@ USING (true);
 
 -----------------------------------------------------------
 
-DROP TABLE IF EXISTS score;
+CREATE TABLE IF NOT EXISTS account (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  password TEXT NOT NULL,
+  role SMALLINT NOT NULL CHECK (role IN (0, 1))
+);
+
+INSERT INTO account (id, name, password, role) VALUES
+('2020010801001','蔚怡香', CRYPT('2020010801001', GEN_SALT('bf')), 0),
+('2020010801002','巫睿杰', CRYPT('2020010801002', GEN_SALT('bf')), 0),
+('2020010801003','桑月婵', CRYPT('2020010801003', GEN_SALT('bf')), 0),
+('2020010801004','廉俊誉', CRYPT('2020010801004', GEN_SALT('bf')), 0),
+('2020010801005','翁思宏', CRYPT('2020010801005', GEN_SALT('bf')), 0),
+('2020010801006','国哲恒', CRYPT('2020010801006', GEN_SALT('bf')), 0),
+('2020010801007','越睿杰', CRYPT('2020010801007', GEN_SALT('bf')), 0),
+('2020010801008','符鑫蕾', CRYPT('2020010801008', GEN_SALT('bf')), 0),
+('2020010801009','舒萧然', CRYPT('2020010801009', GEN_SALT('bf')), 0),
+('2020010801010','濮晧宇', CRYPT('2020010801010', GEN_SALT('bf')), 0),
+('101', '朱震', CRYPT('101', GEN_SALT('bf')), 1);
+
+ALTER TABLE account ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Enable all access to service_role" ON account
+AS PERMISSIVE
+FOR ALL
+TO service_role
+USING (true);
+
+-----------------------------------------------------------
 
 CREATE TABLE IF NOT EXISTS score (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -131,7 +85,7 @@ CREATE TABLE IF NOT EXISTS score (
   student_id TEXT NOT NULL REFERENCES account(id),
   score SMALLINT NOT NULL,
   is_absent BOOLEAN NOT NULL,
-  review_status_id SMALLINT NOT NULL DEFAULT 0 REFERENCES review_status(id)
+  review_status SMALLINT NOT NULL DEFAULT 0 CHECK (review_status IN (0, 1, 2, 3, 4))
 );
 
 ALTER TABLE score ENABLE ROW LEVEL SECURITY;
@@ -141,3 +95,31 @@ AS PERMISSIVE
 FOR ALL
 TO service_role
 USING (true);
+
+-----------------------------------------------------------
+
+CREATE OR REPLACE VIEW full_score AS (
+  WITH json_exam AS (
+    SELECT id, name
+    FROM exam
+  ), json_course AS (
+    SELECT id, name
+    FROM course
+  ), json_student AS (
+    SELECT id, name
+    FROM account
+    WHERE role = 0
+  )
+  SELECT
+    score.id,
+    ROW_TO_JSON(json_exam) exam,
+    ROW_TO_JSON(json_course) course,
+    ROW_TO_JSON(json_student) student,
+    score.score,
+    score.is_absent,
+    score.review_status
+  FROM score
+  LEFT OUTER JOIN json_exam ON json_exam.id = score.exam_id
+  LEFT OUTER JOIN json_course ON json_course.id = score.course_id
+  LEFT OUTER JOIN json_student ON json_student.id = score.student_id
+);

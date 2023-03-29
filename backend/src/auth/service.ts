@@ -1,9 +1,9 @@
+import { accountRepository } from "account/repository";
 import { UnauthorizedError } from "utils/http-error";
 import { generateJwt } from "utils/jwt";
-import { accountRepository } from "./repository";
 import { LoginReq } from "./types";
 
-export const accountService = {
+export const authService = {
   login,
 };
 
@@ -16,6 +16,6 @@ async function login(dto: LoginReq["body"]) {
     throw new UnauthorizedError("账号或密码错误");
   }
 
-  const token = await generateJwt(id);
+  const token = await generateJwt({ id });
   return token;
 }

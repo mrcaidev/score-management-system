@@ -3,16 +3,42 @@ import { InternalServerError } from "utils/http-error";
 import { CreateReq, FindAllReq, FullScore, Score } from "./types";
 
 export const scoreRepository = {
-  findAllAsFull,
   findAll,
+  findAllAsFull,
   findById,
+  findByIdAsFull,
   create,
   updateById,
   deleteById,
 };
 
+async function findAll(dto: FindAllReq["query"]) {
+  const { examId, courseId, studentId, reviewStatus } = dto;
+
+  const { rows } = await database.query<Score>(
+    `
+      SELECT
+        id,
+        exam_id "examId",
+        course_id "courseId",
+        student_id "studentId",
+        score,
+        is_absent "isAbsent",
+        review_status "reviewStatus"
+      FROM score
+      WHERE ($1::UUID IS NULL OR exam_id = $1)
+      AND ($2::SMALLINT IS NULL OR course_id = $2)
+      AND ($3::TEXT IS NULL OR student_id = $3)
+      AND ($4::SMALLINT IS NULL OR review_status = $4)
+      `,
+    [examId, courseId, studentId, reviewStatus]
+  );
+
+  return rows;
+}
+
 async function findAllAsFull(dto: FindAllReq["query"]) {
-  const { courseId, examId, reviewStatus, studentId } = dto;
+  const { examId, courseId, studentId, reviewStatus } = dto;
 
   const { rows } = await database.query<FullScore>(
     `
@@ -29,32 +55,7 @@ async function findAllAsFull(dto: FindAllReq["query"]) {
         AND ($2::SMALLINT IS NULL OR (course->>'id')::SMALLINT = $2)
         AND ($3::TEXT IS NULL OR (student->>'id')::TEXT = $3)
         AND ($4::SMALLINT IS NULL OR review_status = $4)
-    `,
-    [examId, courseId, studentId, reviewStatus]
-  );
-
-  return rows;
-}
-
-async function findAll(dto: FindAllReq["query"]) {
-  const { courseId, examId, reviewStatus, studentId } = dto;
-
-  const { rows } = await database.query<Score>(
-    `
-      SELECT
-        id,
-        exam_id "examId",
-        course_id "courseId",
-        student_id "studentId",
-        score,
-        is_absent "isAbsent",
-        review_status "reviewStatus"
-      FROM score
-      WHERE ($1::UUID IS NULL OR exam_id = $1)
-        AND ($2::SMALLINT IS NULL OR course_id = $2)
-        AND ($3::TEXT IS NULL OR student_id = $3)
-        AND ($4::SMALLINT IS NULL OR review_status = $4)
-    `,
+        `,
     [examId, courseId, studentId, reviewStatus]
   );
 
@@ -73,6 +74,26 @@ async function findById(id: string) {
         is_absent "isAbsent",
         review_status "reviewStatus"
       FROM score
+      WHERE id = $1
+    `,
+    [id]
+  );
+
+  return rows[0];
+}
+
+async function findByIdAsFull(id: string) {
+  const { rows } = await database.query<FullScore>(
+    `
+      SELECT
+        id,
+        exam,
+        course,
+        student,
+        score,
+        is_absent "isAbsent",
+        review_status "reviewStatus"
+      FROM full_score
       WHERE id = $1
     `,
     [id]

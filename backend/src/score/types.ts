@@ -7,14 +7,14 @@ export enum ReviewStatus {
   NONE,
   PENDING,
   ACCEPTED,
-  REJECTED,
   FINISHED,
+  REJECTED,
 }
 
 export const scoreSchema = z.object({
   id: z.string().uuid(),
   examId: z.string().uuid(),
-  courseId: z.number().min(1),
+  courseId: z.number().int().positive(),
   studentId: z.string().nonempty(),
   score: z.number().min(0),
   isAbsent: z.boolean(),
@@ -23,10 +23,7 @@ export const scoreSchema = z.object({
 
 export type Score = z.infer<typeof scoreSchema>;
 
-export type FullScore = Pick<
-  Score,
-  "id" | "score" | "isAbsent" | "reviewStatus"
-> & {
+export type FullScore = Omit<Score, "examId" | "courseId" | "studentId"> & {
   exam: Pick<Exam, "id" | "name">;
   course: Pick<Course, "id" | "name">;
   student: Pick<Account, "id" | "name">;

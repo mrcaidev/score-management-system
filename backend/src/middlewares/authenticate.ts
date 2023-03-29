@@ -1,4 +1,5 @@
-import { accountRepository, Role } from "account";
+import { accountRepository } from "account";
+import { Role } from "auth";
 import { NextFunction, Request, Response } from "express";
 import { decodeJwt } from "utils/jwt";
 
@@ -11,7 +12,7 @@ export function authenticate(expectation?: Role | Role[]) {
         return res.status(401).json({ error: "未登录" });
       }
 
-      const id = await decodeJwt(token);
+      const { id } = await decodeJwt(token);
 
       const account = await accountRepository.findById(id);
 
@@ -33,7 +34,7 @@ export function authenticate(expectation?: Role | Role[]) {
 }
 
 function isExpectedRole(role: Role, expectation: Role | Role[] | undefined) {
-  if (!expectation) {
+  if (expectation === undefined) {
     return true;
   }
 

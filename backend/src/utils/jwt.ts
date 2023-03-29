@@ -3,10 +3,16 @@ import { z } from "zod";
 import { JWT_SECRET } from "./env";
 import { InternalServerError, UnauthorizedError } from "./http-error";
 
-export async function generateJwt(id: string) {
+const payloadSchema = z.object({
+  id: z.string().nonempty(),
+});
+
+type Payload = z.infer<typeof payloadSchema>;
+
+export async function generateJwt(payload: Payload) {
   try {
     const token = await new Promise<string>((resolve, reject) => {
-      sign(id, JWT_SECRET, { expiresIn: "1d" }, (error, token) => {
+      sign(payload, JWT_SECRET, { expiresIn: "1d" }, (error, token) => {
         if (error || !token) {
           return reject(error);
         }
@@ -14,22 +20,22 @@ export async function generateJwt(id: string) {
       });
     });
     return token;
-  } catch {
+  } catch (error) {
     throw new InternalServerError("登录失败，请稍后再试");
   }
 }
 
 export async function decodeJwt(token: string) {
   try {
-    const id = await new Promise<string>((resolve, reject) => {
-      verify(token, JWT_SECRET, (error, id) => {
-        if (error || !id) {
+    const payload = await new Promise<Payload>((resolve, reject) => {
+      verify(token, JWT_SECRET, (error, payload) => {
+        if (error || !payload) {
           return reject(error);
         }
-        return resolve(z.string().parse(id));
+        return resolve(payloadSchema.parse(payload));
       });
     });
-    return id;
+    return payload;
   } catch {
     throw new UnauthorizedError("登录信息无效");
   }

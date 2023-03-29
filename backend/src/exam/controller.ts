@@ -29,8 +29,8 @@ async function create(req: CreateReq, res: Response, next: NextFunction) {
 
 async function updateById(req: UpdateReq, res: Response, next: NextFunction) {
   try {
-    const exam = await examService.updateById(req.params.id, req.body);
-    return res.status(200).json({ data: exam });
+    await examService.updateById(req.params.id, req.body);
+    return res.status(204).end();
   } catch (error) {
     return next(error);
   }
