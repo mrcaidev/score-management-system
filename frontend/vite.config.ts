@@ -1,8 +1,8 @@
-import react from "@vitejs/plugin-react-swc";
 import unocss from "unocss/vite";
 import { defineConfig } from "vite";
+import solid from "vite-plugin-solid";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [react(), unocss(), tsconfigPaths()],
+  plugins: [solid(), unocss(), tsconfigPaths()],
 });

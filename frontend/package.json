@@ -9,17 +9,16 @@
     "start": "vite preview"
   },
   "dependencies": {
+    "@solidjs/router": "^0.8.2",
     "@unocss/reset": "^0.50.6",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "solid-icons": "^1.0.4",
+    "solid-js": "^1.6.16",
     "unocss": "^0.50.6"
   },
   "devDependencies": {
-    "@types/react": "^18.0.31",
-    "@types/react-dom": "^18.0.11",
-    "@vitejs/plugin-react-swc": "^3.2.0",
     "typescript": "^5.0.2",
     "vite": "^4.2.1",
+    "vite-plugin-solid": "^2.6.1",
     "vite-tsconfig-paths": "^4.0.7"
   }
 }
