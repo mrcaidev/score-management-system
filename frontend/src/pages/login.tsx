@@ -1,5 +1,5 @@
 import { SolidButton } from "components/forms/button";
-import { Input, PasswordInput } from "components/forms/input";
+import { Checkbox, Input, PasswordInput } from "components/forms/input";
 import { FiLoader, FiLogIn } from "solid-icons/fi";
 import { Show } from "solid-js";
 import { createStore } from "solid-js/store";
@@ -11,6 +11,7 @@ export default function Login() {
   const [form, setForm] = createStore({
     id: "",
     password: "",
+    shouldRemember: true,
     isSubmitting: false,
   });
 
@@ -25,7 +26,9 @@ export default function Login() {
         password: form.password,
       });
 
-      setLocalStorage("token", token);
+      if (form.shouldRemember) {
+        setLocalStorage("token", token);
+      }
 
       toast.success("登录成功");
     } catch (error) {
@@ -57,7 +60,7 @@ export default function Login() {
             onChange={(e) => setForm({ id: e.currentTarget.value })}
           />
         </div>
-        <div class="mb-6">
+        <div class="mb-4">
           <PasswordInput
             id="password"
             label="密码"
@@ -65,6 +68,17 @@ export default function Login() {
             disabled={form.isSubmitting}
             value={form.password}
             onChange={(e) => setForm({ password: e.currentTarget.value })}
+          />
+        </div>
+        <div class="mb-6">
+          <Checkbox
+            id="should-rememeber"
+            label="1天内记住我"
+            disabled={form.isSubmitting}
+            checked={form.shouldRemember}
+            onChange={(e) =>
+              setForm({ shouldRemember: e.currentTarget.checked })
+            }
           />
         </div>
         <SolidButton
