@@ -1,5 +1,6 @@
-import { Navigate, Outlet, Route, Router, Routes } from "@solidjs/router";
+import { Outlet, Route, Router, Routes } from "@solidjs/router";
 import "@unocss/reset/tailwind.css";
+import { RootGuard } from "components/auth/guards";
 import { AuthProvider } from "components/auth/provider";
 import { lazy } from "solid-js";
 import { Toaster } from "solid-toast";
@@ -12,7 +13,7 @@ export const App = () => {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Navigate href="/login" />} />
+          <Route path="/" element={<RootGuard />} />
           <Route path="login" component={Login} />
           <Route
             path="student"
