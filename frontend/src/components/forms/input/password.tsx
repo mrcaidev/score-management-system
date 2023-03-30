@@ -1,13 +1,9 @@
 import clsx from "clsx";
 import { FiEye, FiEyeOff } from "solid-icons/fi";
-import { createSignal, JSX, Show, splitProps } from "solid-js";
+import { createSignal, Show, splitProps } from "solid-js";
+import { InputProps } from "./types";
 
-type Props = JSX.InputHTMLAttributes<HTMLInputElement> & {
-  id: string;
-  label: string;
-};
-
-export function PasswordInput(props: Props) {
+export function PasswordInput(props: InputProps) {
   const [local, rest] = splitProps(props, ["id", "label", "class"]);
 
   const [isVisible, setIsVisible] = createSignal(false);

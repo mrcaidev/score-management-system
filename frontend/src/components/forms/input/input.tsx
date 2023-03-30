@@ -1,12 +1,8 @@
 import clsx from "clsx";
-import { JSX, mergeProps, splitProps } from "solid-js";
+import { mergeProps, splitProps } from "solid-js";
+import { InputProps } from "./types";
 
-type Props = JSX.InputHTMLAttributes<HTMLInputElement> & {
-  id: string;
-  label: string;
-};
-
-export function Input(props: Props) {
+export function Input(props: InputProps) {
   const fullProps = mergeProps({ type: "text" }, props);
 
   const [local, rest] = splitProps(fullProps, ["id", "label", "class"]);
