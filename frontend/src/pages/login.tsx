@@ -42,7 +42,10 @@ export default function Login() {
 
   return (
     <main class="w-screen h-screen grid place-items-center">
-      <form onSubmit={handleSubmit} class="w-80">
+      <form
+        onSubmit={handleSubmit}
+        class="w-100 px-8 py-10 rounded-lg bg-gray-200 dark:bg-gray-800 shadow-lg"
+      >
         <h1 class="mb-8 font-bold text-3xl text-center">登录</h1>
         <div class="mb-4">
           <Input
