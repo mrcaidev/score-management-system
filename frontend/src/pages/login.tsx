@@ -53,6 +53,7 @@ export default function Login() {
             label="学工号"
             required
             disabled={form.isSubmitting}
+            value={form.id}
             onChange={(e) => setForm({ id: e.currentTarget.value })}
           />
         </div>
@@ -62,6 +63,7 @@ export default function Login() {
             label="密码"
             required
             disabled={form.isSubmitting}
+            value={form.password}
             onChange={(e) => setForm({ password: e.currentTarget.value })}
           />
         </div>
