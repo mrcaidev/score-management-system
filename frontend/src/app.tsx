@@ -1,13 +1,17 @@
 import { Navigate, Outlet, Route, Router, Routes } from "@solidjs/router";
 import "@unocss/reset/tailwind.css";
+import { lazy } from "solid-js";
+import { Toaster } from "solid-toast";
 import "virtual:uno.css";
+
+const Login = lazy(() => import("pages/login"));
 
 export const App = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Navigate href="/login" />} />
-        <Route path="login" element={<div>Login</div>} />
+        <Route path="login" component={Login} />
         <Route
           path="student"
           element={
@@ -35,6 +39,7 @@ export const App = () => {
           <Route path="score" element={<div>Teacher Score</div>} />
         </Route>
       </Routes>
+      <Toaster />
     </Router>
   );
 };
