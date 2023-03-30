@@ -17,6 +17,7 @@
     "sourceType": "module"
   },
   "rules": {
+    "@typescript-eslint/no-non-null-assertion": "off",
     "jsx-a11y/label-has-associated-control": "off"
   }
 }
