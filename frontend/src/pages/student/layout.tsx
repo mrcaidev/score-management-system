@@ -8,17 +8,17 @@ import { Role } from "utils/types";
 export default function StudentLayout() {
   return (
     <RoleGuard role={Role.STUDENT}>
-      <main class="fixed left-0 right-0 left-0 right-0">
-        <Sidebar>
-          <NavLink to="/student/score">
-            <FiFileText size={16} />
-            历次成绩
-          </NavLink>
-          <NavLink to="/student/review">
-            <FiSearch size={16} />
-            查分申请
-          </NavLink>
-        </Sidebar>
+      <Sidebar>
+        <NavLink to="/student/score">
+          <FiFileText size={16} />
+          历次成绩
+        </NavLink>
+        <NavLink to="/student/review">
+          <FiSearch size={16} />
+          查分申请
+        </NavLink>
+      </Sidebar>
+      <main class="fixed left-90 right-0 left-0 right-0">
         <Outlet />
       </main>
     </RoleGuard>
