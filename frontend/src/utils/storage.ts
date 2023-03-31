@@ -20,3 +20,11 @@ export function setLocalStorage(key: string, value: unknown) {
     return;
   }
 }
+
+export function removeLocalStorage(key: string) {
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    return;
+  }
+}
