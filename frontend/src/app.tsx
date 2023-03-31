@@ -9,6 +9,7 @@ import "virtual:uno.css";
 
 const Login = lazy(() => import("pages/login"));
 const StudentLayout = lazy(() => import("pages/student/layout"));
+const StudentHome = lazy(() => import("pages/student/home"));
 const TeacherLayout = lazy(() => import("pages/teacher/layout"));
 
 export const App = () => {
@@ -20,7 +21,7 @@ export const App = () => {
             <Route path="/" element={<RootGuard />} />
             <Route path="login" component={Login} />
             <Route path="student" component={StudentLayout}>
-              <Route path="/" element={<div>Student Home</div>} />
+              <Route path="/" component={StudentHome} />
               <Route path="review" element={<div>Student Review</div>} />
               <Route path="score" element={<div>Student Score</div>} />
             </Route>
