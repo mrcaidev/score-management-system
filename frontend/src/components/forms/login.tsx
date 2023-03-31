@@ -58,9 +58,10 @@ export function LoginForm() {
         <Input
           id="id"
           label="学工号"
+          name="id"
+          value={form.id}
           required
           disabled={form.isSubmitting}
-          value={form.id}
           onChange={(e) => setForm({ id: e.currentTarget.value })}
         />
       </div>
@@ -68,9 +69,10 @@ export function LoginForm() {
         <PasswordInput
           id="password"
           label="密码"
+          name="password"
+          value={form.password}
           required
           disabled={form.isSubmitting}
-          value={form.password}
           onChange={(e) => setForm({ password: e.currentTarget.value })}
         />
       </div>
@@ -78,8 +80,9 @@ export function LoginForm() {
         <Checkbox
           id="should-rememeber"
           label="1天内记住我"
-          disabled={form.isSubmitting}
+          name="shouldRememeber"
           checked={form.shouldRemember}
+          disabled={form.isSubmitting}
           onChange={(e) => setForm({ shouldRemember: e.currentTarget.checked })}
         />
       </div>
