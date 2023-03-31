@@ -16,6 +16,7 @@ async function findAll() {
     `
       SELECT id, name, held_at "heldAt"
       FROM exam
+      ORDER BY held_at DESC
     `
   );
 
