@@ -8,14 +8,11 @@ export function LoginGuard(props: ParentProps) {
   const [auth] = useAuth();
 
   return (
-    <Switch fallback={props.children}>
+    <Switch fallback={<Navigate href={getRedirectPath(auth()!.role)} />}>
       <Match when={auth.loading}>
         <PageLoading />
       </Match>
       <Match when={auth.error}>{props.children}</Match>
-      <Match when={auth()}>
-        <Navigate href={getRedirectPath(auth()!.role)} />
-      </Match>
     </Switch>
   );
 }
