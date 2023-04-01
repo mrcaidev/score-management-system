@@ -57,9 +57,9 @@ export default function StudentScore() {
       >
         <Show when={exams()}>
           <For each={exams()}>
-            {(exam) => (
-              <option value={exam.id} selected={examId() === exam.id}>
-                {exam.name}
+            {({ id, name }) => (
+              <option value={id} selected={examId() === id}>
+                {name}
               </option>
             )}
           </For>
@@ -96,19 +96,19 @@ export default function StudentScore() {
             </thead>
             <tbody>
               <For each={namedScores()}>
-                {(score) => (
+                {({ id, courseName, score }) => (
                   <tr class="hover:bg-gray-200 dark:hover:gray-800 transition-colors">
                     <td class="py-2 border border-gray-400 dark:border-gray-600">
-                      {score.courseName}
+                      {courseName}
                     </td>
                     <td class="py-2 border border-gray-400 dark:border-gray-600">
-                      {score.score}
+                      {score}
                     </td>
                     <td class="py-2 border border-gray-400 dark:border-gray-600">
                       <button
                         type="button"
                         onClick={() =>
-                          request.post(`/scores/${score.id}/require-review`, {})
+                          request.post(`/scores/${id}/require-review`)
                         }
                         class="px-3 py-1 rounded bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-sm text-gray-100 transition-colors"
                       >
