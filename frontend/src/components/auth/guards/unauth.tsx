@@ -4,15 +4,18 @@ import { Match, ParentProps, Switch } from "solid-js";
 import { useAuth } from "../provider";
 import { getRedirectPath } from "./utils";
 
-export function LoginGuard(props: ParentProps) {
+export function UnauthGuard(props: ParentProps) {
   const [auth] = useAuth();
 
   return (
-    <Switch fallback={<Navigate href={getRedirectPath(auth()!.role)} />}>
+    <Switch>
       <Match when={auth.loading}>
         <PageLoading />
       </Match>
       <Match when={auth.error}>{props.children}</Match>
+      <Match when={auth()}>
+        {(auth) => <Navigate href={getRedirectPath(auth().role)} />}
+      </Match>
     </Switch>
   );
 }

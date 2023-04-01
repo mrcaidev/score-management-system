@@ -51,7 +51,7 @@ export function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      class="w-100 px-8 py-10 rounded-lg bg-gray-200 dark:bg-gray-800 shadow-lg"
+      class="w-100 px-8 py-10 rounded-lg border-1 border-gray-900/5 dark:border-gray-100/5 bg-gray-200 dark:bg-gray-800 shadow-xl"
     >
       <h1 class="mb-8 font-bold text-3xl text-center">登录</h1>
       <div class="mb-4">
@@ -87,7 +87,7 @@ export function LoginForm() {
         />
       </div>
       <SolidButton
-        variant={form.isSubmitting ? "disabled" : "primary"}
+        status={form.isSubmitting ? "disabled" : "normal"}
         type="submit"
         disabled={form.isSubmitting}
         class="flex justify-center items-center gap-1"

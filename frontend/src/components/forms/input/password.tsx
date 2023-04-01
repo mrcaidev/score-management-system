@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { FiEye, FiEyeOff } from "solid-icons/fi";
-import { createSignal, Show, splitProps } from "solid-js";
+import { Show, createSignal, splitProps } from "solid-js";
 import { InputProps } from "./types";
 
 export function PasswordInput(props: InputProps) {

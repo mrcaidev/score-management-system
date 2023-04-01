@@ -1,4 +1,5 @@
 import {
+  Accessor,
   ParentProps,
   createContext,
   createEffect,
@@ -9,7 +10,7 @@ import {
 import { getLocalStorage, setLocalStorage } from "utils/storage";
 
 type State = {
-  isDark: () => boolean;
+  isDark: Accessor<boolean>;
   toggle: () => void;
 };
 

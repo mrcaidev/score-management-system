@@ -18,7 +18,7 @@ export function RoleGuard(props: Props) {
       <Match when={auth.error}>
         <Navigate href="/login" />
       </Match>
-      <Match when={auth()!.role !== props.role}>
+      <Match when={auth()?.role !== props.role}>
         <Navigate href={getRedirectPath(auth()!.role)} />
       </Match>
     </Switch>

@@ -13,7 +13,7 @@ export function Sidebar(props: ParentProps) {
       </p>
       <hr class="my-3 border-gray-400 dark:border-gray-600" />
       <nav class="space-y-1 grow overscroll-auto">{props.children}</nav>
-      <hr class="mb-2 border-gray-400 dark:border-gray-600" />
+      <hr class="mb-3 border-gray-400 dark:border-gray-600" />
       <div class="space-y-1">
         <ThemeToggler />
         <Logout />

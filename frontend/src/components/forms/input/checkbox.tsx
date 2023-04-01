@@ -7,7 +7,7 @@ export function Checkbox(props: InputProps) {
   const [local, rest] = splitProps(props, ["id", "label", "class"]);
 
   return (
-    <div class="flex items-center gap-1.5 relative">
+    <div class="flex items-center gap-2 relative">
       <input
         {...rest}
         type="checkbox"

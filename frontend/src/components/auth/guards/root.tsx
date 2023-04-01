@@ -8,12 +8,15 @@ export function RootGuard() {
   const [auth] = useAuth();
 
   return (
-    <Switch fallback={<Navigate href={getRedirectPath(auth()!.role)} />}>
+    <Switch>
       <Match when={auth.loading}>
         <PageLoading />
       </Match>
       <Match when={auth.error}>
         <Navigate href="/login" />
+      </Match>
+      <Match when={auth()}>
+        {(auth) => <Navigate href={getRedirectPath(auth().role)} />}
       </Match>
     </Switch>
   );

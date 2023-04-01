@@ -16,11 +16,11 @@ const TeacherLayout = lazy(() => import("pages/teacher/layout"));
 
 export const App = () => {
   return (
-    <AuthProvider>
-      <ThemeProvider>
+    <ThemeProvider>
+      <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<RootGuard />} />
+            <Route path="/" component={RootGuard} />
             <Route path="login" component={Login} />
             <Route path="student" component={StudentLayout}>
               <Route path="/" component={StudentHome} />
@@ -36,7 +36,7 @@ export const App = () => {
           </Routes>
           <Toaster position="top-center" />
         </Router>
-      </ThemeProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };

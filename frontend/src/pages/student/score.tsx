@@ -9,11 +9,9 @@ import {
   Match,
   Show,
   Switch,
-  createEffect,
   createResource,
   createSignal,
 } from "solid-js";
-import toast from "solid-toast";
 import { request } from "utils/request";
 import { NamedScore } from "utils/types";
 
@@ -22,30 +20,27 @@ export default function StudentScore() {
 
   const exams = useRouteData<typeof examsData>();
 
-  const [examId, setExamId] = createSignal(exams()?.at(0)?.id ?? "");
+  const [examId, setExamId] = createSignal("");
 
-  const [namedScores] = createResource(examId, (examId) => {
-    const params = new URLSearchParams();
+  const [namedScores] = createResource(
+    () => examId() || exams()?.at(0)?.id,
+    (examId) => {
+      const params = new URLSearchParams();
 
-    const studentId = auth()?.id;
-    if (studentId) {
-      params.append("studentId", studentId);
+      const studentId = auth()?.id;
+      if (studentId) {
+        params.append("studentId", studentId);
+      }
+
+      if (examId) {
+        params.append("examId", examId);
+      } else {
+        return [];
+      }
+
+      return request.get<NamedScore[]>(`/scores?${params.toString()}`);
     }
-
-    if (examId) {
-      params.append("examId", examId);
-    } else {
-      return [];
-    }
-
-    return request.get<NamedScore[]>(`/scores?${params.toString()}`);
-  });
-
-  createEffect(() => {
-    if (namedScores.error) {
-      toast.error(namedScores.error.message);
-    }
-  });
+  );
 
   return (
     <div class="space-y-8 px-12 pt-8">
