@@ -19,9 +19,9 @@
     "@types/cors": "^2.8.13",
     "@types/express": "^4.17.17",
     "@types/jsonwebtoken": "^9.0.1",
-    "@types/node": "^18.15.10",
+    "@types/node": "^18.15.11",
     "@types/pg": "^8.6.6",
     "esbuild": "^0.17.14",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.3"
   }
 }

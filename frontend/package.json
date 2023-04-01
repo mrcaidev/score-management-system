@@ -12,12 +12,12 @@
     "@solidjs/router": "^0.8.2",
     "clsx": "^1.2.1",
     "solid-icons": "^1.0.4",
-    "solid-js": "^1.6.16",
+    "solid-js": "^1.7.0",
     "solid-toast": "^0.5.0"
   },
   "devDependencies": {
     "@unocss/reset": "^0.50.6",
-    "typescript": "^5.0.2",
+    "typescript": "^5.0.3",
     "unocss": "^0.50.6",
     "vite": "^4.2.1",
     "vite-plugin-solid": "^2.6.1",
