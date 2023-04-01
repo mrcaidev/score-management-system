@@ -12,6 +12,7 @@ import {
   createResource,
   createSignal,
 } from "solid-js";
+import toast from "solid-toast";
 import { request } from "utils/request";
 import { NamedScore } from "utils/types";
 
@@ -41,6 +42,18 @@ export default function StudentScore() {
       return request.get<NamedScore[]>(`/scores?${params.toString()}`);
     }
   );
+
+  const createClickReviewHandler = (scoreId: string) => {
+    return async () => {
+      try {
+        await request.post(`/scores/${scoreId}/require-review`);
+      } catch (error) {
+        if (error instanceof Error) {
+          toast.error(error.message);
+        }
+      }
+    };
+  };
 
   return (
     <div class="space-y-8 px-12 pt-8">
@@ -107,9 +120,7 @@ export default function StudentScore() {
                     <td class="py-2 border border-gray-400 dark:border-gray-600">
                       <button
                         type="button"
-                        onClick={() =>
-                          request.post(`/scores/${id}/require-review`)
-                        }
+                        onClick={createClickReviewHandler(id)}
                         class="px-3 py-1 rounded bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-sm text-gray-100 transition-colors"
                       >
                         查分
