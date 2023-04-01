@@ -12,8 +12,7 @@ import {
   createResource,
   createSignal,
 } from "solid-js";
-import toast from "solid-toast";
-import { request } from "utils/request";
+import { handleRequestError, request } from "utils/request";
 import { NamedScore } from "utils/types";
 
 export default function StudentScore() {
@@ -21,26 +20,17 @@ export default function StudentScore() {
 
   const exams = useRouteData<typeof examsData>();
 
-  const [examId, setExamId] = createSignal("");
+  const [selectedExamId, setSelectedExamId] = createSignal("");
 
   const [namedScores] = createResource(
-    () => examId() || exams()?.at(0)?.id,
-    (examId) => {
-      const params = new URLSearchParams();
-
-      const studentId = auth()?.id;
-      if (studentId) {
-        params.append("studentId", studentId);
-      }
-
-      if (examId) {
-        params.append("examId", examId);
-      } else {
-        return [];
-      }
-
-      return request.get<NamedScore[]>(`/scores?${params.toString()}`);
-    }
+    () => selectedExamId() || exams()?.at(0)?.id,
+    (examId) =>
+      request.get<NamedScore[]>("/scores", {
+        params: {
+          studentId: auth()?.id,
+          examId,
+        },
+      })
   );
 
   const createClickReviewHandler = (scoreId: string) => {
@@ -48,9 +38,7 @@ export default function StudentScore() {
       try {
         await request.post(`/scores/${scoreId}/require-review`);
       } catch (error) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        }
+        handleRequestError(error);
       }
     };
   };
@@ -65,13 +53,13 @@ export default function StudentScore() {
         id="exam"
         label="考试"
         name="exam"
-        onChange={(e) => setExamId(e.currentTarget.value)}
+        onChange={(e) => setSelectedExamId(e.currentTarget.value)}
         class="max-w-md"
       >
         <Show when={exams()}>
           <For each={exams()}>
             {({ id, name }) => (
-              <option value={id} selected={examId() === id}>
+              <option value={id} selected={selectedExamId() === id}>
                 {name}
               </option>
             )}

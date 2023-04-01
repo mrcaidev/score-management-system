@@ -1,54 +1,31 @@
+import axios, { isAxiosError } from "axios";
+import toast from "solid-toast";
 import { getLocalStorage } from "./storage";
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const request = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+  timeout: 5000,
+  headers: { "Content-Type": "application/json" },
+});
 
-async function fetcher<T>(url: string, init?: RequestInit) {
+request.interceptors.request.use((config) => {
   const token = getLocalStorage("token");
+  config.headers.Authorization = "Bearer " + token;
+  return config;
+});
 
-  const response = await fetch(new URL(url, BASE_URL), {
-    ...init,
-    headers: {
-      ...init?.headers,
-      Authorization: "Bearer " + token,
-      "Content-Type": "application/json",
-    },
-  });
+request.interceptors.response.use((response) => response.data.data);
 
-  if (!response.ok) {
-    const { error }: { error: string } = await response.json();
-    throw new Error(error);
+export function handleRequestError(error: unknown) {
+  if (isAxiosError(error)) {
+    toast.error(error.response?.data.error);
+    return;
   }
 
-  const { data }: { data: T } = await response.json();
-  return data;
-}
+  if (error instanceof Error) {
+    toast.error(error.message);
+    return;
+  }
 
-export const request = {
-  get<T>(url: string) {
-    return fetcher<T>(url);
-  },
-  post<T>(url: string, payload: unknown = {}) {
-    return fetcher<T>(url, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-  },
-  put<T>(url: string, payload: unknown = {}) {
-    return fetcher<T>(url, {
-      method: "PUT",
-      body: JSON.stringify(payload),
-    });
-  },
-  patch<T>(url: string, payload: unknown = {}) {
-    return fetcher<T>(url, {
-      method: "PATCH",
-      body: JSON.stringify(payload),
-    });
-  },
-  delete<T>(url: string, payload: unknown = {}) {
-    return fetcher<T>(url, {
-      method: "DELETE",
-      body: JSON.stringify(payload),
-    });
-  },
-};
+  toast.error("未知错误，请稍后再试");
+}

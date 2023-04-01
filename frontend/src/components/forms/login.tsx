@@ -3,7 +3,7 @@ import { FiLoader, FiLogIn } from "solid-icons/fi";
 import { Show } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
-import { request } from "utils/request";
+import { handleRequestError, request } from "utils/request";
 import { setLocalStorage } from "utils/storage";
 import { SolidButton } from "./button";
 import { Checkbox, Input, PasswordInput } from "./input";
@@ -37,12 +37,7 @@ export function LoginForm() {
 
       await refetch();
     } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-        return;
-      }
-
-      toast.error("未知错误，请稍后再试");
+      handleRequestError(error);
     } finally {
       setForm({ isSubmitting: false });
     }
