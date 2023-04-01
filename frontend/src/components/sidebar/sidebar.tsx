@@ -16,7 +16,14 @@ export function Sidebar(props: Props) {
   return (
     <aside class="flex flex-col fixed left-0 top-0 bottom-0 w-90 p-3 bg-gray-200 dark:bg-gray-800">
       <p class="font-bold text-xl">
-        <A href="/student" class="inline-block px-3 py-1">
+        <A href="/student" class="flex items-center gap-3 px-3 py-1">
+          <img
+            src="/favicon.svg"
+            alt="Logo"
+            width="24"
+            height="24"
+            class="w-6 h-6"
+          />
           成绩管理系统
         </A>
       </p>
