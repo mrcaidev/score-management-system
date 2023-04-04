@@ -1,33 +1,39 @@
-import { Account } from "account";
-import { Course } from "course";
-import { Exam } from "exam";
+import { accountSchema } from "account/types";
+import { courseSchema } from "course/types";
+import { examSchema } from "exam/types";
 import { z } from "zod";
 
 export enum ReviewStatus {
-  NONE,
+  NONE = 1,
   PENDING,
+  REJECTED,
   ACCEPTED,
   FINISHED,
-  REJECTED,
 }
 
 export const scoreSchema = z.object({
   id: z.string().uuid(),
-  examId: z.string().uuid(),
-  courseId: z.number().int().positive(),
-  studentId: z.string().nonempty(),
-  score: z.number().min(0),
+  examId: examSchema.shape.id,
+  courseId: courseSchema.shape.id,
+  studentId: accountSchema.shape.id,
+  score: z.number().nonnegative(),
   isAbsent: z.boolean(),
   reviewStatus: z.nativeEnum(ReviewStatus),
 });
 
 export type Score = z.infer<typeof scoreSchema>;
 
-export type NamedScore = Omit<Score, "examId" | "courseId" | "studentId"> & {
-  examName: Exam["name"];
-  courseName: Course["name"];
-  studentName: Account["name"];
-};
+export const namedScoreSchema = scoreSchema
+  .omit({ examId: true, courseId: true, studentId: true })
+  .merge(
+    z.object({
+      examName: examSchema.shape.name,
+      courseName: courseSchema.shape.name,
+      studentName: accountSchema.shape.name,
+    })
+  );
+
+export type NamedScore = z.infer<typeof namedScoreSchema>;
 
 export const findAllReqSchema = z.object({
   query: scoreSchema
@@ -55,16 +61,3 @@ export const deleteReqSchema = z.object({
 });
 
 export type DeleteReq = z.infer<typeof deleteReqSchema>;
-
-export const requireReviewReqSchema = z.object({
-  params: scoreSchema.pick({ id: true }),
-});
-
-export type RequireReviewReq = z.infer<typeof requireReviewReqSchema>;
-
-export const handleReviewReqSchema = z.object({
-  params: scoreSchema.pick({ id: true }),
-  body: scoreSchema.pick({ reviewStatus: true }),
-});
-
-export type HandleReviewReq = z.infer<typeof handleReviewReqSchema>;

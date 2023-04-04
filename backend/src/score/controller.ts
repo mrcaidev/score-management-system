@@ -1,21 +1,12 @@
 import { NextFunction, Response } from "express";
 import { scoreService } from "./service";
-import {
-  CreateReq,
-  DeleteReq,
-  FindAllReq,
-  HandleReviewReq,
-  RequireReviewReq,
-  UpdateReq,
-} from "./types";
+import { CreateReq, DeleteReq, FindAllReq, UpdateReq } from "./types";
 
 export const scoreController = {
   findAll,
   create,
   updateById,
   deleteById,
-  requireReview,
-  handleReview,
 };
 
 async function findAll(req: FindAllReq, res: Response, next: NextFunction) {
@@ -48,32 +39,6 @@ async function updateById(req: UpdateReq, res: Response, next: NextFunction) {
 async function deleteById(req: DeleteReq, res: Response, next: NextFunction) {
   try {
     await scoreService.deleteById(req.params.id);
-    return res.status(204).end();
-  } catch (error) {
-    return next(error);
-  }
-}
-
-async function requireReview(
-  req: RequireReviewReq,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    await scoreService.requireReview(req.params.id, res.locals.auth.id);
-    return res.status(204).end();
-  } catch (error) {
-    return next(error);
-  }
-}
-
-async function handleReview(
-  req: HandleReviewReq,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    await scoreService.handleReview(req.params.id, req.body);
     return res.status(204).end();
   } catch (error) {
     return next(error);

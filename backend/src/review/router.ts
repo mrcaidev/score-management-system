@@ -2,30 +2,30 @@ import { Role } from "account/types";
 import { Router } from "express";
 import { authenticate } from "middlewares/authenticate";
 import { validate } from "middlewares/validate";
-import { examController } from "./controller";
+import { reviewController } from "./controller";
 import { createReqSchema, deleteReqSchema, updateReqSchema } from "./types";
 
-export const examRouter: Router = Router();
+export const reviewRouter: Router = Router();
 
-examRouter.get("/", examController.findAll);
+reviewRouter.get("/", authenticate(), reviewController.findAll);
 
-examRouter.post(
-  "/",
-  authenticate(Role.TEACHER),
+reviewRouter.post(
+  "/:id",
+  authenticate(Role.STUDENT),
   validate(createReqSchema),
-  examController.create
+  reviewController.create
 );
 
-examRouter.patch(
+reviewRouter.patch(
   "/:id",
   authenticate(Role.TEACHER),
   validate(updateReqSchema),
-  examController.updateById
+  reviewController.updateById
 );
 
-examRouter.delete(
+reviewRouter.delete(
   "/:id",
-  authenticate(Role.TEACHER),
+  authenticate(Role.STUDENT),
   validate(deleteReqSchema),
-  examController.deleteById
+  reviewController.deleteById
 );

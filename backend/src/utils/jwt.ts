@@ -1,12 +1,11 @@
+import { accountSchema } from "account/types";
 import { IncomingHttpHeaders } from "http";
 import { sign, verify } from "jsonwebtoken";
 import { z } from "zod";
 import { JWT_SECRET } from "./env";
 import { InternalServerError, UnauthorizedError } from "./http-error";
 
-const payloadSchema = z.object({
-  id: z.string().nonempty(),
-});
+const payloadSchema = accountSchema.pick({ id: true });
 
 type Payload = z.infer<typeof payloadSchema>;
 
@@ -38,12 +37,12 @@ export async function decodeJwt(token: string) {
     });
     return payload;
   } catch {
-    throw new UnauthorizedError("登录信息无效");
+    throw new UnauthorizedError("登录信息无效，请重新登录");
   }
 }
 
-export function extractJwtFromHeader(headers: IncomingHttpHeaders) {
-  const authorization = headers.authorization;
+export function extractJwtFromHeaders(headers: IncomingHttpHeaders) {
+  const { authorization } = headers;
 
   if (!authorization) {
     return;

@@ -1,16 +1,16 @@
+import { Account } from "account/types";
 import { NextFunction, Request, Response } from "express";
 import { authService } from "./service";
 import { LoginReq } from "./types";
 
 export const authController = {
-  getInfo,
+  getAccount,
   login,
 };
 
-async function getInfo(_: Request, res: Response, next: NextFunction) {
+async function getAccount(_: Request, res: Response, next: NextFunction) {
   try {
-    const { id } = res.locals.auth;
-    const account = await authService.getInfo(id);
+    const account = res.locals.auth as Account;
     return res.status(200).json({ data: account });
   } catch (error) {
     return next(error);

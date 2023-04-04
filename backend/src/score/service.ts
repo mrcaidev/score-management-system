@@ -1,36 +1,26 @@
-import { accountRepository } from "account";
-import { Auth, Role } from "auth";
-import { courseRepository } from "course";
-import { examRepository } from "exam";
+import { accountRepository } from "account/repository";
+import { Account, Role } from "account/types";
+import { courseRepository } from "course/repository";
+import { examRepository } from "exam/repository";
 import {
   ForbiddenError,
   NotFoundError,
   UnprocessableContentError,
 } from "utils/http-error";
 import { scoreRepository } from "./repository";
-import {
-  CreateReq,
-  FindAllReq,
-  HandleReviewReq,
-  ReviewStatus,
-  Score,
-  UpdateReq,
-} from "./types";
+import { CreateReq, FindAllReq, Score, UpdateReq } from "./types";
 
 export const scoreService = {
   findAll,
   create,
   updateById,
   deleteById,
-  requireReview,
-  handleReview,
 };
 
-async function findAll(dto: FindAllReq["query"], auth: Auth) {
+async function findAll(dto: FindAllReq["query"], auth: Account) {
   const { studentId } = dto;
-  const { id: authId, role: authRole } = auth;
 
-  if (authRole === Role.STUDENT && authId !== studentId) {
+  if (auth.role === Role.STUDENT && auth.id !== studentId) {
     throw new ForbiddenError("学生只能查询自己的成绩");
   }
 
@@ -96,77 +86,4 @@ async function deleteById(id: string) {
   }
 
   await scoreRepository.deleteById(id);
-}
-
-async function requireReview(id: string, authId: string) {
-  const oldScore = await scoreRepository.findById(id);
-
-  if (!oldScore) {
-    throw new NotFoundError("成绩不存在");
-  }
-
-  if (oldScore.studentId !== authId) {
-    throw new ForbiddenError("只能申请复查自己的成绩");
-  }
-
-  if (oldScore.reviewStatus !== ReviewStatus.NONE) {
-    throw new UnprocessableContentError("已经申请过复查");
-  }
-
-  const newScore = { ...oldScore, reviewStatus: ReviewStatus.PENDING };
-
-  await scoreRepository.updateById(id, newScore);
-}
-
-async function handleReview(id: string, dto: HandleReviewReq["body"]) {
-  const { reviewStatus } = dto;
-
-  if (reviewStatus === ReviewStatus.NONE) {
-    throw new UnprocessableContentError("教师不能取消复查");
-  }
-
-  if (reviewStatus === ReviewStatus.PENDING) {
-    throw new UnprocessableContentError("教师不能主动申请复查");
-  }
-
-  const oldScore = await scoreRepository.findById(id);
-
-  if (!oldScore) {
-    throw new NotFoundError("成绩不存在");
-  }
-
-  if (oldScore.reviewStatus === ReviewStatus.NONE) {
-    throw new UnprocessableContentError("学生未申请复查");
-  }
-
-  if (
-    oldScore.reviewStatus === ReviewStatus.PENDING &&
-    reviewStatus !== ReviewStatus.ACCEPTED &&
-    reviewStatus !== ReviewStatus.REJECTED
-  ) {
-    throw new UnprocessableContentError("待受理的复查只能变更为已受理或已驳回");
-  }
-
-  if (
-    oldScore.reviewStatus === ReviewStatus.ACCEPTED &&
-    reviewStatus !== ReviewStatus.REJECTED &&
-    reviewStatus !== ReviewStatus.FINISHED
-  ) {
-    throw new UnprocessableContentError("已受理的复查只能变更为已驳回或已完成");
-  }
-
-  if (
-    oldScore.reviewStatus === ReviewStatus.REJECTED &&
-    reviewStatus !== ReviewStatus.ACCEPTED
-  ) {
-    throw new UnprocessableContentError("已驳回的复查只能变更为已受理");
-  }
-
-  if (oldScore.reviewStatus === ReviewStatus.FINISHED) {
-    throw new UnprocessableContentError("已完成的复查不能再变更状态");
-  }
-
-  const newScore = { ...oldScore, reviewStatus };
-
-  await scoreRepository.updateById(id, newScore);
 }

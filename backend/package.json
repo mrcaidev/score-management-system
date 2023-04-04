@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.cjs --external:pg-native",
+    "build": "esbuild src/index.ts --bundle --outfile=dist/index.cjs --platform=node --external:pg-native",
     "start": "node dist/index.cjs"
   },
   "dependencies": {

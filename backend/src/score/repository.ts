@@ -5,6 +5,7 @@ import { CreateReq, FindAllReq, NamedScore, Score } from "./types";
 export const scoreRepository = {
   findAll,
   findAllAsNamed,
+  findAllWithReviewAsNamed,
   findById,
   findByIdAsNamed,
   create,
@@ -27,10 +28,10 @@ async function findAll(dto: FindAllReq["query"]) {
         review_status "reviewStatus"
       FROM score
       WHERE ($1::UUID IS NULL OR exam_id = $1)
-      AND ($2::SMALLINT IS NULL OR course_id = $2)
-      AND ($3::TEXT IS NULL OR student_id = $3)
-      AND ($4::SMALLINT IS NULL OR review_status = $4)
-      `,
+        AND ($2::SMALLINT IS NULL OR course_id = $2)
+        AND ($3::TEXT IS NULL OR student_id = $3)
+        AND ($4::SMALLINT IS NULL OR review_status = $4)
+    `,
     [examId, courseId, studentId, reviewStatus]
   );
 
@@ -51,15 +52,43 @@ async function findAllAsNamed(dto: FindAllReq["query"]) {
         score.is_absent "isAbsent",
         score.review_status "reviewStatus"
       FROM score
-      LEFT OUTER JOIN exam ON exam.id = score.exam_id
-      LEFT OUTER JOIN course ON course.id = score.course_id
-      LEFT OUTER JOIN account ON account.id = score.student_id
+        LEFT OUTER JOIN exam ON exam.id = score.exam_id
+        LEFT OUTER JOIN course ON course.id = score.course_id
+        LEFT OUTER JOIN account ON account.id = score.student_id
       WHERE ($1::UUID IS NULL OR exam.id = $1)
         AND ($2::SMALLINT IS NULL OR course.id = $2)
         AND ($3::TEXT IS NULL OR account.id = $3)
         AND ($4::SMALLINT IS NULL OR review_status = $4)
-        `,
+    `,
     [examId, courseId, studentId, reviewStatus]
+  );
+
+  return rows;
+}
+
+async function findAllWithReviewAsNamed(
+  dto: Pick<FindAllReq["query"], "studentId"> = {}
+) {
+  const { studentId } = dto;
+
+  const { rows } = await database.query<NamedScore>(
+    `
+      SELECT
+        score.id,
+        exam.name "examName",
+        course.name "courseName",
+        account.name "studentName",
+        score.score,
+        score.is_absent "isAbsent",
+        score.review_status "reviewStatus"
+      FROM score
+        LEFT OUTER JOIN exam ON exam.id = score.exam_id
+        LEFT OUTER JOIN course ON course.id = score.course_id
+        LEFT OUTER JOIN account ON account.id = score.student_id
+      WHERE ($1::TEXT IS NULL OR account.id = $1)
+        AND review_status != 1
+    `,
+    [studentId]
   );
 
   return rows;
@@ -97,9 +126,9 @@ async function findByIdAsNamed(id: string) {
         score.is_absent "isAbsent",
         score.review_status "reviewStatus"
       FROM score
-      LEFT OUTER JOIN exam ON exam.id = score.exam_id
-      LEFT OUTER JOIN course ON course.id = score.course_id
-      LEFT OUTER JOIN account ON account.id = score.student_id
+        LEFT OUTER JOIN exam ON exam.id = score.exam_id
+        LEFT OUTER JOIN course ON course.id = score.course_id
+        LEFT OUTER JOIN account ON account.id = score.student_id
       WHERE score.id = $1
     `,
     [id]

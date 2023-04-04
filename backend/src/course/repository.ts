@@ -11,6 +11,7 @@ async function findAll() {
     `
       SELECT id, name, max_score "maxScore"
       FROM course
+      ORDER BY id ASC
     `
   );
 

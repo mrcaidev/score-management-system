@@ -1,13 +1,14 @@
 import "utils/env";
 
-import { authRouter } from "auth";
+import { authRouter } from "auth/router";
 import cors from "cors";
-import { courseRouter } from "course";
-import { examRouter } from "exam";
+import { courseRouter } from "course/router";
+import { examRouter } from "exam/router";
 import express, { Express } from "express";
 import { handleError } from "middlewares/handle-error";
-import { rootRouter } from "root";
-import { scoreRouter } from "score";
+import { reviewRouter } from "review/router";
+import { rootRouter } from "root/router";
+import { scoreRouter } from "score/router";
 
 export const app: Express = express();
 
@@ -19,5 +20,6 @@ app.use("/auth", authRouter);
 app.use("/courses", courseRouter);
 app.use("/exams", examRouter);
 app.use("/scores", scoreRouter);
+app.use("/reviews", reviewRouter);
 
 app.use(handleError);

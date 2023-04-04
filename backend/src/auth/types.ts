@@ -1,20 +1,8 @@
+import { secretAccountSchema } from "account/types";
 import { z } from "zod";
 
-export enum Role {
-  STUDENT,
-  TEACHER,
-}
-
-export type Auth = {
-  id: string;
-  role: Role;
-};
-
 export const loginReqSchema = z.object({
-  body: z.object({
-    id: z.string().nonempty(),
-    password: z.string().nonempty(),
-  }),
+  body: secretAccountSchema.pick({ id: true, password: true }),
 });
 
 export type LoginReq = z.infer<typeof loginReqSchema>;

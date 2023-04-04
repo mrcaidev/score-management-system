@@ -1,4 +1,4 @@
-import { Role } from "auth";
+import { Role } from "account/types";
 import { Router } from "express";
 import { authenticate } from "middlewares/authenticate";
 import { validate } from "middlewares/validate";
@@ -7,8 +7,6 @@ import {
   createReqSchema,
   deleteReqSchema,
   findAllReqSchema,
-  handleReviewReqSchema,
-  requireReviewReqSchema,
   updateReqSchema,
 } from "./types";
 
@@ -40,18 +38,4 @@ scoreRouter.delete(
   authenticate(Role.TEACHER),
   validate(deleteReqSchema),
   scoreController.deleteById
-);
-
-scoreRouter.post(
-  "/:id/require-review",
-  authenticate(Role.STUDENT),
-  validate(requireReviewReqSchema),
-  scoreController.requireReview
-);
-
-scoreRouter.post(
-  "/:id/handle-review",
-  authenticate(Role.TEACHER),
-  validate(handleReviewReqSchema),
-  scoreController.handleReview
 );
