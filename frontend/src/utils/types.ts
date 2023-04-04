@@ -1,5 +1,5 @@
 export enum Role {
-  STUDENT,
+  STUDENT = 1,
   TEACHER,
 }
 
@@ -22,11 +22,11 @@ export type Exam = {
 };
 
 export enum ReviewStatus {
-  NONE,
+  NONE = 1,
   PENDING,
+  REJECTED,
   ACCEPTED,
   FINISHED,
-  REJECTED,
 }
 
 export type Score = {

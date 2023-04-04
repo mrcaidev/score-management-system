@@ -36,7 +36,7 @@ export default function StudentScore() {
   const createClickReviewHandler = (scoreId: string) => {
     return async () => {
       try {
-        await request.post(`/scores/${scoreId}/require-review`);
+        await request.post(`/review/${scoreId}`);
       } catch (error) {
         handleRequestError(error);
       }
