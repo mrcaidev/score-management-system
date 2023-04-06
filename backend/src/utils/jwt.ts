@@ -11,7 +11,7 @@ type Payload = z.infer<typeof payloadSchema>;
 
 export async function generateJwt(payload: Payload) {
   try {
-    const token = await new Promise<string>((resolve, reject) => {
+    return await new Promise<string>((resolve, reject) => {
       sign(payload, JWT_SECRET, { expiresIn: "1d" }, (error, token) => {
         if (error || !token) {
           return reject(error);
@@ -19,15 +19,14 @@ export async function generateJwt(payload: Payload) {
         return resolve(token);
       });
     });
-    return token;
-  } catch (error) {
+  } catch {
     throw new InternalServerError("登录失败，请稍后再试");
   }
 }
 
 export async function decodeJwt(token: string) {
   try {
-    const payload = await new Promise<Payload>((resolve, reject) => {
+    return await new Promise<Payload>((resolve, reject) => {
       verify(token, JWT_SECRET, (error, payload) => {
         if (error || !payload) {
           return reject(error);
@@ -35,7 +34,6 @@ export async function decodeJwt(token: string) {
         return resolve(payloadSchema.parse(payload));
       });
     });
-    return payload;
   } catch {
     throw new UnauthorizedError("登录信息无效，请重新登录");
   }

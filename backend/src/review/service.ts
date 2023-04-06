@@ -17,10 +17,10 @@ export const reviewService = {
 
 async function findAll(auth: Account) {
   if (auth.role === Role.STUDENT) {
-    return scoreRepository.findAllWithReviewAsNamed({ studentId: auth.id });
+    return scoreRepository.findAllWithReviewAsFull({ studentId: auth.id });
   }
 
-  return scoreRepository.findAllWithReviewAsNamed();
+  return scoreRepository.findAllWithReviewAsFull();
 }
 
 async function create(id: string, auth: Account) {
@@ -38,9 +38,7 @@ async function create(id: string, auth: Account) {
     throw new UnprocessableContentError("已经申请过复查");
   }
 
-  const newScore = { ...oldScore, reviewStatus: ReviewStatus.PENDING };
-
-  await scoreRepository.updateById(id, newScore);
+  await scoreRepository.updateById(id, { reviewStatus: ReviewStatus.PENDING });
 }
 
 async function updateById(id: string, dto: UpdateReq["body"]) {
@@ -91,9 +89,7 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
     throw new UnprocessableContentError("已完成的复查不能再变更状态");
   }
 
-  const newScore = { ...oldScore, reviewStatus };
-
-  await scoreRepository.updateById(id, newScore);
+  await scoreRepository.updateById(id, { reviewStatus });
 }
 
 async function deleteById(id: string, auth: Account) {
@@ -111,7 +107,5 @@ async function deleteById(id: string, auth: Account) {
     throw new UnprocessableContentError("复查已经被受理");
   }
 
-  const newScore = { ...oldScore, reviewStatus: ReviewStatus.NONE };
-
-  await scoreRepository.updateById(id, newScore);
+  await scoreRepository.updateById(id, { reviewStatus: ReviewStatus.NONE });
 }

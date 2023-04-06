@@ -23,17 +23,17 @@ export const scoreSchema = z.object({
 
 export type Score = z.infer<typeof scoreSchema>;
 
-export const namedScoreSchema = scoreSchema
+export const fullScoreSchema = scoreSchema
   .omit({ examId: true, courseId: true, studentId: true })
   .merge(
     z.object({
-      examName: examSchema.shape.name,
-      courseName: courseSchema.shape.name,
-      studentName: accountSchema.shape.name,
+      exam: examSchema,
+      course: courseSchema,
+      student: accountSchema,
     })
   );
 
-export type NamedScore = z.infer<typeof namedScoreSchema>;
+export type FullScore = z.infer<typeof fullScoreSchema>;
 
 export const findAllReqSchema = z.object({
   query: scoreSchema
@@ -51,7 +51,7 @@ export type CreateReq = z.infer<typeof createReqSchema>;
 
 export const updateReqSchema = z.object({
   params: scoreSchema.pick({ id: true }),
-  body: scoreSchema.pick({ score: true }).partial(),
+  body: scoreSchema.pick({ score: true, reviewStatus: true }).partial(),
 });
 
 export type UpdateReq = z.infer<typeof updateReqSchema>;

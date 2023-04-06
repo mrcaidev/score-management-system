@@ -1,6 +1,6 @@
 import { database } from "utils/database";
 import { InternalServerError } from "utils/http-error";
-import { CreateReq, Exam } from "./types";
+import { CreateReq, Exam, UpdateReq } from "./types";
 
 export const examRepository = {
   findAll,
@@ -68,13 +68,14 @@ async function create(dto: CreateReq["body"]) {
   return rows[0];
 }
 
-async function updateById(id: string, dto: Exam) {
+async function updateById(id: string, dto: UpdateReq["body"]) {
   const { name, heldAt } = dto;
 
   const { rowCount } = await database.query(
     `
       UPDATE exam
-      SET name = $2, held_at = $3
+      SET name = CASE WHEN $2 IS NULL THEN name ELSE $2 END,
+        held_at = CASE WHEN $3 IS NULL THEN held_at ELSE $3 END
       WHERE id = $1
     `,
     [id, name, heldAt]

@@ -2,13 +2,9 @@ import { accountRepository } from "account/repository";
 import { Account, Role } from "account/types";
 import { courseRepository } from "course/repository";
 import { examRepository } from "exam/repository";
-import {
-  ForbiddenError,
-  NotFoundError,
-  UnprocessableContentError,
-} from "utils/http-error";
+import { NotFoundError, UnprocessableContentError } from "utils/http-error";
 import { scoreRepository } from "./repository";
-import { CreateReq, FindAllReq, Score, UpdateReq } from "./types";
+import { CreateReq, FindAllReq, UpdateReq } from "./types";
 
 export const scoreService = {
   findAll,
@@ -18,14 +14,11 @@ export const scoreService = {
 };
 
 async function findAll(dto: FindAllReq["query"], auth: Account) {
-  const { studentId } = dto;
-
-  if (auth.role === Role.STUDENT && auth.id !== studentId) {
-    throw new ForbiddenError("学生只能查询自己的成绩");
+  if (auth.role === Role.STUDENT) {
+    return scoreRepository.findAllAsFull({ ...dto, studentId: auth.id });
   }
 
-  const namedScores = await scoreRepository.findAllAsNamed(dto);
-  return namedScores;
+  return scoreRepository.findAllAsFull(dto);
 }
 
 async function create(dto: CreateReq["body"]) {
@@ -50,8 +43,7 @@ async function create(dto: CreateReq["body"]) {
     throw new UnprocessableContentError("分数超出最高分");
   }
 
-  const namedScore = await scoreRepository.create(dto);
-  return namedScore;
+  return scoreRepository.create(dto);
 }
 
 async function updateById(id: string, dto: UpdateReq["body"]) {
@@ -73,15 +65,13 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
     throw new UnprocessableContentError("分数超出最高分");
   }
 
-  const newScore = { ...oldScore, ...dto } as Score;
-
-  await scoreRepository.updateById(id, newScore);
+  await scoreRepository.updateById(id, dto);
 }
 
 async function deleteById(id: string) {
-  const score = await scoreRepository.findById(id);
+  const oldScore = await scoreRepository.findById(id);
 
-  if (!score) {
+  if (!oldScore) {
     throw new NotFoundError("成绩不存在");
   }
 

@@ -5,6 +5,5 @@ export const courseService = {
 };
 
 async function findAll() {
-  const courses = await courseRepository.findAll();
-  return courses;
+  return courseRepository.findAll();
 }
