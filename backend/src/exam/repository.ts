@@ -74,8 +74,8 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
   const { rowCount } = await database.query(
     `
       UPDATE exam
-      SET name = CASE WHEN $2 IS NULL THEN name ELSE $2 END,
-        held_at = CASE WHEN $3 IS NULL THEN held_at ELSE $3 END
+      SET name = CASE WHEN $2::TEXT IS NULL THEN name ELSE $2 END,
+        held_at = CASE WHEN $3::TIMESTAMPTZ IS NULL THEN held_at ELSE $3 END
       WHERE id = $1
     `,
     [id, name, heldAt]

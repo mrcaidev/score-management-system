@@ -165,8 +165,8 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
   const { rowCount } = await database.query(
     `
       UPDATE score
-      SET score = CASE WHEN $2 IS NULL THEN score ELSE $2 END,
-        review_status = CASE WHEN $3 IS NULL THEN review_status ELSE $3 END
+      SET score = CASE WHEN $2::SMALLINT IS NULL THEN score ELSE $2 END,
+        review_status = CASE WHEN $3::SMALLINT IS NULL THEN review_status ELSE $3 END
       WHERE id = $1
     `,
     [id, score, reviewStatus]
