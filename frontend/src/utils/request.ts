@@ -1,14 +1,14 @@
-import axios, { isAxiosError } from "axios";
+import axios, { AxiosRequestConfig, isAxiosError } from "axios";
 import toast from "solid-toast";
 import { getLocalStorage } from "./storage";
 
-export const request = axios.create({
+const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
-  timeout: 5000,
+  timeout: 3000,
   headers: { "Content-Type": "application/json" },
 });
 
-request.interceptors.request.use((config) => {
+instance.interceptors.request.use((config) => {
   const token = getLocalStorage("token");
   if (token) {
     config.headers.Authorization = "Bearer " + token;
@@ -16,7 +16,32 @@ request.interceptors.request.use((config) => {
   return config;
 });
 
-request.interceptors.response.use((response) => response.data.data);
+export const request = {
+  get: async <T>(url: string, config?: AxiosRequestConfig) => {
+    const response = await instance.get<{ data: T }>(url, config);
+    return response.data.data;
+  },
+  post: async <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => {
+    const response = await instance.post<{ data: T }>(url, data, config);
+    return response.data.data;
+  },
+  put: async <T>(url: string, data?: unknown, config?: AxiosRequestConfig) => {
+    const response = await instance.put<{ data: T }>(url, data, config);
+    return response.data.data;
+  },
+  patch: async <T>(
+    url: string,
+    data?: unknown,
+    config?: AxiosRequestConfig
+  ) => {
+    const response = await instance.patch<{ data: T }>(url, data, config);
+    return response.data.data;
+  },
+  delete: async <T>(url: string, config?: AxiosRequestConfig) => {
+    const response = await instance.delete<{ data: T }>(url, config);
+    return response.data.data;
+  },
+};
 
 export function handleRequestError(error: unknown) {
   if (isAxiosError(error)) {
