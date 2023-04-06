@@ -83,7 +83,7 @@ export default function StudentScore() {
               <col span={1} class="w-1/4" />
             </colgroup>
             <thead>
-              <tr class="bg-gray-300 dark:gray-700">
+              <tr class="bg-gray-300 dark:bg-gray-700">
                 <th class="py-3 border border-gray-400 dark:border-gray-600">
                   科目
                 </th>
@@ -98,7 +98,7 @@ export default function StudentScore() {
             <tbody>
               <For each={namedScores()}>
                 {({ id, courseName, score }) => (
-                  <tr class="hover:bg-gray-200 dark:hover:gray-800 transition-colors">
+                  <tr class="hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors">
                     <td class="py-2 border border-gray-400 dark:border-gray-600">
                       {courseName}
                     </td>
