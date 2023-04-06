@@ -1,0 +1,29 @@
+services:
+  backend:
+    container_name: backend
+    build: ./backend
+    env_file: .env
+    ports:
+      - ${PORT}:${PORT}
+    networks:
+      - master
+    restart: always
+    depends_on:
+      - db
+
+  db:
+    container_name: db
+    image: postgres
+    env_file: .env
+    volumes:
+      - data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+    networks:
+      - master
+    restart: always
+
+volumes:
+  data:
+
+networks:
+  master:
