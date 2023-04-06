@@ -14,7 +14,7 @@ export function UnauthGuard(props: ParentProps) {
       </Match>
       <Match when={auth.error}>{props.children}</Match>
       <Match when={auth()}>
-        {(auth) => <Navigate href={getRedirectPath(auth().role)} />}
+        <Navigate href={getRedirectPath(auth()!.role)} />
       </Match>
     </Switch>
   );

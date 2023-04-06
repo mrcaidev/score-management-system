@@ -5,7 +5,9 @@ import { Role } from "utils/types";
 import { useAuth } from "../provider";
 import { getRedirectPath } from "./utils";
 
-type Props = ParentProps<{ role: Role }>;
+type Props = ParentProps<{
+  role: Role;
+}>;
 
 export function RoleGuard(props: Props) {
   const [auth] = useAuth();
@@ -18,7 +20,7 @@ export function RoleGuard(props: Props) {
       <Match when={auth.error}>
         <Navigate href="/login" />
       </Match>
-      <Match when={auth()?.role !== props.role}>
+      <Match when={auth()!.role !== props.role}>
         <Navigate href={getRedirectPath(auth()!.role)} />
       </Match>
     </Switch>

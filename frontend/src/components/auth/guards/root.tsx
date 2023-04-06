@@ -16,7 +16,7 @@ export function RootGuard() {
         <Navigate href="/login" />
       </Match>
       <Match when={auth()}>
-        {(auth) => <Navigate href={getRedirectPath(auth().role)} />}
+        <Navigate href={getRedirectPath(auth()!.role)} />
       </Match>
     </Switch>
   );
