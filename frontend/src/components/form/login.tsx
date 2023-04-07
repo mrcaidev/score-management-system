@@ -67,7 +67,11 @@ export function LoginForm() {
           onChange={(e) => setForm({ password: e.currentTarget.value })}
         />
       </div>
-      <Button type="submit" disabled={form.isSubmitting} class="justify-center">
+      <Button
+        type="submit"
+        disabled={form.isSubmitting}
+        class="justify-center w-full"
+      >
         <Show when={form.isSubmitting} fallback={<FiLogIn />}>
           <FiLoader class="animate-spin" />
         </Show>

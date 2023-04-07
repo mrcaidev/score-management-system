@@ -37,9 +37,9 @@ export function Button(props: Props) {
   const buttonSize = () => {
     switch (local.size) {
       case "normal":
-        return "px-4 py-3 font-bold";
+        return "gap-2 px-4 py-3 rounded-md font-bold";
       case "small":
-        return "px-2 py-1 text-sm";
+        return "gap-1 px-2 py-1 rounded text-sm";
     }
   };
 
@@ -47,7 +47,7 @@ export function Button(props: Props) {
     <button
       {...rest}
       class={clsx(
-        "flex items-center gap-2 w-full rounded-md disabled:bg-gray-600 disabled:hover:bg-gray-600 dark:disabled:bg-gray-400 dark:disabled:hover:bg-gray-400 text-gray-100 transition-colors",
+        "flex items-center disabled:bg-gray-600 disabled:hover:bg-gray-600 dark:disabled:bg-gray-400 dark:disabled:hover:bg-gray-400 text-gray-100 transition-colors",
         buttonBackground(),
         buttonSize(),
         local.class
