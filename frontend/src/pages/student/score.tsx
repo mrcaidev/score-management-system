@@ -1,6 +1,7 @@
 import { useRouteData } from "@solidjs/router";
 import { Option } from "components/form/option";
 import { Select } from "components/form/select";
+import { PageTitle } from "components/page-title";
 import { TableCell } from "components/table/cell";
 import { TableHead } from "components/table/head";
 import { TableRow } from "components/table/row";
@@ -42,10 +43,10 @@ export default function StudentScore() {
 
   return (
     <div class="space-y-8 px-12 pt-8">
-      <h1 class="flex items-center gap-3 font-bold text-3xl">
+      <PageTitle>
         <FiFileText />
         历次成绩
-      </h1>
+      </PageTitle>
       <Select
         id="exam"
         label="考试"
