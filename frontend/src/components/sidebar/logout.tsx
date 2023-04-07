@@ -1,5 +1,6 @@
 import { useAuth } from "components/auth/provider";
 import { FiLogOut } from "solid-icons/fi";
+import toast from "solid-toast";
 import { removeLocalStorage } from "utils/storage";
 
 export function Logout() {
@@ -7,6 +8,7 @@ export function Logout() {
 
   const handleClick = async () => {
     removeLocalStorage("token");
+    toast.success("已安全退出");
     await refetch();
   };
 

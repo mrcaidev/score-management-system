@@ -13,6 +13,7 @@ const StudentLayout = lazy(() => import("pages/student/layout"));
 const StudentHome = lazy(() => import("pages/student/home"));
 const StudentScore = lazy(() => import("pages/student/score"));
 const TeacherLayout = lazy(() => import("pages/teacher/layout"));
+const TeacherHome = lazy(() => import("pages/teacher/home"));
 
 export const App = () => {
   return (
@@ -28,10 +29,10 @@ export const App = () => {
               <Route path="review" element={<div>Student Review</div>} />
             </Route>
             <Route path="teacher" component={TeacherLayout}>
-              <Route path="/" element={<div>Teacher Home</div>} />
-              <Route path="review" element={<div>Teacher Review</div>} />
+              <Route path="/" component={TeacherHome} />
               <Route path="score" element={<div>Teacher Score</div>} />
               <Route path="add-score" element={<div>Teacher Score Add</div>} />
+              <Route path="review" element={<div>Teacher Review</div>} />
             </Route>
           </Routes>
           <Toaster position="top-center" />

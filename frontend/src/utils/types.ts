@@ -39,8 +39,8 @@ export type Score = {
   reviewStatus: ReviewStatus;
 };
 
-export type NamedScore = Omit<Score, "examId" | "courseId" | "studentId"> & {
-  examName: Exam["name"];
-  courseName: Course["name"];
-  studentName: Account["name"];
+export type FullScore = Omit<Score, "examId" | "courseId" | "studentId"> & {
+  exam: Exam;
+  course: Course;
+  student: Account;
 };

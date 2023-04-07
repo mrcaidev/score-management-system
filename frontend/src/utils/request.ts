@@ -16,6 +16,21 @@ instance.interceptors.request.use((config) => {
   return config;
 });
 
+instance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (isAxiosError(error)) {
+      throw new Error(error.response?.data.error);
+    }
+
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("未知错误，请稍后再试");
+  }
+);
+
 export const request = {
   get: async <T>(url: string, config?: AxiosRequestConfig) => {
     const response = await instance.get<{ data: T }>(url, config);
@@ -44,11 +59,6 @@ export const request = {
 };
 
 export function handleRequestError(error: unknown) {
-  if (isAxiosError(error)) {
-    toast.error(error.response?.data.error);
-    return;
-  }
-
   if (error instanceof Error) {
     toast.error(error.message);
     return;

@@ -1,1 +1,0 @@
-export { SolidButton } from "./solid";

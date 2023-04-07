@@ -1,5 +1,4 @@
 import { Navigate } from "@solidjs/router";
-import { PageLoading } from "components/loading";
 import { Match, ParentProps, Switch } from "solid-js";
 import { Role } from "utils/types";
 import { useAuth } from "../provider";
@@ -14,9 +13,6 @@ export function RoleGuard(props: Props) {
 
   return (
     <Switch fallback={props.children}>
-      <Match when={auth.loading}>
-        <PageLoading />
-      </Match>
       <Match when={auth.error}>
         <Navigate href="/login" />
       </Match>

@@ -5,8 +5,9 @@ import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
 import { setLocalStorage } from "utils/storage";
-import { SolidButton } from "./button";
-import { Checkbox, Input, PasswordInput } from "./input";
+import { Button } from "./button";
+import { Input } from "./input";
+import { PasswordInput } from "./password";
 
 export function LoginForm() {
   const [, { refetch }] = useAuth();
@@ -14,7 +15,6 @@ export function LoginForm() {
   const [form, setForm] = createStore({
     id: "",
     password: "",
-    shouldRemember: true,
     isSubmitting: false,
   });
 
@@ -29,13 +29,9 @@ export function LoginForm() {
         password: form.password,
       });
 
-      if (form.shouldRemember) {
-        setLocalStorage("token", token);
-      }
-
-      toast.success("登录成功");
-
+      setLocalStorage("token", token);
       await refetch();
+      toast.success("登录成功");
     } catch (error) {
       handleRequestError(error);
     } finally {
@@ -46,7 +42,7 @@ export function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      class="w-100 px-8 py-10 rounded-lg border-1 border-gray-900/5 dark:border-gray-100/5 bg-gray-200 dark:bg-gray-800 shadow-xl"
+      class="w-100 px-8 py-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-800 shadow-xl"
     >
       <h1 class="mb-8 font-bold text-3xl text-center">登录</h1>
       <div class="mb-4">
@@ -60,7 +56,7 @@ export function LoginForm() {
           onChange={(e) => setForm({ id: e.currentTarget.value })}
         />
       </div>
-      <div class="mb-4">
+      <div class="mb-6">
         <PasswordInput
           id="password"
           label="密码"
@@ -71,27 +67,12 @@ export function LoginForm() {
           onChange={(e) => setForm({ password: e.currentTarget.value })}
         />
       </div>
-      <div class="mb-6">
-        <Checkbox
-          id="should-rememeber"
-          label="1天内记住我"
-          name="shouldRememeber"
-          checked={form.shouldRemember}
-          disabled={form.isSubmitting}
-          onChange={(e) => setForm({ shouldRemember: e.currentTarget.checked })}
-        />
-      </div>
-      <SolidButton
-        status={form.isSubmitting ? "disabled" : "normal"}
-        type="submit"
-        disabled={form.isSubmitting}
-        class="flex justify-center items-center gap-1"
-      >
-        登录
+      <Button type="submit" disabled={form.isSubmitting} class="justify-center">
         <Show when={form.isSubmitting} fallback={<FiLogIn />}>
           <FiLoader class="animate-spin" />
         </Show>
-      </SolidButton>
+        登录
+      </Button>
     </form>
   );
 }

@@ -1,6 +1,6 @@
 import { useAuth } from "components/auth/provider";
 
-export default function StudentHome() {
+export default function TeacherHome() {
   const [auth] = useAuth();
 
   return (
