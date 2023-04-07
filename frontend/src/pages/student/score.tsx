@@ -1,6 +1,7 @@
 import { useRouteData } from "@solidjs/router";
 import { Option } from "components/form/option";
 import { Select } from "components/form/select";
+import { TableCell } from "components/table/cell";
 import { TableHead } from "components/table/head";
 import { TableRow } from "components/table/row";
 import { examsData } from "pages/exams.data";
@@ -84,15 +85,13 @@ export default function StudentScore() {
             <tbody>
               <For each={fullScores()}>
                 {({ id, exam, course, isAbsent, score }) => (
-                  <TableRow
-                    values={[
-                      id,
-                      exam.name,
-                      course.name,
-                      isAbsent ? "是" : "否",
-                      score,
-                    ]}
-                  />
+                  <TableRow>
+                    <TableCell>{id}</TableCell>
+                    <TableCell>{exam.name}</TableCell>
+                    <TableCell>{course.name}</TableCell>
+                    <TableCell>{isAbsent ? "是" : "否"}</TableCell>
+                    <TableCell>{score}</TableCell>
+                  </TableRow>
                 )}
               </For>
             </tbody>
