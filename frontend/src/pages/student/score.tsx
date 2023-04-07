@@ -90,7 +90,9 @@ export default function StudentScore() {
                     <TableCell>{exam.name}</TableCell>
                     <TableCell>{course.name}</TableCell>
                     <TableCell>{isAbsent ? "是" : "否"}</TableCell>
-                    <TableCell>{score}</TableCell>
+                    <TableCell>
+                      {score} / {course.maxScore}
+                    </TableCell>
                   </TableRow>
                 )}
               </For>
