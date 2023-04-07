@@ -1,11 +1,9 @@
 import clsx from "clsx";
-import { IconTypes } from "solid-icons";
 import { JSX, mergeProps, splitProps } from "solid-js";
 
 type Props = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
   color?: "primary" | "success" | "danger";
   size?: "normal" | "small";
-  icon?: IconTypes;
 };
 
 export function Button(props: Props) {
@@ -21,7 +19,6 @@ export function Button(props: Props) {
   const [local, rest] = splitProps(mergedProps, [
     "color",
     "size",
-    "icon",
     "class",
     "children",
   ]);
@@ -46,15 +43,6 @@ export function Button(props: Props) {
     }
   };
 
-  const iconSize = () => {
-    switch (local.size) {
-      case "normal":
-        return 16;
-      case "small":
-        return 14;
-    }
-  };
-
   return (
     <button
       {...rest}
@@ -65,7 +53,6 @@ export function Button(props: Props) {
         local.class
       )}
     >
-      {local.icon && <local.icon size={iconSize()} />}
       {local.children}
     </button>
   );
