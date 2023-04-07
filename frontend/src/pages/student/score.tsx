@@ -68,7 +68,10 @@ export default function StudentScore() {
         <Match when={fullScores.error}>
           <div>发生错误：{fullScores.error.message}</div>
         </Match>
-        <Match when={fullScores()}>
+        <Match when={fullScores() && fullScores()!.length === 0}>
+          <p>暂无成绩</p>
+        </Match>
+        <Match when={fullScores() && fullScores()!.length !== 0}>
           <table class="text-center">
             <colgroup>
               <col span={1} class="w-90" />
