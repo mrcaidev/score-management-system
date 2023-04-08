@@ -30,8 +30,14 @@ export function LoginForm() {
       });
 
       setLocalStorage("token", token);
-      await refetch();
-      toast.success("登录成功");
+
+      const account = await refetch();
+
+      if (!account) {
+        return;
+      }
+
+      toast.success("欢迎回来，" + account.name);
     } catch (error) {
       handleRequestError(error);
     } finally {
