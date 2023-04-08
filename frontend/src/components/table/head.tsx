@@ -10,7 +10,7 @@ export function TableHead(props: Props) {
       <tr>
         <For each={props.names}>
           {(name) => (
-            <th class="py-2 border border-gray-400 dark:border-gray-600">
+            <th class="py-3 border border-gray-400 dark:border-gray-600">
               {name}
             </th>
           )}

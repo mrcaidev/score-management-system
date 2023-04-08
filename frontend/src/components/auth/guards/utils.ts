@@ -6,7 +6,5 @@ export function getRedirectPath(role: Role) {
       return "/student";
     case Role.TEACHER:
       return "/teacher";
-    default:
-      return "/";
   }
 }

@@ -49,7 +49,7 @@ export function Button(props: Props) {
     <button
       {...rest}
       class={clsx(
-        "flex items-center disabled:bg-gray-600 disabled:hover:bg-gray-600 dark:disabled:bg-gray-500 dark:disabled:hover:bg-gray-500 transition-colors",
+        "flex items-center disabled:bg-gray-600 dark:disabled:bg-gray-500 disabled:hover:bg-gray-600 dark:disabled:hover:bg-gray-500 transition-colors",
         colors(),
         sizes(),
         local.class

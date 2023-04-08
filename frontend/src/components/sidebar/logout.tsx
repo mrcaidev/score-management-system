@@ -8,8 +8,8 @@ export function Logout() {
 
   const handleClick = async () => {
     removeLocalStorage("token");
-    toast.success("已安全退出");
     await refetch();
+    toast.success("已安全退出");
   };
 
   return (
