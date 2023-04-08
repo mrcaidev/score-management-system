@@ -3,6 +3,5 @@ import { request } from "utils/request";
 import { Exam } from "utils/types";
 
 export function examsData() {
-  const [exams] = createResource(() => request.get<Exam[]>("/exams"));
-  return exams;
+  return createResource(() => request.get<Exam[]>("/exams"));
 }

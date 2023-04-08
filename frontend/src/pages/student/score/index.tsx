@@ -18,7 +18,7 @@ import { FullScore } from "utils/types";
 import { StudentScoreTable } from "./table";
 
 export default function StudentScore() {
-  const exams = useRouteData<typeof examsData>();
+  const [exams] = useRouteData<typeof examsData>();
 
   const [selectedExamId, setSelectedExamId] = createSignal("");
 
