@@ -45,6 +45,8 @@ async function create(dto: CreateReq["body"], auth: Account) {
   await scoreRepository.updateById(oldScore.id, {
     reviewStatus: ReviewStatus.PENDING,
   });
+
+  return scoreRepository.findByIdAsFull(oldScore.id);
 }
 
 async function updateById(id: string, dto: UpdateReq["body"]) {

@@ -20,8 +20,8 @@ async function findAll(_: Request, res: Response, next: NextFunction) {
 
 async function create(req: CreateReq, res: Response, next: NextFunction) {
   try {
-    await reviewService.create(req.body, res.locals.auth);
-    return res.status(201).end();
+    const score = await reviewService.create(req.body, res.locals.auth);
+    return res.status(201).json({ data: score });
   } catch (error) {
     return next(error);
   }
