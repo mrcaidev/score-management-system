@@ -31,7 +31,7 @@ export function DeleteButton(props: Props) {
 
   return (
     <Button
-      color="danger"
+      variant="danger"
       size="small"
       disabled={isDeleting()}
       onClick={handleClick}

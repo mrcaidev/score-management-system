@@ -76,7 +76,7 @@ function UndoButton(props: UndoButtonProps) {
 
   return (
     <Button
-      color="danger"
+      variant="danger"
       size="small"
       disabled={isSubmitting() || props.reviewStatus !== ReviewStatus.PENDING}
       onClick={handleClick}

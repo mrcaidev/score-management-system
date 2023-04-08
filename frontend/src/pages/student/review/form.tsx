@@ -83,7 +83,7 @@ export function CreateReviewForm(props: Props) {
         </Select>
       </div>
       <div class="flex justify-end items-center gap-3">
-        <Button color="ghost" onClick={props.onClose}>
+        <Button variant="ghost" onClick={props.onClose}>
           <FiX />
           取消
         </Button>

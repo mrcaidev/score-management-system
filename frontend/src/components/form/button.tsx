@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { JSX, mergeProps, splitProps } from "solid-js";
 
 type Props = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
-  color?: "primary" | "success" | "danger" | "ghost";
+  variant?: "primary" | "success" | "danger" | "ghost";
   size?: "normal" | "small";
 };
 
@@ -10,21 +10,21 @@ export function Button(props: Props) {
   const mergedProps = mergeProps(
     {
       type: "button" as const,
-      color: "primary" as const,
+      variant: "primary" as const,
       size: "normal" as const,
     },
     props
   );
 
   const [local, rest] = splitProps(mergedProps, [
-    "color",
+    "variant",
     "size",
     "class",
     "children",
   ]);
 
   const colors = () => {
-    switch (local.color) {
+    switch (local.variant) {
       case "primary":
         return "bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-gray-100";
       case "success":
