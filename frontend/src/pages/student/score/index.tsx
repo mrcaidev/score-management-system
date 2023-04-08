@@ -62,7 +62,7 @@ export default function StudentScore() {
       <Switch>
         <Match when={fullScores.loading}>
           <div class="grid place-items-center h-40">
-            <FiLoader />
+            <FiLoader class="animate-spin" />
           </div>
         </Match>
         <Match when={fullScores.error}>
