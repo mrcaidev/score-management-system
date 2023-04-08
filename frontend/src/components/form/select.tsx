@@ -1,13 +1,20 @@
 import clsx from "clsx";
 import { JSX, splitProps } from "solid-js";
+import { Option } from "./option";
 
 type Props = JSX.SelectHTMLAttributes<HTMLSelectElement> & {
   id: string;
   label: string;
+  placeholder?: string;
 };
 
 export function Select(props: Props) {
-  const [local, rest] = splitProps(props, ["label", "class", "children"]);
+  const [local, rest] = splitProps(props, [
+    "label",
+    "placeholder",
+    "class",
+    "children",
+  ]);
 
   return (
     <div class="space-y-2">
@@ -21,6 +28,11 @@ export function Select(props: Props) {
           local.class
         )}
       >
+        {local.placeholder && (
+          <Option value="" selected disabled>
+            {local.placeholder}
+          </Option>
+        )}
         {local.children}
       </select>
     </div>
