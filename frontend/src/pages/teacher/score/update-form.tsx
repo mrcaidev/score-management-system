@@ -1,8 +1,8 @@
 import { Button } from "components/form/button";
 import { Checkbox } from "components/form/checkbox";
 import { Input } from "components/form/input";
-import { FiCheck, FiLoader, FiX } from "solid-icons/fi";
-import { Setter, Show, onMount } from "solid-js";
+import { FiCheck, FiX } from "solid-icons/fi";
+import { Setter, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
@@ -101,14 +101,10 @@ export function UpdateForm(props: Props) {
         onChange={(e) => setForm({ isAbsent: e.currentTarget.checked })}
       />
       <div class="flex justify-end items-center gap-2 mt-2">
-        <Button variant="ghost" onClick={props.onClose}>
-          <FiX />
+        <Button variant="ghost" icon={FiX} onClick={props.onClose}>
           取消
         </Button>
-        <Button type="submit" disabled={form.isSubmitting}>
-          <Show when={form.isSubmitting} fallback={<FiCheck />}>
-            <FiLoader class="animate-spin" />
-          </Show>
+        <Button type="submit" icon={FiCheck} isLoading={form.isSubmitting}>
           确认
         </Button>
       </div>

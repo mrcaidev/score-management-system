@@ -1,6 +1,6 @@
 import { Button } from "components/form/button";
-import { FiDelete, FiLoader } from "solid-icons/fi";
-import { Setter, Show, createSignal } from "solid-js";
+import { FiDelete } from "solid-icons/fi";
+import { Setter, createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
 import { FullScore } from "utils/types";
@@ -33,12 +33,10 @@ export function DeleteButton(props: Props) {
     <Button
       variant="danger"
       size="small"
-      disabled={isDeleting()}
+      icon={FiDelete}
+      isLoading={isDeleting()}
       onClick={handleClick}
     >
-      <Show when={isDeleting()} fallback={<FiDelete />}>
-        <FiLoader class="animate-spin" />
-      </Show>
       删除
     </Button>
   );

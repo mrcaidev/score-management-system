@@ -1,8 +1,8 @@
 import { Button } from "components/form/button";
 import { Option } from "components/form/option";
 import { Select } from "components/form/select";
-import { FiCheck, FiLoader, FiX } from "solid-icons/fi";
-import { For, Setter, Show, createResource } from "solid-js";
+import { FiCheck, FiX } from "solid-icons/fi";
+import { For, Setter, createResource } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
@@ -83,14 +83,10 @@ export function CreateReviewForm(props: Props) {
         </Select>
       </div>
       <div class="flex justify-end items-center gap-3">
-        <Button variant="ghost" onClick={props.onClose}>
-          <FiX />
+        <Button variant="ghost" icon={FiX} onClick={props.onClose}>
           取消
         </Button>
-        <Button type="submit" disabled={form.isSubmitting}>
-          <Show when={form.isSubmitting} fallback={<FiCheck />}>
-            <FiLoader class="animate-spin" />
-          </Show>
+        <Button type="submit" icon={FiCheck} isLoading={form.isSubmitting}>
           确认
         </Button>
       </div>

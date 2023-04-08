@@ -17,8 +17,7 @@ export function UpdateButton(props: Props) {
 
   return (
     <>
-      <Button size="small" onClick={openModal}>
-        <FiEdit2 />
+      <Button size="small" icon={FiEdit2} onClick={openModal}>
         更新
       </Button>
       <Modal title="更新成绩" isOpen={isModalOpen()} onClose={closeModal}>

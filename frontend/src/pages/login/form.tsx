@@ -2,8 +2,7 @@ import { useAuth } from "components/auth/provider";
 import { Button } from "components/form/button";
 import { Input } from "components/form/input";
 import { PasswordInput } from "components/form/password";
-import { FiLoader, FiLogIn } from "solid-icons/fi";
-import { Show } from "solid-js";
+import { FiLogIn } from "solid-icons/fi";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
@@ -75,12 +74,10 @@ export function LoginForm() {
       </div>
       <Button
         type="submit"
-        disabled={form.isSubmitting}
+        icon={FiLogIn}
+        isLoading={form.isSubmitting}
         class="justify-center w-full"
       >
-        <Show when={form.isSubmitting} fallback={<FiLogIn />}>
-          <FiLoader class="animate-spin" />
-        </Show>
         登录
       </Button>
     </form>

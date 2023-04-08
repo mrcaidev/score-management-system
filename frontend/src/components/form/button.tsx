@@ -1,17 +1,22 @@
 import clsx from "clsx";
-import { JSX, mergeProps, splitProps } from "solid-js";
+import { IconTypes } from "solid-icons";
+import { FiLoader } from "solid-icons/fi";
+import { JSX, Show, mergeProps, splitProps } from "solid-js";
 
 type Props = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "success" | "danger" | "ghost";
   size?: "normal" | "small";
+  icon?: IconTypes;
+  isLoading?: boolean;
 };
 
 export function Button(props: Props) {
   const mergedProps = mergeProps(
     {
-      type: "button" as const,
       variant: "primary" as const,
       size: "normal" as const,
+      isLoading: false,
+      type: "button" as const,
     },
     props
   );
@@ -19,11 +24,14 @@ export function Button(props: Props) {
   const [local, rest] = splitProps(mergedProps, [
     "variant",
     "size",
+    "icon",
+    "isLoading",
+    "disabled",
     "class",
     "children",
   ]);
 
-  const colors = () => {
+  const buttonColor = () => {
     switch (local.variant) {
       case "primary":
         return "bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-gray-100";
@@ -36,7 +44,7 @@ export function Button(props: Props) {
     }
   };
 
-  const sizes = () => {
+  const buttonSize = () => {
     switch (local.size) {
       case "normal":
         return "gap-2 px-4 py-3 rounded-md font-bold";
@@ -45,16 +53,34 @@ export function Button(props: Props) {
     }
   };
 
+  const iconSize = () => {
+    switch (local.size) {
+      case "normal":
+        return 16;
+      case "small":
+        return 14;
+    }
+  };
+
   return (
     <button
       {...rest}
+      disabled={local.isLoading || local.disabled || false}
       class={clsx(
         "flex items-center disabled:bg-gray-600 dark:disabled:bg-gray-500 disabled:hover:bg-gray-600 dark:disabled:hover:bg-gray-500 transition-colors",
-        colors(),
-        sizes(),
+        buttonColor(),
+        buttonSize(),
         local.class
       )}
     >
+      {local.icon && (
+        <Show
+          when={local.isLoading}
+          fallback={<local.icon size={iconSize()} />}
+        >
+          <FiLoader size={iconSize()} class="animate-spin" />
+        </Show>
+      )}
       {local.children}
     </button>
   );

@@ -16,8 +16,7 @@ export function ReviewCreator(props: Props) {
 
   return (
     <>
-      <Button onClick={openModal}>
-        <FiPlus />
+      <Button icon={FiPlus} onClick={openModal}>
         申请查分
       </Button>
       <Modal title="申请查分" isOpen={isModalOpen()} onClose={closeModal}>

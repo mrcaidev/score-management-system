@@ -2,8 +2,8 @@ import { Button } from "components/form/button";
 import { TableCell } from "components/table/cell";
 import { TableHead } from "components/table/head";
 import { TableRow } from "components/table/row";
-import { FiLoader, FiRotateCcw } from "solid-icons/fi";
-import { For, Setter, Show, createSignal } from "solid-js";
+import { FiRotateCcw } from "solid-icons/fi";
+import { For, Setter, createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
 import { FullScore, ReviewStatus } from "utils/types";
@@ -78,12 +78,11 @@ function UndoButton(props: UndoButtonProps) {
     <Button
       variant="danger"
       size="small"
-      disabled={isSubmitting() || props.reviewStatus !== ReviewStatus.PENDING}
+      icon={FiRotateCcw}
+      isLoading={isSubmitting()}
+      disabled={props.reviewStatus !== ReviewStatus.PENDING}
       onClick={handleClick}
     >
-      <Show when={isSubmitting()} fallback={<FiRotateCcw />}>
-        <FiLoader class="animate-spin" />
-      </Show>
       撤销
     </Button>
   );
