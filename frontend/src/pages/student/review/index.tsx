@@ -11,7 +11,7 @@ import { For, Match, Switch, createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
 import { ReviewStatus } from "utils/types";
-import { CreateForm } from "./create-form";
+import { CreateReviewForm } from "./form";
 
 export default function StudentReview() {
   const [reviews, { mutate }] = useRouteData<typeof reviewsData>();
@@ -41,7 +41,7 @@ export default function StudentReview() {
         申请查分
       </Button>
       <Modal title="申请查分" isOpen={isModalOpen()} onClose={closeModal}>
-        <CreateForm onClose={closeModal} mutate={mutate} />
+        <CreateReviewForm onClose={closeModal} mutate={mutate} />
       </Modal>
       <Switch>
         <Match when={reviews.loading}>

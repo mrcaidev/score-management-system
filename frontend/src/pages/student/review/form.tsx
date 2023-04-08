@@ -1,8 +1,8 @@
 import { Button } from "components/form/button";
 import { Option } from "components/form/option";
 import { Select } from "components/form/select";
-import { FiCheck, FiX } from "solid-icons/fi";
-import { For, Setter, createResource } from "solid-js";
+import { FiCheck, FiLoader, FiX } from "solid-icons/fi";
+import { For, Setter, Show, createResource } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
@@ -13,7 +13,7 @@ type Props = {
   mutate: Setter<FullScore[]>;
 };
 
-export function CreateForm(props: Props) {
+export function CreateReviewForm(props: Props) {
   const [form, setForm] = createStore({
     examId: "",
     courseId: 0,
@@ -40,7 +40,7 @@ export function CreateForm(props: Props) {
       });
       props.mutate((fullScores) => [...fullScores, fullScore]);
       props.onClose();
-      toast.success("申请成功");
+      toast.success("申请成功，请等待班主任处理");
     } catch (error) {
       handleRequestError(error);
     } finally {
@@ -88,7 +88,9 @@ export function CreateForm(props: Props) {
           取消
         </Button>
         <Button type="submit" disabled={form.isSubmitting}>
-          <FiCheck />
+          <Show when={form.isSubmitting} fallback={<FiCheck />}>
+            <FiLoader class="animate-spin" />
+          </Show>
           确认
         </Button>
       </div>
