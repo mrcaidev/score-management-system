@@ -2,9 +2,6 @@ import { useRouteData } from "@solidjs/router";
 import { Option } from "components/form/option";
 import { Select } from "components/form/select";
 import { PageTitle } from "components/page-title";
-import { TableCell } from "components/table/cell";
-import { TableHead } from "components/table/head";
-import { TableRow } from "components/table/row";
 import { examsData } from "pages/exams.data";
 import { FiFileText, FiLoader } from "solid-icons/fi";
 import {
@@ -18,6 +15,7 @@ import {
 } from "solid-js";
 import { request } from "utils/request";
 import { FullScore } from "utils/types";
+import { StudentScoreTable } from "./table";
 
 export default function StudentScore() {
   const exams = useRouteData<typeof examsData>();
@@ -74,31 +72,7 @@ export default function StudentScore() {
           <p>暂无成绩</p>
         </Match>
         <Match when={fullScores() && fullScores()!.length !== 0}>
-          <table class="text-center">
-            <colgroup>
-              <col span={1} class="w-90" />
-              <col span={1} class="w-80" />
-              <col span={1} class="w-40" />
-              <col span={1} class="w-40" />
-              <col span={1} class="w-40" />
-            </colgroup>
-            <TableHead names={["代码", "考试", "科目", "是否缺席", "成绩"]} />
-            <tbody>
-              <For each={fullScores()}>
-                {({ id, exam, course, isAbsent, score }) => (
-                  <TableRow>
-                    <TableCell>{id}</TableCell>
-                    <TableCell>{exam.name}</TableCell>
-                    <TableCell>{course.name}</TableCell>
-                    <TableCell>{isAbsent ? "是" : "否"}</TableCell>
-                    <TableCell>
-                      {score} / {course.maxScore}
-                    </TableCell>
-                  </TableRow>
-                )}
-              </For>
-            </tbody>
-          </table>
+          <StudentScoreTable scores={fullScores()!} />
           <p>总分：{totalScore()}</p>
         </Match>
       </Switch>
