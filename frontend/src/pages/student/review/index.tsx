@@ -3,7 +3,7 @@ import { PageTitle } from "components/page-title";
 import { reviewsData } from "pages/reviews.data";
 import { FiLoader, FiSearch } from "solid-icons/fi";
 import { Match, Switch } from "solid-js";
-import { ReviewCreator } from "./review-creator";
+import { ReviewCreator } from "./creator";
 import { StudentReviewTable } from "./table";
 
 export default function StudentReview() {
