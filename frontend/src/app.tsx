@@ -16,6 +16,7 @@ const StudentScore = lazy(() => import("pages/student/score"));
 const StudentReview = lazy(() => import("pages/student/review"));
 const TeacherLayout = lazy(() => import("pages/teacher/layout"));
 const TeacherHome = lazy(() => import("pages/teacher/home"));
+const TeacherScore = lazy(() => import("pages/teacher/score"));
 
 export const App = () => {
   return (
@@ -36,7 +37,7 @@ export const App = () => {
             </Route>
             <Route path="teacher" component={TeacherLayout}>
               <Route path="/" component={TeacherHome} />
-              <Route path="score" element={<div>Teacher Score</div>} />
+              <Route path="score" component={TeacherScore} data={examsData} />
               <Route path="add-score" element={<div>Teacher Score Add</div>} />
               <Route path="review" element={<div>Teacher Review</div>} />
             </Route>
