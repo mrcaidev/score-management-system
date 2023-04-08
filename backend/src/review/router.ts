@@ -10,7 +10,7 @@ export const reviewRouter: Router = Router();
 reviewRouter.get("/", authenticate(), reviewController.findAll);
 
 reviewRouter.post(
-  "/:id",
+  "/",
   authenticate(Role.STUDENT),
   validate(createReqSchema),
   reviewController.create

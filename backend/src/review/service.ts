@@ -6,7 +6,7 @@ import {
   NotFoundError,
   UnprocessableContentError,
 } from "utils/http-error";
-import { UpdateReq } from "./types";
+import { CreateReq, UpdateReq } from "./types";
 
 export const reviewService = {
   findAll,
@@ -23,22 +23,28 @@ async function findAll(auth: Account) {
   return scoreRepository.findAllWithReviewAsFull();
 }
 
-async function create(id: string, auth: Account) {
-  const oldScore = await scoreRepository.findById(id);
+async function create(dto: CreateReq["body"], auth: Account) {
+  const { examId, courseId } = dto;
 
-  if (!oldScore) {
+  const oldScores = await scoreRepository.findAll({
+    examId,
+    courseId,
+    studentId: auth.id,
+  });
+
+  if (!oldScores[0]) {
     throw new NotFoundError("成绩不存在");
   }
 
-  if (oldScore.studentId !== auth.id) {
-    throw new ForbiddenError("只能申请复查自己的成绩");
-  }
+  const oldScore = oldScores[0];
 
   if (oldScore.reviewStatus !== ReviewStatus.NONE) {
     throw new UnprocessableContentError("已经申请过复查");
   }
 
-  await scoreRepository.updateById(id, { reviewStatus: ReviewStatus.PENDING });
+  await scoreRepository.updateById(oldScore.id, {
+    reviewStatus: ReviewStatus.PENDING,
+  });
 }
 
 async function updateById(id: string, dto: UpdateReq["body"]) {
