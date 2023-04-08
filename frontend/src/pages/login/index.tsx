@@ -1,5 +1,5 @@
 import { UnauthGuard } from "components/auth/guards";
-import { LoginForm } from "components/form/login";
+import { LoginForm } from "./form";
 
 export default function Login() {
   return (
