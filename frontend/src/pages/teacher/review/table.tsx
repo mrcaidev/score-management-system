@@ -13,21 +13,19 @@ export function Table() {
   const [scores, { mutate }] = useRouteData<typeof reviewsData>();
 
   return (
-    <table class="text-center">
+    <table class="max-w-5xl w-full text-center">
       <colgroup>
-        <col class="w-90" />
-        <col class="w-80" />
-        <col class="w-20" />
-        <col class="w-40" />
-        <col class="w-20" />
-        <col class="w-50" />
+        <col class="w-1/4" />
+        <col class="w-1/8" />
+        <col class="w-1/4" />
+        <col class="w-1/8" />
+        <col class="w-1/4" />
       </colgroup>
-      <TableHead names={["成绩代码", "考试", "课程", "姓名", "状态", "操作"]} />
+      <TableHead names={["考试", "课程", "姓名", "状态", "操作"]} />
       <tbody>
         <For each={scores()}>
           {({ id, exam, course, student, reviewStatus }) => (
             <TableRow>
-              <TableCell>{id}</TableCell>
               <TableCell>{exam.name}</TableCell>
               <TableCell>{course.name}</TableCell>
               <TableCell>{student.name}</TableCell>

@@ -13,24 +13,20 @@ type Props = {
 
 export function Table(props: Props) {
   return (
-    <table class="text-center">
+    <table class="max-w-5xl w-full text-center">
       <colgroup>
-        <col class="w-90" />
-        <col class="w-80" />
-        <col class="w-20" />
-        <col class="w-40" />
-        <col class="w-20" />
-        <col class="w-30" />
-        <col class="w-50" />
+        <col class="w-1/4" />
+        <col class="w-1/8" />
+        <col class="w-1/8" />
+        <col class="w-1/8" />
+        <col class="w-1/8" />
+        <col class="w-1/4" />
       </colgroup>
-      <TableHead
-        names={["代码", "考试", "课程", "姓名", "是否缺席", "成绩", "操作"]}
-      />
+      <TableHead names={["考试", "课程", "姓名", "是否缺席", "成绩", "操作"]} />
       <tbody>
         <For each={props.scores}>
           {(score) => (
             <TableRow>
-              <TableCell>{score.id}</TableCell>
               <TableCell>{score.exam.name}</TableCell>
               <TableCell>{score.course.name}</TableCell>
               <TableCell>{score.student.name}</TableCell>
