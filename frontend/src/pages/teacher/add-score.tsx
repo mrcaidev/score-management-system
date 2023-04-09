@@ -64,8 +64,11 @@ export default function TeacherAddScore() {
         <FiEdit />
         成绩录入
       </Title>
-      <div class="grow grid place-items-center">
-        <form onSubmit={handleSubmit} class="space-y-4 w-100">
+      <div class="grow relative">
+        <form
+          onSubmit={handleSubmit}
+          class="space-y-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-3/5 w-100"
+        >
           <Select
             id="exam"
             label="考试"
