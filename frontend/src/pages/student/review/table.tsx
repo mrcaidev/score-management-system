@@ -20,7 +20,7 @@ export function Table(props: Props) {
         <col class="w-40" />
         <col class="w-50" />
       </colgroup>
-      <TableHead names={["成绩代码", "考试", "科目", "状态", "操作"]} />
+      <TableHead names={["成绩代码", "考试", "课程", "状态", "操作"]} />
       <tbody>
         <For each={props.scores}>
           {({ id, exam, course, reviewStatus }) => (

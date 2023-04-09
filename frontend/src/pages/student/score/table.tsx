@@ -18,7 +18,7 @@ export function Table(props: Props) {
         <col class="w-40" />
         <col class="w-40" />
       </colgroup>
-      <TableHead names={["代码", "考试", "科目", "是否缺席", "成绩"]} />
+      <TableHead names={["代码", "考试", "课程", "是否缺席", "成绩"]} />
       <tbody>
         <For each={props.scores}>
           {({ id, exam, course, isAbsent, score }) => (
