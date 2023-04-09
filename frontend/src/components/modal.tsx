@@ -28,28 +28,29 @@ export function Modal(props: Props) {
     onCleanup(() => document.removeEventListener("keydown", handleEscape));
   });
 
-  // TODO: Click outside to close modal.
-
   return (
     <Show when={props.isOpen}>
       <Portal>
-        <div class="grid place-items-center fixed left-0 right-0 top-0 bottom-0 bg-gray-900/75">
-          <div
-            role="dialog"
-            class="max-w-3xl px-8 py-6 m-8 rounded-lg bg-gray-200 dark:bg-gray-800"
-          >
-            <div class="flex justify-between items-center gap-8 mb-6">
-              <p class="font-bold text-2xl">{props.title}</p>
-              <button
-                type="button"
-                onClick={() => props.onClose()}
-                class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
-              >
-                <FiX size={24} />
-              </button>
-            </div>
-            {props.children}
+        <div
+          role="presentation"
+          onClick={() => props.onClose()}
+          class="fixed left-0 right-0 top-0 bottom-0 bg-gray-900/75"
+        />
+        <div
+          role="dialog"
+          class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-3/5 max-w-3xl px-8 py-6 m-8 rounded-lg bg-gray-200 dark:bg-gray-800"
+        >
+          <div class="flex justify-between items-center gap-8 mb-6">
+            <p class="font-bold text-2xl">{props.title}</p>
+            <button
+              type="button"
+              onClick={() => props.onClose()}
+              class="p-1 rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors"
+            >
+              <FiX size={24} />
+            </button>
           </div>
+          {props.children}
         </div>
       </Portal>
     </Show>
