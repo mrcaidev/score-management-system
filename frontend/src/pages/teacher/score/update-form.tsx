@@ -93,10 +93,12 @@ export function UpdateForm(props: Props) {
         label="成绩"
         type="number"
         name="score"
-        value={form.score}
+        value={form.isAbsent ? 0 : form.score}
         placeholder={"0-" + props.score.course.maxScore}
         required
-        disabled={isSubmitting()}
+        min={0}
+        max={props.score.course.maxScore}
+        disabled={isSubmitting() || form.isAbsent}
         onChange={(e) => setForm({ score: +e.target.value })}
       />
       <Checkbox

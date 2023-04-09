@@ -110,12 +110,12 @@ export default function TeacherAddScore() {
             label="成绩"
             type="number"
             name="score"
-            value={form.score}
+            value={form.isAbsent ? 0 : form.score}
             placeholder={"0-" + maxScore()}
             required
             min={0}
             max={maxScore()}
-            disabled={isSubmitting()}
+            disabled={isSubmitting() || form.isAbsent}
             onChange={(e) => setForm({ score: +e.target.value })}
           />
           <Checkbox

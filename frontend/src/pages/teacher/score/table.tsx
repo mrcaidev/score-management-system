@@ -1,7 +1,7 @@
 import { TableCell } from "components/table/cell";
 import { TableHead } from "components/table/head";
 import { TableRow } from "components/table/row";
-import { For, Setter } from "solid-js";
+import { For, Setter, Show } from "solid-js";
 import { FullScore } from "utils/types";
 import { DeleteButton } from "./delete-button";
 import { UpdateButton } from "./update-button";
@@ -36,7 +36,10 @@ export function Table(props: Props) {
               <TableCell>{score.student.name}</TableCell>
               <TableCell>{score.isAbsent ? "是" : "否"}</TableCell>
               <TableCell>
-                {score.score} / {score.course.maxScore}
+                <Show when={score.isAbsent} fallback={score.score}>
+                  0
+                </Show>
+                &nbsp;/ {score.course.maxScore}
               </TableCell>
               <TableCell>
                 <div class="flex justify-center items-center gap-3">
