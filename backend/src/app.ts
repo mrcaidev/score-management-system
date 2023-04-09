@@ -1,5 +1,6 @@
 import "utils/env";
 
+import { accountRouter } from "account/router";
 import { authRouter } from "auth/router";
 import cors from "cors";
 import { courseRouter } from "course/router";
@@ -17,6 +18,7 @@ app.use(express.json());
 
 app.use("/", rootRouter);
 app.use("/auth", authRouter);
+app.use("/accounts", accountRouter);
 app.use("/courses", courseRouter);
 app.use("/exams", examRouter);
 app.use("/scores", scoreRouter);

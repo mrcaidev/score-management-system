@@ -16,7 +16,7 @@ INSERT INTO account_role (name) VALUES
 CREATE TABLE IF NOT EXISTS account (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
-  role SMALLINT NOT NULL REFERENCES account_role(id),
+  role SMALLINT NOT NULL DEFAULT 1 REFERENCES account_role(id),
   password TEXT NOT NULL
 );
 
