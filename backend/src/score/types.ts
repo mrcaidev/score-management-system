@@ -51,7 +51,7 @@ export type CreateReq = z.infer<typeof createReqSchema>;
 
 export const updateReqSchema = z.object({
   params: scoreSchema.pick({ id: true }),
-  body: scoreSchema.pick({ score: true, reviewStatus: true }).partial(),
+  body: scoreSchema.pick({ isAbsent: true, score: true }).partial(),
 });
 
 export type UpdateReq = z.infer<typeof updateReqSchema>;

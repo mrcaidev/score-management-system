@@ -160,16 +160,17 @@ async function create(dto: CreateReq["body"]) {
 }
 
 async function updateById(id: string, dto: UpdateReq["body"]) {
-  const { score, reviewStatus } = dto;
+  const { isAbsent, score } = dto;
 
   const { rowCount } = await database.query(
     `
       UPDATE score
-      SET score = CASE WHEN $2::SMALLINT IS NULL THEN score ELSE $2 END,
-        review_status = CASE WHEN $3::SMALLINT IS NULL THEN review_status ELSE $3 END
+      SET
+        is_absent = CASE WHEN $2::BOOLEAN IS NULL THEN is_absent ELSE $2 END,
+        score = CASE WHEN $3::SMALLINT IS NULL THEN score ELSE $3 END
       WHERE id = $1
     `,
-    [id, score, reviewStatus]
+    [id, isAbsent, score]
   );
 
   if (rowCount !== 1) {
