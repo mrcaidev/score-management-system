@@ -28,6 +28,8 @@ export function Modal(props: Props) {
     onCleanup(() => document.removeEventListener("keydown", handleEscape));
   });
 
+  // TODO: Click outside to close modal.
+
   return (
     <Show when={props.isOpen}>
       <Portal>

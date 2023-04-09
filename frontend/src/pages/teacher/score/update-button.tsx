@@ -12,6 +12,7 @@ type Props = {
 
 export function UpdateButton(props: Props) {
   const [isModalOpen, setIsModalOpen] = createSignal(false);
+
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
@@ -23,8 +24,8 @@ export function UpdateButton(props: Props) {
       <Modal title="更新成绩" isOpen={isModalOpen()} onClose={closeModal}>
         <UpdateForm
           score={props.score}
-          mutate={props.mutate}
           onClose={closeModal}
+          mutate={props.mutate}
         />
       </Modal>
     </>

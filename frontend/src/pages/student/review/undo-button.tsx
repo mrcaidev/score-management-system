@@ -1,5 +1,5 @@
 import { Button } from "components/form/button";
-import { FiCheck } from "solid-icons/fi";
+import { FiRotateCcw } from "solid-icons/fi";
 import { Setter, createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
@@ -7,44 +7,39 @@ import { FullScore, ReviewStatus } from "utils/types";
 
 type Props = {
   scoreId: string;
+  reviewStatus: ReviewStatus;
   mutate: Setter<FullScore[]>;
 };
 
-export function FinishButton(props: Props) {
-  const [isFinishing, setIsFinishing] = createSignal(false);
+export function UndoButton(props: Props) {
+  const [isUndoing, setIsUndoing] = createSignal(false);
 
   const mutateFn = (scores: FullScore[]) =>
-    scores.map((score) => {
-      if (score.id === props.scoreId) {
-        return { ...score, reviewStatus: ReviewStatus.FINISHED };
-      }
-      return score;
-    });
+    scores.filter((score) => score.id !== props.scoreId);
 
   const handleClick = async () => {
-    setIsFinishing(true);
+    setIsUndoing(true);
 
     try {
-      await request.patch("/reviews/" + props.scoreId, {
-        reviewStatus: ReviewStatus.FINISHED,
-      });
+      await request.delete("/reviews/" + props.scoreId);
       props.mutate(mutateFn);
-      toast.success("已完成处理");
+      toast.success("撤销成功");
     } catch (error) {
       handleRequestError(error);
     } finally {
-      setIsFinishing(false);
+      setIsUndoing(false);
     }
   };
 
   return (
     <Button
+      variant="danger"
       size="small"
-      icon={FiCheck}
-      isLoading={isFinishing()}
+      icon={FiRotateCcw}
+      isLoading={isUndoing()}
       onClick={handleClick}
     >
-      完成
+      撤销
     </Button>
   );
 }

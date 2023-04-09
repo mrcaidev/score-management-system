@@ -1,19 +1,16 @@
-import { Button } from "components/form/button";
 import { TableCell } from "components/table/cell";
 import { TableHead } from "components/table/head";
 import { TableRow } from "components/table/row";
-import { FiRotateCcw } from "solid-icons/fi";
-import { For, Setter, createSignal } from "solid-js";
-import toast from "solid-toast";
-import { handleRequestError, request } from "utils/request";
+import { For, Setter, Show } from "solid-js";
 import { FullScore, ReviewStatus } from "utils/types";
+import { UndoButton } from "./undo-button";
 
 type Props = {
-  reviews: FullScore[];
+  scores: FullScore[];
   mutate: Setter<FullScore[]>;
 };
 
-export function StudentReviewTable(props: Props) {
+export function Table(props: Props) {
   return (
     <table class="text-center">
       <colgroup>
@@ -25,7 +22,7 @@ export function StudentReviewTable(props: Props) {
       </colgroup>
       <TableHead names={["成绩代码", "考试", "科目", "状态", "操作"]} />
       <tbody>
-        <For each={props.reviews}>
+        <For each={props.scores}>
           {({ id, exam, course, reviewStatus }) => (
             <TableRow>
               <TableCell>{id}</TableCell>
@@ -33,12 +30,14 @@ export function StudentReviewTable(props: Props) {
               <TableCell>{course.name}</TableCell>
               <TableCell>{mapReviewStatusToText(reviewStatus)}</TableCell>
               <TableCell>
-                <div class="flex justify-center items-center gap-2">
-                  <UndoButton
-                    id={id}
-                    reviewStatus={reviewStatus}
-                    mutate={props.mutate}
-                  />
+                <div class="flex justify-center items-center gap-3">
+                  <Show when={reviewStatus === ReviewStatus.PENDING}>
+                    <UndoButton
+                      scoreId={id}
+                      reviewStatus={reviewStatus}
+                      mutate={props.mutate}
+                    />
+                  </Show>
                 </div>
               </TableCell>
             </TableRow>
@@ -46,45 +45,6 @@ export function StudentReviewTable(props: Props) {
         </For>
       </tbody>
     </table>
-  );
-}
-
-type UndoButtonProps = {
-  id: string;
-  reviewStatus: ReviewStatus;
-  mutate: Setter<FullScore[]>;
-};
-
-function UndoButton(props: UndoButtonProps) {
-  const [isSubmitting, setIsSubmitting] = createSignal(false);
-
-  const handleClick = async () => {
-    setIsSubmitting(true);
-
-    try {
-      await request.delete("/reviews/" + props.id);
-      props.mutate((reviews) =>
-        reviews.filter((review) => review.id !== props.id)
-      );
-      toast.success("撤销成功");
-    } catch (error) {
-      handleRequestError(error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <Button
-      variant="danger"
-      size="small"
-      icon={FiRotateCcw}
-      isLoading={isSubmitting()}
-      disabled={props.reviewStatus !== ReviewStatus.PENDING}
-      onClick={handleClick}
-    >
-      撤销
-    </Button>
   );
 }
 

@@ -1,5 +1,5 @@
 import { Button } from "components/form/button";
-import { FiDelete } from "solid-icons/fi";
+import { FiTrash } from "solid-icons/fi";
 import { Setter, createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
@@ -13,14 +13,15 @@ type Props = {
 export function DeleteButton(props: Props) {
   const [isDeleting, setIsDeleting] = createSignal(false);
 
+  const mutateFn = (scores: FullScore[]) =>
+    scores.filter((score) => score.id !== props.scoreId);
+
   const handleClick = async () => {
     setIsDeleting(true);
 
     try {
       await request.delete("/scores/" + props.scoreId);
-      props.mutate((scores) =>
-        scores.filter((score) => score.id !== props.scoreId)
-      );
+      props.mutate(mutateFn);
       toast.success("删除成功");
     } catch (error) {
       handleRequestError(error);
@@ -33,7 +34,7 @@ export function DeleteButton(props: Props) {
     <Button
       variant="danger"
       size="small"
-      icon={FiDelete}
+      icon={FiTrash}
       isLoading={isDeleting()}
       onClick={handleClick}
     >

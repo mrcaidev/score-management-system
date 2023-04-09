@@ -13,6 +13,14 @@ type Props = {
 export function AcceptButton(props: Props) {
   const [isAccepting, setIsAccepting] = createSignal(false);
 
+  const mutateFn = (scores: FullScore[]) =>
+    scores.map((score) => {
+      if (score.id === props.scoreId) {
+        return { ...score, reviewStatus: ReviewStatus.ACCEPTED };
+      }
+      return score;
+    });
+
   const handleClick = async () => {
     setIsAccepting(true);
 
@@ -20,14 +28,7 @@ export function AcceptButton(props: Props) {
       await request.patch("/reviews/" + props.scoreId, {
         reviewStatus: ReviewStatus.ACCEPTED,
       });
-      props.mutate((reviews) =>
-        reviews.map((review) => {
-          if (review.id === props.scoreId) {
-            return { ...review, reviewStatus: ReviewStatus.ACCEPTED };
-          }
-          return review;
-        })
-      );
+      props.mutate(mutateFn);
       toast.success("已接受申请，请尽快与授课老师核实分数");
     } catch (error) {
       handleRequestError(error);

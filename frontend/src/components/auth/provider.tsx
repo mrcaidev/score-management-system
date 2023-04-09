@@ -1,4 +1,4 @@
-import { FiLoader } from "solid-icons/fi";
+import { PageLoading } from "components/loading/page";
 import {
   createContext,
   createResource,
@@ -20,9 +20,7 @@ export function AuthProvider(props: ParentProps) {
   return (
     <AuthContext.Provider value={authResource}>
       <Show when={authResource[0].loading} fallback={props.children}>
-        <div class="grid place-items-center fixed left-0 right-0 top-0 bottom-0">
-          <FiLoader size={36} class="animate-spin" />
-        </div>
+        <PageLoading />
       </Show>
     </AuthContext.Provider>
   );

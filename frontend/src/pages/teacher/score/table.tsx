@@ -11,7 +11,7 @@ type Props = {
   mutate: Setter<FullScore[]>;
 };
 
-export function TeacherScoreTable(props: Props) {
+export function Table(props: Props) {
   return (
     <table class="text-center">
       <colgroup>
@@ -39,7 +39,7 @@ export function TeacherScoreTable(props: Props) {
                 {score.score} / {score.course.maxScore}
               </TableCell>
               <TableCell>
-                <div class="flex justify-center items-center gap-2">
+                <div class="flex justify-center items-center gap-3">
                   <UpdateButton score={score} mutate={props.mutate} />
                   <DeleteButton scoreId={score.id} mutate={props.mutate} />
                 </div>

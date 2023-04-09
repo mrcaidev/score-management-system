@@ -3,5 +3,7 @@ import { request } from "utils/request";
 import { Exam } from "utils/types";
 
 export function examsData() {
-  return createResource(() => request.get<Exam[]>("/exams"));
+  return createResource(() => request.get<Exam[]>("/exams"), {
+    initialValue: [],
+  });
 }

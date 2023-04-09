@@ -3,9 +3,9 @@ import { Checkbox } from "components/form/checkbox";
 import { Input } from "components/form/input";
 import { Option } from "components/form/option";
 import { Select } from "components/form/select";
-import { PageTitle } from "components/page-title";
+import { Title } from "components/title";
 import { FiCheck, FiEdit, FiRefreshCw } from "solid-icons/fi";
-import { For, createResource } from "solid-js";
+import { For, createResource, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
@@ -18,8 +18,9 @@ export default function TeacherAddScore() {
     studentId: "",
     score: 0,
     isAbsent: false,
-    isSubmitting: false,
   });
+
+  const [isSubmitting, setIsSubmitting] = createSignal(false);
 
   const [exams] = createResource(() => request.get<Exam[]>("/exams"), {
     initialValue: [],
@@ -45,30 +46,24 @@ export default function TeacherAddScore() {
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
 
-    setForm({ isSubmitting: true });
+    setIsSubmitting(true);
 
     try {
-      await request.post("/scores", {
-        examId: form.examId,
-        courseId: form.courseId,
-        studentId: form.studentId,
-        score: form.score,
-        isAbsent: form.isAbsent,
-      });
+      await request.post("/scores", { ...form });
       toast.success("录入成功");
     } catch (error) {
       handleRequestError(error);
     } finally {
-      setForm({ isSubmitting: false });
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div class="space-y-8 flex flex-col h-full px-12 pt-8">
-      <PageTitle>
+      <Title>
         <FiEdit />
         成绩录入
-      </PageTitle>
+      </Title>
       <div class="grow grid place-items-center">
         <form onSubmit={handleSubmit} class="space-y-4 w-100">
           <Select
@@ -78,8 +73,8 @@ export default function TeacherAddScore() {
             value={form.examId}
             placeholder="请选择考试"
             required
-            disabled={form.isSubmitting}
-            onChange={(e) => setForm({ examId: e.currentTarget.value })}
+            disabled={isSubmitting()}
+            onChange={(e) => setForm({ examId: e.target.value })}
           >
             <For each={exams()}>
               {({ id, name }) => <Option value={id}>{name}</Option>}
@@ -92,8 +87,8 @@ export default function TeacherAddScore() {
             value={form.courseId}
             placeholder="请选择课程"
             required
-            disabled={form.isSubmitting}
-            onChange={(e) => setForm({ courseId: +e.currentTarget.value })}
+            disabled={isSubmitting()}
+            onChange={(e) => setForm({ courseId: +e.target.value })}
           >
             <For each={courses()}>
               {({ id, name }) => <Option value={id}>{name}</Option>}
@@ -104,11 +99,11 @@ export default function TeacherAddScore() {
             label="学号"
             name="student"
             value={form.studentId}
-            placeholder="学生的13位学号"
-            required
+            placeholder="13位学号"
             pattern="\d{13}"
-            disabled={form.isSubmitting}
-            onChange={(e) => setForm({ studentId: e.currentTarget.value })}
+            required
+            disabled={isSubmitting()}
+            onChange={(e) => setForm({ studentId: e.target.value })}
           />
           <Input
             id="score"
@@ -120,16 +115,16 @@ export default function TeacherAddScore() {
             required
             min={0}
             max={maxScore()}
-            disabled={form.isSubmitting}
-            onChange={(e) => setForm({ score: +e.currentTarget.value })}
+            disabled={isSubmitting()}
+            onChange={(e) => setForm({ score: +e.target.value })}
           />
           <Checkbox
             id="isAbsent"
             label="是否缺席"
             name="isAbsent"
             checked={form.isAbsent}
-            disabled={form.isSubmitting}
-            onChange={(e) => setForm({ isAbsent: e.currentTarget.checked })}
+            disabled={isSubmitting()}
+            onChange={(e) => setForm({ isAbsent: e.target.checked })}
           />
           <div class="grid grid-cols-2 gap-3 pt-2">
             <Button
@@ -143,7 +138,7 @@ export default function TeacherAddScore() {
             <Button
               type="submit"
               icon={FiCheck}
-              isLoading={form.isSubmitting}
+              isLoading={isSubmitting()}
               class="justify-center"
             >
               确认

@@ -5,6 +5,7 @@ type Props = JSX.OptionHTMLAttributes<HTMLOptionElement>;
 
 export function Option(props: Props) {
   const [local, rest] = splitProps(props, ["class"]);
+
   return (
     <option
       {...rest}

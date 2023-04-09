@@ -3,30 +3,29 @@ import { Button } from "components/form/button";
 import { Input } from "components/form/input";
 import { PasswordInput } from "components/form/password";
 import { FiLogIn } from "solid-icons/fi";
+import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
 import { setLocalStorage } from "utils/storage";
 
-export function LoginForm() {
+export function Form() {
   const [, { refetch }] = useAuth();
 
   const [form, setForm] = createStore({
     id: "",
     password: "",
-    isSubmitting: false,
   });
+
+  const [isSubmitting, setIsSubmitting] = createSignal(false);
 
   const handleSubmit = async (e: SubmitEvent) => {
     e.preventDefault();
 
-    setForm({ isSubmitting: true });
+    setIsSubmitting(true);
 
     try {
-      const token = await request.post<string>("/auth/login", {
-        id: form.id,
-        password: form.password,
-      });
+      const token = await request.post<string>("/auth/login", { ...form });
 
       setLocalStorage("token", token);
 
@@ -40,46 +39,44 @@ export function LoginForm() {
     } catch (error) {
       handleRequestError(error);
     } finally {
-      setForm({ isSubmitting: false });
+      setIsSubmitting(false);
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      class="w-100 px-8 py-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-800 shadow-xl"
+      class="space-y-4 w-100 px-8 py-10 rounded-lg border border-gray-300 dark:border-gray-700 bg-gray-200 dark:bg-gray-800 shadow-xl"
     >
-      <h1 class="mb-8 font-bold text-3xl text-center">登录</h1>
-      <div class="mb-4">
-        <Input
-          id="id"
-          label="学工号"
-          name="id"
-          value={form.id}
-          required
-          disabled={form.isSubmitting}
-          onChange={(e) => setForm({ id: e.currentTarget.value })}
-        />
+      <h1 class="pb-4 font-bold text-3xl text-center">登录</h1>
+      <Input
+        id="id"
+        label="学工号"
+        name="id"
+        value={form.id}
+        required
+        disabled={isSubmitting()}
+        onChange={(e) => setForm({ id: e.target.value })}
+      />
+      <PasswordInput
+        id="password"
+        label="密码"
+        name="password"
+        value={form.password}
+        required
+        disabled={isSubmitting()}
+        onChange={(e) => setForm({ password: e.target.value })}
+      />
+      <div class="pt-2">
+        <Button
+          type="submit"
+          icon={FiLogIn}
+          isLoading={isSubmitting()}
+          class="justify-center w-full"
+        >
+          登录
+        </Button>
       </div>
-      <div class="mb-6">
-        <PasswordInput
-          id="password"
-          label="密码"
-          name="password"
-          value={form.password}
-          required
-          disabled={form.isSubmitting}
-          onChange={(e) => setForm({ password: e.currentTarget.value })}
-        />
-      </div>
-      <Button
-        type="submit"
-        icon={FiLogIn}
-        isLoading={form.isSubmitting}
-        class="justify-center w-full"
-      >
-        登录
-      </Button>
     </form>
   );
 }

@@ -9,7 +9,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((config) => {
-  const token = getLocalStorage("token");
+  const token = getLocalStorage<string>("token");
   if (token) {
     config.headers.Authorization = "Bearer " + token;
   }
@@ -27,7 +27,7 @@ instance.interceptors.response.use(
       throw error;
     }
 
-    throw new Error("未知错误，请稍后再试");
+    throw new Error("未知的网络请求错误，请稍后再试");
   }
 );
 
@@ -64,5 +64,5 @@ export function handleRequestError(error: unknown) {
     return;
   }
 
-  toast.error("未知错误，请稍后再试");
+  toast.error("未知的应用内错误，请稍后再试");
 }

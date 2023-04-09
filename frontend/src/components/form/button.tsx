@@ -1,6 +1,6 @@
 import clsx from "clsx";
+import { Loading } from "components/loading/normal";
 import { IconTypes } from "solid-icons";
-import { FiLoader } from "solid-icons/fi";
 import { JSX, Show, mergeProps, splitProps } from "solid-js";
 
 type Props = JSX.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -78,7 +78,7 @@ export function Button(props: Props) {
           when={local.isLoading}
           fallback={<local.icon size={iconSize()} />}
         >
-          <FiLoader size={iconSize()} class="animate-spin" />
+          <Loading size={iconSize()} />
         </Show>
       )}
       {local.children}

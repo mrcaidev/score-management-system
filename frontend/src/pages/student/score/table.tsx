@@ -8,7 +8,7 @@ type Props = {
   scores: FullScore[];
 };
 
-export function StudentScoreTable(props: Props) {
+export function Table(props: Props) {
   return (
     <table class="text-center">
       <colgroup>

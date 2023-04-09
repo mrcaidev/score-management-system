@@ -11,7 +11,6 @@ export function PasswordInput(props: Props) {
   const [local, rest] = splitProps(props, ["label", "class"]);
 
   const [isVisible, setIsVisible] = createSignal(false);
-  const inputType = () => (isVisible() ? "text" : "password");
 
   return (
     <div class="space-y-2">
@@ -19,9 +18,9 @@ export function PasswordInput(props: Props) {
       <div class="group relative">
         <input
           {...rest}
-          type={inputType()}
+          type={isVisible() ? "text" : "password"}
           class={clsx(
-            "peer min-w-0 w-full px-3 py-2 rounded border border-gray-400 dark:border-gray-600 outline-none group-focus-within:outline-indigo-600 dark:group-focus-within:outline-indigo-400 group-focus-within:-outline-offset-1 bg-transparent disabled:text-gray-600 dark:disabled:text-gray-400",
+            "peer block min-w-0 w-full px-3 py-2 rounded border border-gray-400 dark:border-gray-600 outline-none group-focus-within:outline-indigo-600 dark:group-focus-within:outline-indigo-400 group-focus-within:-outline-offset-1 bg-transparent disabled:text-gray-600 dark:disabled:text-gray-400",
             local.class
           )}
         />

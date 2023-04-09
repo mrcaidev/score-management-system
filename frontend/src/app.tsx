@@ -48,8 +48,8 @@ export const App = () => {
               />
             </Route>
           </Routes>
-          <Toaster position="top-center" />
         </Router>
+        <Toaster position="top-center" />
       </AuthProvider>
     </ThemeProvider>
   );

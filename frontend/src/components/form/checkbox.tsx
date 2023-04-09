@@ -21,9 +21,7 @@ export function Checkbox(props: Props) {
         )}
       />
       <FiCheck class="hidden peer-checked:inline absolute left-0 top-1/2 -translate-y-1/2 peer-disabled:stroke-gray-600 dark:peer-disabled:stroke-gray-400 pointer-events-none" />
-      <label for={rest.id} class="text-sm select-none">
-        {local.label}
-      </label>
+      <label for={rest.id}>{local.label}</label>
     </div>
   );
 }

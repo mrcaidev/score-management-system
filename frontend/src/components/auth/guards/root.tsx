@@ -1,19 +1,14 @@
 import { Navigate } from "@solidjs/router";
-import { Match, Switch } from "solid-js";
+import { Show } from "solid-js";
 import { useAuth } from "../provider";
-import { getRedirectPath } from "./utils";
+import { Redirect } from "./redirect";
 
 export function RootGuard() {
   const [auth] = useAuth();
 
   return (
-    <Switch>
-      <Match when={auth.error}>
-        <Navigate href="/login" />
-      </Match>
-      <Match when={auth()}>
-        <Navigate href={getRedirectPath(auth()!.role)} />
-      </Match>
-    </Switch>
+    <Show when={auth.error} fallback={<Redirect />}>
+      <Navigate href="/login" />
+    </Show>
   );
 }

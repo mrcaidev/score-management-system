@@ -13,6 +13,14 @@ type Props = {
 export function RejectButton(props: Props) {
   const [isRejecting, setIsRejecting] = createSignal(false);
 
+  const mutateFn = (scores: FullScore[]) =>
+    scores.map((score) => {
+      if (score.id === props.scoreId) {
+        return { ...score, reviewStatus: ReviewStatus.REJECTED };
+      }
+      return score;
+    });
+
   const handleClick = async () => {
     setIsRejecting(true);
 
@@ -20,14 +28,7 @@ export function RejectButton(props: Props) {
       await request.patch("/reviews/" + props.scoreId, {
         reviewStatus: ReviewStatus.REJECTED,
       });
-      props.mutate((reviews) =>
-        reviews.map((review) => {
-          if (review.id === props.scoreId) {
-            return { ...review, reviewStatus: ReviewStatus.REJECTED };
-          }
-          return review;
-        })
-      );
+      props.mutate(mutateFn);
       toast.success("已驳回申请");
     } catch (error) {
       handleRequestError(error);
