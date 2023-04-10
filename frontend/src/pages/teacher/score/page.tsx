@@ -1,6 +1,5 @@
 import { useRouteData } from "@solidjs/router";
-import { Option } from "components/form/option";
-import { Select } from "components/form/select";
+import { Option, Select } from "components/form";
 import { Title } from "components/title";
 import { examsData } from "pages/exams.data";
 import { FiFileText } from "solid-icons/fi";

@@ -1,7 +1,5 @@
 import { useAuth } from "components/auth/provider";
-import { Button } from "components/form/button";
-import { Input } from "components/form/input";
-import { PasswordInput } from "components/form/password";
+import { Button, Input, PasswordInput } from "components/form";
 import { FiLogIn } from "solid-icons/fi";
 import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";

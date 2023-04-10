@@ -1,4 +1,4 @@
-import { Button } from "components/form/button";
+import { Button } from "components/form";
 import { Modal } from "components/modal";
 import { FiEdit2 } from "solid-icons/fi";
 import { createSignal } from "solid-js";

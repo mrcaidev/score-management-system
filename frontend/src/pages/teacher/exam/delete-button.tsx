@@ -1,5 +1,5 @@
 import { useRouteData } from "@solidjs/router";
-import { Button } from "components/form/button";
+import { Button } from "components/form";
 import { examsData } from "pages/exams.data";
 import { FiTrash } from "solid-icons/fi";
 import { createSignal } from "solid-js";

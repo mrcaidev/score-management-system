@@ -1,7 +1,5 @@
 import { useRouteData } from "@solidjs/router";
-import { Button } from "components/form/button";
-import { DatePicker } from "components/form/date-picker";
-import { Input } from "components/form/input";
+import { Button, DatePicker, Input } from "components/form";
 import { examsData } from "pages/exams.data";
 import { FiCheck, FiX } from "solid-icons/fi";
 import { createSignal } from "solid-js";

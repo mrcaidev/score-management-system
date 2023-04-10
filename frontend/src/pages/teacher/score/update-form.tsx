@@ -1,8 +1,4 @@
-import { Button } from "components/form/button";
-import { Checkbox } from "components/form/checkbox";
-import { Input } from "components/form/input";
-import { Option } from "components/form/option";
-import { Select } from "components/form/select";
+import { Button, Checkbox, Input, Option, Select } from "components/form";
 import { FiCheck, FiX } from "solid-icons/fi";
 import { Setter, createSignal, onMount } from "solid-js";
 import { createStore } from "solid-js/store";

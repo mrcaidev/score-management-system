@@ -1,6 +1,4 @@
-import { Button } from "components/form/button";
-import { Option } from "components/form/option";
-import { Select } from "components/form/select";
+import { Button, Option, Select } from "components/form";
 import { FiCheck, FiX } from "solid-icons/fi";
 import { For, Setter, createResource, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";

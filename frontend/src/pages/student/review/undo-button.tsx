@@ -1,4 +1,4 @@
-import { Button } from "components/form/button";
+import { Button } from "components/form";
 import { FiRotateCcw } from "solid-icons/fi";
 import { Setter, createSignal } from "solid-js";
 import toast from "solid-toast";
