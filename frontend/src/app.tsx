@@ -5,6 +5,7 @@ import { AuthProvider } from "components/auth/provider";
 import { ThemeProvider } from "components/theme/provider";
 import { examsData } from "pages/exams.data";
 import { reviewsData } from "pages/reviews.data";
+import { studentsData } from "pages/students.data";
 import { lazy } from "solid-js";
 import { Toaster } from "solid-toast";
 import "virtual:uno.css";
@@ -16,10 +17,11 @@ const StudentScore = lazy(() => import("pages/student/score"));
 const StudentReview = lazy(() => import("pages/student/review"));
 const TeacherLayout = lazy(() => import("pages/teacher/layout"));
 const TeacherHome = lazy(() => import("pages/teacher/home"));
+const TeacherStudent = lazy(() => import("pages/teacher/student"));
+const TeacherExam = lazy(() => import("pages/teacher/exam"));
 const TeacherScore = lazy(() => import("pages/teacher/score"));
 const TeacherAddScore = lazy(() => import("pages/teacher/add-score"));
 const TeacherReview = lazy(() => import("pages/teacher/review"));
-const TeacherExam = lazy(() => import("pages/teacher/exam"));
 
 export const App = () => {
   return (
@@ -40,6 +42,11 @@ export const App = () => {
             </Route>
             <Route path="teacher" component={TeacherLayout}>
               <Route path="/" component={TeacherHome} />
+              <Route
+                path="student"
+                component={TeacherStudent}
+                data={studentsData}
+              />
               <Route path="exam" component={TeacherExam} data={examsData} />
               <Route path="score" component={TeacherScore} data={examsData} />
               <Route path="add-score" component={TeacherAddScore} />
