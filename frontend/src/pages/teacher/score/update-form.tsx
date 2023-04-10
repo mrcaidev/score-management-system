@@ -1,6 +1,8 @@
+import { useRouteData } from "@solidjs/router";
 import { Button, Checkbox, Input, Option, Select } from "components/form";
+import { scoresData } from "pages/scores.data";
 import { FiCheck, FiX } from "solid-icons/fi";
-import { Setter, createSignal, onMount } from "solid-js";
+import { createSignal, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
@@ -9,10 +11,11 @@ import { FullScore } from "utils/types";
 type Props = {
   score: FullScore;
   onClose: () => void;
-  mutate: Setter<FullScore[]>;
 };
 
 export function UpdateForm(props: Props) {
+  const [, { mutate }] = useRouteData<typeof scoresData>();
+
   const [form, setForm] = createStore({
     isAbsent: false,
     score: 0,
@@ -47,7 +50,7 @@ export function UpdateForm(props: Props) {
 
     try {
       await request.patch("/scores/" + props.score.id, { ...form });
-      props.mutate(mutateFn);
+      mutate(mutateFn);
       props.onClose();
       toast.success("更新成功");
     } catch (error) {

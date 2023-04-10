@@ -5,6 +5,7 @@ import { AuthProvider } from "components/auth/provider";
 import { ThemeProvider } from "components/theme/provider";
 import { examsData } from "pages/exams.data";
 import { reviewsData } from "pages/reviews.data";
+import { scoresData } from "pages/scores.data";
 import { studentsData } from "pages/students.data";
 import { lazy } from "solid-js";
 import { Toaster } from "solid-toast";
@@ -33,7 +34,7 @@ export const App = () => {
             <Route path="login" component={Login} />
             <Route path="student" component={StudentLayout}>
               <Route path="/" component={StudentHome} />
-              <Route path="score" component={StudentScore} data={examsData} />
+              <Route path="score" component={StudentScore} data={scoresData} />
               <Route
                 path="review"
                 component={StudentReview}
@@ -48,7 +49,7 @@ export const App = () => {
                 data={studentsData}
               />
               <Route path="exam" component={TeacherExam} data={examsData} />
-              <Route path="score" component={TeacherScore} data={examsData} />
+              <Route path="score" component={TeacherScore} data={scoresData} />
               <Route path="add-score" component={TeacherAddScore} />
               <Route
                 path="review"

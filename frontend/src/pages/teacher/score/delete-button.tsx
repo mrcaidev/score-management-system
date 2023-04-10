@@ -1,16 +1,19 @@
+import { useRouteData } from "@solidjs/router";
 import { Button } from "components/form";
+import { scoresData } from "pages/scores.data";
 import { FiTrash } from "solid-icons/fi";
-import { Setter, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
 import { FullScore } from "utils/types";
 
 type Props = {
   scoreId: string;
-  mutate: Setter<FullScore[]>;
 };
 
 export function DeleteButton(props: Props) {
+  const [, { mutate }] = useRouteData<typeof scoresData>();
+
   const [isDeleting, setIsDeleting] = createSignal(false);
 
   const mutateFn = (scores: FullScore[]) =>
@@ -21,7 +24,7 @@ export function DeleteButton(props: Props) {
 
     try {
       await request.delete("/scores/" + props.scoreId);
-      props.mutate(mutateFn);
+      mutate(mutateFn);
       toast.success("删除成功");
     } catch (error) {
       handleRequestError(error);
