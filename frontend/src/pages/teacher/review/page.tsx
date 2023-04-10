@@ -1,6 +1,6 @@
 import { Title } from "components/title";
 import { FiSearch } from "solid-icons/fi";
-import { Table } from "./table";
+import { ReviewTable } from "./table";
 
 export function Page() {
   return (
@@ -9,7 +9,7 @@ export function Page() {
         <FiSearch />
         查分审核
       </Title>
-      <Table />
+      <ReviewTable />
     </div>
   );
 }

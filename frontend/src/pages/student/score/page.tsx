@@ -13,7 +13,7 @@ import {
 } from "solid-js";
 import { request } from "utils/request";
 import { FullScore } from "utils/types";
-import { Table } from "./table";
+import { ScoreTable } from "./table";
 
 export function Page() {
   const [exams] = useRouteData<typeof examsData>();
@@ -59,7 +59,7 @@ export function Page() {
         </For>
       </Select>
       <Show when={scores().length} fallback={<p>暂无成绩</p>}>
-        <Table scores={scores()} />
+        <ScoreTable scores={scores()} />
         <p>总分：{totalScore()}</p>
       </Show>
     </div>

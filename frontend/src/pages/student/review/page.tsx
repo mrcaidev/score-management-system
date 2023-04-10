@@ -4,7 +4,7 @@ import { reviewsData } from "pages/reviews.data";
 import { FiSearch } from "solid-icons/fi";
 import { Show } from "solid-js";
 import { CreateButton } from "./create-button";
-import { Table } from "./table";
+import { ReviewTable } from "./table";
 
 export function Page() {
   const [scores, { mutate }] = useRouteData<typeof reviewsData>();
@@ -17,7 +17,7 @@ export function Page() {
       </Title>
       <CreateButton mutate={mutate} />
       <Show when={scores().length} fallback={<p>暂无查分申请</p>}>
-        <Table scores={scores()} mutate={mutate} />
+        <ReviewTable scores={scores()} mutate={mutate} />
       </Show>
     </div>
   );

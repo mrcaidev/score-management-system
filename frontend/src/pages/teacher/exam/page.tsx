@@ -1,7 +1,7 @@
 import { Title } from "components/title";
 import { FiBookOpen } from "solid-icons/fi";
-import { Table } from "./table";
 import { CreateButton } from "./create-button";
+import { ExamTable } from "./table";
 
 export function Page() {
   return (
@@ -11,7 +11,7 @@ export function Page() {
         考试管理
       </Title>
       <CreateButton />
-      <Table />
+      <ExamTable />
     </div>
   );
 }

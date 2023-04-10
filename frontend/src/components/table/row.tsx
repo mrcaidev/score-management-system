@@ -2,6 +2,8 @@ import { ParentProps } from "solid-js";
 
 export function TableRow(props: ParentProps) {
   return (
-    <tr class="hover:bg-gray-200 dark:hover:bg-gray-800">{props.children}</tr>
+    <tr class="even:bg-gray-200 dark:even:bg-gray-800 hover:bg-indigo-100 dark:hover:bg-indigo-900">
+      {props.children}
+    </tr>
   );
 }
