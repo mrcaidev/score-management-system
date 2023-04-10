@@ -44,3 +44,27 @@ export type FullScore = Omit<Score, "examId" | "courseId" | "studentId"> & {
   course: Course;
   student: Account;
 };
+
+export function mapRoleToText(role: Role) {
+  switch (role) {
+    case Role.STUDENT:
+      return "学生";
+    case Role.TEACHER:
+      return "班主任";
+  }
+}
+
+export function mapReviewStatusToText(status: ReviewStatus) {
+  switch (status) {
+    case ReviewStatus.NONE:
+      return "无";
+    case ReviewStatus.PENDING:
+      return "待处理";
+    case ReviewStatus.REJECTED:
+      return "已驳回";
+    case ReviewStatus.ACCEPTED:
+      return "已受理";
+    case ReviewStatus.FINISHED:
+      return "已完成";
+  }
+}

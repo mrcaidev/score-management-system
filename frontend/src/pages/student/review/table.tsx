@@ -2,7 +2,7 @@ import { useRouteData } from "@solidjs/router";
 import { Table, TableCell, TableRow } from "components/table";
 import { reviewsData } from "pages/reviews.data";
 import { For, Show } from "solid-js";
-import { ReviewStatus } from "utils/types";
+import { ReviewStatus, mapReviewStatusToText } from "utils/types";
 import { UndoButton } from "./undo-button";
 
 export function ReviewTable() {
@@ -31,19 +31,4 @@ export function ReviewTable() {
       </Table>
     </Show>
   );
-}
-
-function mapReviewStatusToText(status: ReviewStatus) {
-  switch (status) {
-    case ReviewStatus.NONE:
-      return "无";
-    case ReviewStatus.PENDING:
-      return "待处理";
-    case ReviewStatus.REJECTED:
-      return "已驳回";
-    case ReviewStatus.ACCEPTED:
-      return "已受理";
-    case ReviewStatus.FINISHED:
-      return "已完成";
-  }
 }
