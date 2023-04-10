@@ -1,17 +1,19 @@
+import { useRouteData } from "@solidjs/router";
 import { Button } from "components/form";
+import { reviewsData } from "pages/reviews.data";
 import { FiRotateCcw } from "solid-icons/fi";
-import { Setter, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
-import { FullScore, ReviewStatus } from "utils/types";
+import { FullScore } from "utils/types";
 
 type Props = {
   scoreId: string;
-  reviewStatus: ReviewStatus;
-  mutate: Setter<FullScore[]>;
 };
 
 export function UndoButton(props: Props) {
+  const [, { mutate }] = useRouteData<typeof reviewsData>();
+
   const [isUndoing, setIsUndoing] = createSignal(false);
 
   const mutateFn = (scores: FullScore[]) =>
@@ -22,7 +24,7 @@ export function UndoButton(props: Props) {
 
     try {
       await request.delete("/reviews/" + props.scoreId);
-      props.mutate(mutateFn);
+      mutate(mutateFn);
       toast.success("撤销成功");
     } catch (error) {
       handleRequestError(error);

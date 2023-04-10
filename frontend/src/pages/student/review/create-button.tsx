@@ -1,15 +1,10 @@
 import { Button } from "components/form";
 import { Modal } from "components/modal";
 import { FiPlus } from "solid-icons/fi";
-import { Setter, createSignal } from "solid-js";
-import { FullScore } from "utils/types";
+import { createSignal } from "solid-js";
 import { CreateForm } from "./create-form";
 
-type Props = {
-  mutate: Setter<FullScore[]>;
-};
-
-export function CreateButton(props: Props) {
+export function CreateButton() {
   const [isModalOpen, setIsModalOpen] = createSignal(false);
 
   const openModal = () => setIsModalOpen(true);
@@ -21,7 +16,7 @@ export function CreateButton(props: Props) {
         申请查分
       </Button>
       <Modal isOpen={isModalOpen()} onClose={closeModal}>
-        <CreateForm onClose={closeModal} mutate={props.mutate} />
+        <CreateForm onClose={closeModal} />
       </Modal>
     </>
   );

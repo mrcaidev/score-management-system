@@ -1,6 +1,8 @@
+import { useRouteData } from "@solidjs/router";
 import { Button, Option, Select } from "components/form";
+import { reviewsData } from "pages/reviews.data";
 import { FiCheck, FiX } from "solid-icons/fi";
-import { For, Setter, createResource, createSignal } from "solid-js";
+import { For, createResource, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
@@ -8,10 +10,11 @@ import { Course, Exam, FullScore } from "utils/types";
 
 type Props = {
   onClose: () => void;
-  mutate: Setter<FullScore[]>;
 };
 
 export function CreateForm(props: Props) {
+  const [, { mutate }] = useRouteData<typeof reviewsData>();
+
   const [form, setForm] = createStore({
     examId: "",
     courseId: 0,
@@ -34,7 +37,7 @@ export function CreateForm(props: Props) {
 
     try {
       const score = await request.post<FullScore>("/reviews", { ...form });
-      props.mutate((scores) => [...scores, score]);
+      mutate((scores) => [...scores, score]);
       props.onClose();
       toast.success("申请成功，请等待班主任处理");
     } catch (error) {

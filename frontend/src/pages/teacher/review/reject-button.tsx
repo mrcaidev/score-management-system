@@ -1,16 +1,19 @@
+import { useRouteData } from "@solidjs/router";
 import { Button } from "components/form";
+import { reviewsData } from "pages/reviews.data";
 import { FiX } from "solid-icons/fi";
-import { Setter, createSignal } from "solid-js";
+import { createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
 import { FullScore, ReviewStatus } from "utils/types";
 
 type Props = {
   scoreId: string;
-  mutate: Setter<FullScore[]>;
 };
 
 export function RejectButton(props: Props) {
+  const [, { mutate }] = useRouteData<typeof reviewsData>();
+
   const [isRejecting, setIsRejecting] = createSignal(false);
 
   const mutateFn = (scores: FullScore[]) =>
@@ -28,7 +31,7 @@ export function RejectButton(props: Props) {
       await request.patch("/reviews/" + props.scoreId, {
         reviewStatus: ReviewStatus.REJECTED,
       });
-      props.mutate(mutateFn);
+      mutate(mutateFn);
       toast.success("已驳回申请");
     } catch (error) {
       handleRequestError(error);

@@ -8,7 +8,7 @@ import { FinishButton } from "./finish-button";
 import { RejectButton } from "./reject-button";
 
 export function ReviewTable() {
-  const [scores, { mutate }] = useRouteData<typeof reviewsData>();
+  const [scores] = useRouteData<typeof reviewsData>();
 
   return (
     <Table
@@ -25,15 +25,15 @@ export function ReviewTable() {
             <TableCell>
               <Switch>
                 <Match when={reviewStatus === ReviewStatus.PENDING}>
-                  <RejectButton scoreId={id} mutate={mutate} />
-                  <AcceptButton scoreId={id} mutate={mutate} />
+                  <RejectButton scoreId={id} />
+                  <AcceptButton scoreId={id} />
                 </Match>
                 <Match when={reviewStatus === ReviewStatus.REJECTED}>
-                  <AcceptButton scoreId={id} mutate={mutate} />
+                  <AcceptButton scoreId={id} />
                 </Match>
                 <Match when={reviewStatus === ReviewStatus.ACCEPTED}>
-                  <RejectButton scoreId={id} mutate={mutate} />
-                  <FinishButton scoreId={id} mutate={mutate} />
+                  <RejectButton scoreId={id} />
+                  <FinishButton scoreId={id} />
                 </Match>
               </Switch>
             </TableCell>
