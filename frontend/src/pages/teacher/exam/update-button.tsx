@@ -20,7 +20,7 @@ export function UpdateButton(props: Props) {
       <Button size="small" icon={FiEdit2} onClick={openModal}>
         更新
       </Button>
-      <Modal title="更新考试" isOpen={isModalOpen()} onClose={closeModal}>
+      <Modal isOpen={isModalOpen()} onClose={closeModal}>
         <UpdateForm exam={props.exam} onClose={closeModal} />
       </Modal>
     </>

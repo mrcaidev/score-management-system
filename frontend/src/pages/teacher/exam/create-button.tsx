@@ -15,7 +15,7 @@ export function CreateButton() {
       <Button icon={FiPlus} onClick={openModal}>
         添加考试
       </Button>
-      <Modal title="添加考试" isOpen={isModalOpen()} onClose={closeModal}>
+      <Modal isOpen={isModalOpen()} onClose={closeModal}>
         <CreateForm onClose={closeModal} />
       </Modal>
     </>

@@ -20,7 +20,7 @@ export function CreateButton(props: Props) {
       <Button icon={FiPlus} onClick={openModal}>
         申请查分
       </Button>
-      <Modal title="申请查分" isOpen={isModalOpen()} onClose={closeModal}>
+      <Modal isOpen={isModalOpen()} onClose={closeModal}>
         <CreateForm onClose={closeModal} mutate={props.mutate} />
       </Modal>
     </>

@@ -63,6 +63,7 @@ export function UpdateForm(props: Props) {
 
   return (
     <form onSubmit={handleSubmit} class="space-y-4 w-100">
+      <p class="pb-2 font-bold text-2xl">更新成绩</p>
       <Select
         id="exam"
         label="考试"

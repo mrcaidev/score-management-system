@@ -48,6 +48,7 @@ export function CreateForm(props: Props) {
 
   return (
     <form onSubmit={handleSubmit} class="space-y-4 w-100">
+      <p class="pb-2 font-bold text-2xl">添加考试</p>
       <Select
         id="exam"
         label="考试"
