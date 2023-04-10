@@ -101,7 +101,7 @@ async function findAllWithReviewAsFull(dto: FindAllReq["query"] = {}) {
           )
           ELSE $1
           END
-        AND ($1::TEXT IS NULL OR (student->>'id')::TEXT = $1)
+        AND ($2::TEXT IS NULL OR (student->>'id')::TEXT = $2)
         AND review_status != 1
     `,
     [examId, studentId]
