@@ -11,13 +11,13 @@ export function ExamTable() {
   return (
     <Table head={["名称", "时间", "操作"]} columnWidths={[1, 1, 1]}>
       <For each={exams()}>
-        {(exam) => (
+        {({ id, name, heldAt }) => (
           <TableRow>
-            <TableCell>{exam.name}</TableCell>
-            <TableCell>{new Date(exam.heldAt).toLocaleDateString()}</TableCell>
+            <TableCell>{name}</TableCell>
+            <TableCell>{new Date(heldAt).toLocaleDateString()}</TableCell>
             <TableCell>
-              <UpdateButton exam={exam} />
-              <DeleteButton examId={exam.id} />
+              <UpdateButton examId={id} />
+              <DeleteButton examId={id} />
             </TableCell>
           </TableRow>
         )}

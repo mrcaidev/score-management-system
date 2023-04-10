@@ -15,21 +15,21 @@ export function ScoreTable() {
         columnWidths={[2, 1, 1, 1, 1, 2]}
       >
         <For each={scores()}>
-          {(score) => (
+          {({ id, exam, course, student, isAbsent, score }) => (
             <TableRow>
-              <TableCell>{score.exam.name}</TableCell>
-              <TableCell>{score.course.name}</TableCell>
-              <TableCell>{score.student.name}</TableCell>
-              <TableCell>{score.isAbsent ? "是" : "否"}</TableCell>
+              <TableCell>{exam.name}</TableCell>
+              <TableCell>{course.name}</TableCell>
+              <TableCell>{student.name}</TableCell>
+              <TableCell>{isAbsent ? "是" : "否"}</TableCell>
               <TableCell>
-                <Show when={score.isAbsent} fallback={score.score}>
+                <Show when={isAbsent} fallback={score}>
                   0
                 </Show>
-                &nbsp;/ {score.course.maxScore}
+                &nbsp;/ {course.maxScore}
               </TableCell>
               <TableCell>
-                <UpdateButton score={score} />
-                <DeleteButton scoreId={score.id} />
+                <UpdateButton scoreId={id} />
+                <DeleteButton scoreId={id} />
               </TableCell>
             </TableRow>
           )}

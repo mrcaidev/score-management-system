@@ -9,12 +9,14 @@ import { handleRequestError, request } from "utils/request";
 import { FullScore } from "utils/types";
 
 type Props = {
-  score: FullScore;
+  scoreId: string;
   onClose: () => void;
 };
 
 export function UpdateForm(props: Props) {
-  const [, { mutate }] = useRouteData<typeof scoresData>();
+  const [scores, { mutate }] = useRouteData<typeof scoresData>();
+
+  const score = () => scores().find((score) => score.id === props.scoreId)!;
 
   const [form, setForm] = createStore({
     isAbsent: false,
@@ -24,15 +26,12 @@ export function UpdateForm(props: Props) {
   const [isSubmitting, setIsSubmitting] = createSignal(false);
 
   onMount(() => {
-    setForm({
-      isAbsent: props.score.isAbsent,
-      score: props.score.score,
-    });
+    setForm({ isAbsent: score().isAbsent, score: score().score });
   });
 
   const mutateFn = (scores: FullScore[]) =>
     scores.map((score) => {
-      if (score.id === props.score.id) {
+      if (score.id === props.scoreId) {
         return {
           ...score,
           isAbsent: form.isAbsent,
@@ -49,7 +48,7 @@ export function UpdateForm(props: Props) {
     setIsSubmitting(true);
 
     try {
-      await request.patch("/scores/" + props.score.id, { ...form });
+      await request.patch("/scores/" + props.scoreId, { ...form });
       mutate(mutateFn);
       props.onClose();
       toast.success("更新成功");
@@ -63,16 +62,16 @@ export function UpdateForm(props: Props) {
   return (
     <form onSubmit={handleSubmit} class="space-y-4 w-100">
       <p class="pb-2 font-bold text-2xl">更新成绩</p>
-      <Select label="考试" name="exam" value={props.score.exam.id} disabled>
-        <Option value={props.score.exam.id}>{props.score.exam.name}</Option>
+      <Select label="考试" name="exam" value={score().exam.id} disabled>
+        <Option value={score().exam.id}>{score().exam.name}</Option>
       </Select>
-      <Select label="课程" name="course" value={props.score.course.id} disabled>
-        <Option value={props.score.course.id}>{props.score.course.name}</Option>
+      <Select label="课程" name="course" value={score().course.id} disabled>
+        <Option value={score().course.id}>{score().course.name}</Option>
       </Select>
       <Input
         label="学生"
         name="student"
-        value={props.score.student.name}
+        value={score().student.name}
         disabled
       />
       <Input
@@ -80,10 +79,10 @@ export function UpdateForm(props: Props) {
         type="number"
         name="score"
         value={form.isAbsent ? 0 : form.score}
-        placeholder={"0-" + props.score.course.maxScore}
+        placeholder={"0-" + score().course.maxScore}
         required
         min={0}
-        max={props.score.course.maxScore}
+        max={score().course.maxScore}
         disabled={isSubmitting() || form.isAbsent}
         onChange={(e) => setForm({ score: +e.target.value })}
       />

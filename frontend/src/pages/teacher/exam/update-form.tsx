@@ -9,12 +9,14 @@ import { handleRequestError, request } from "utils/request";
 import { Exam } from "utils/types";
 
 type Props = {
-  exam: Exam;
+  examId: string;
   onClose: () => void;
 };
 
 export function UpdateForm(props: Props) {
-  const [, { mutate }] = useRouteData<typeof examsData>();
+  const [exams, { mutate }] = useRouteData<typeof examsData>();
+
+  const exam = () => exams().find((exam) => exam.id === props.examId)!;
 
   const [form, setForm] = createStore({
     name: "",
@@ -24,15 +26,12 @@ export function UpdateForm(props: Props) {
   const [isSubmitting, setIsSubmitting] = createSignal(false);
 
   onMount(() => {
-    setForm({
-      name: props.exam.name,
-      heldAt: props.exam.heldAt,
-    });
+    setForm({ name: exam().name, heldAt: exam().heldAt });
   });
 
   const mutateFn = (exams: Exam[]) =>
     exams.map((exam) => {
-      if (exam.id === props.exam.id) {
+      if (exam.id === props.examId) {
         return {
           ...exam,
           name: form.name,
@@ -48,7 +47,7 @@ export function UpdateForm(props: Props) {
     setIsSubmitting(true);
 
     try {
-      await request.patch("/exams/" + props.exam.id, { ...form });
+      await request.patch("/exams/" + props.examId, { ...form });
       mutate(mutateFn);
       props.onClose();
       toast.success("更新成功");

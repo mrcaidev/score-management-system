@@ -11,13 +11,13 @@ export function ExamTable() {
   return (
     <Table head={["学号", "姓名", "操作"]} columnWidths={[2, 1, 2]}>
       <For each={students()}>
-        {(student) => (
+        {({ id, name }) => (
           <TableRow>
-            <TableCell>{student.id}</TableCell>
-            <TableCell>{student.name}</TableCell>
+            <TableCell>{id}</TableCell>
+            <TableCell>{name}</TableCell>
             <TableCell>
-              <UpdateButton student={student} />
-              <DeleteButton studentId={student.id} />
+              <UpdateButton studentId={id} />
+              <DeleteButton studentId={id} />
             </TableCell>
           </TableRow>
         )}

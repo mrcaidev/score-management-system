@@ -9,12 +9,15 @@ import { handleRequestError, request } from "utils/request";
 import { Account } from "utils/types";
 
 type Props = {
-  student: Account;
+  studentId: string;
   onClose: () => void;
 };
 
 export function UpdateForm(props: Props) {
-  const [, { mutate }] = useRouteData<typeof studentsData>();
+  const [students, { mutate }] = useRouteData<typeof studentsData>();
+
+  const student = () =>
+    students().find((student) => student.id === props.studentId)!;
 
   const [form, setForm] = createStore({
     name: "",
@@ -23,14 +26,12 @@ export function UpdateForm(props: Props) {
   const [isSubmitting, setIsSubmitting] = createSignal(false);
 
   onMount(() => {
-    setForm({
-      name: props.student.name,
-    });
+    setForm({ name: student().name });
   });
 
   const mutateFn = (students: Account[]) =>
     students.map((student) => {
-      if (student.id === props.student.id) {
+      if (student.id === props.studentId) {
         return {
           ...student,
           name: form.name,
@@ -45,7 +46,7 @@ export function UpdateForm(props: Props) {
     setIsSubmitting(true);
 
     try {
-      await request.patch("/accounts/" + props.student.id, { ...form });
+      await request.patch("/accounts/" + props.studentId, { ...form });
       mutate(mutateFn);
       props.onClose();
       toast.success("更新成功");
@@ -59,7 +60,7 @@ export function UpdateForm(props: Props) {
   return (
     <form onSubmit={handleSubmit} class="space-y-4 w-100">
       <p class="pb-2 font-bold text-2xl">更新学生</p>
-      <Input label="学号" name="id" value={props.student.id} disabled />
+      <Input label="学号" name="id" value={props.studentId} disabled />
       <Input
         label="名称"
         name="name"

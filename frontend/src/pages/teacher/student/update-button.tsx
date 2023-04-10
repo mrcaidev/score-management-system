@@ -2,11 +2,10 @@ import { Button } from "components/form";
 import { Modal } from "components/modal";
 import { FiEdit2 } from "solid-icons/fi";
 import { createSignal } from "solid-js";
-import { Account } from "utils/types";
 import { UpdateForm } from "./update-form";
 
 type Props = {
-  student: Account;
+  studentId: string;
 };
 
 export function UpdateButton(props: Props) {
@@ -21,7 +20,7 @@ export function UpdateButton(props: Props) {
         更新
       </Button>
       <Modal isOpen={isModalOpen()} onClose={closeModal}>
-        <UpdateForm student={props.student} onClose={closeModal} />
+        <UpdateForm studentId={props.studentId} onClose={closeModal} />
       </Modal>
     </>
   );
