@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "esbuild src/index.ts --bundle --outfile=dist/index.cjs --platform=node --external:pg-native",
-    "start": "node dist/index.cjs"
+    "start": "node dist/index.cjs",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -21,7 +23,13 @@
     "@types/jsonwebtoken": "^9.0.1",
     "@types/node": "^18.15.11",
     "@types/pg": "^8.6.6",
+    "@types/supertest": "^2.0.12",
+    "@vitest/coverage-c8": "^0.30.0",
     "esbuild": "^0.17.16",
-    "typescript": "^5.0.4"
+    "supertest": "^6.3.3",
+    "typescript": "^5.0.4",
+    "vite": "^4.2.1",
+    "vite-tsconfig-paths": "^4.0.8",
+    "vitest": "^0.30.0"
   }
 }
