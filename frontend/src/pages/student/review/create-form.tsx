@@ -50,7 +50,6 @@ export function CreateForm(props: Props) {
     <form onSubmit={handleSubmit} class="space-y-4 w-100">
       <p class="pb-2 font-bold text-2xl">添加考试</p>
       <Select
-        id="exam"
         label="考试"
         name="exam"
         value={form.examId}
@@ -64,7 +63,6 @@ export function CreateForm(props: Props) {
         </For>
       </Select>
       <Select
-        id="course"
         label="课程"
         name="course"
         value={form.courseId}

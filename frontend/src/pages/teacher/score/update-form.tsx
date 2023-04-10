@@ -64,33 +64,19 @@ export function UpdateForm(props: Props) {
   return (
     <form onSubmit={handleSubmit} class="space-y-4 w-100">
       <p class="pb-2 font-bold text-2xl">更新成绩</p>
-      <Select
-        id="exam"
-        label="考试"
-        name="exam"
-        value={props.score.exam.id}
-        disabled
-      >
+      <Select label="考试" name="exam" value={props.score.exam.id} disabled>
         <Option value={props.score.exam.id}>{props.score.exam.name}</Option>
       </Select>
-      <Select
-        id="course"
-        label="课程"
-        name="course"
-        value={props.score.course.id}
-        disabled
-      >
+      <Select label="课程" name="course" value={props.score.course.id} disabled>
         <Option value={props.score.course.id}>{props.score.course.name}</Option>
       </Select>
       <Input
-        id="student"
         label="学生"
         name="student"
         value={props.score.student.name}
         disabled
       />
       <Input
-        id="score"
         label="成绩"
         type="number"
         name="score"
@@ -103,7 +89,6 @@ export function UpdateForm(props: Props) {
         onChange={(e) => setForm({ score: +e.target.value })}
       />
       <Checkbox
-        id="isAbsent"
         label="是否缺席"
         name="isAbsent"
         checked={form.isAbsent}

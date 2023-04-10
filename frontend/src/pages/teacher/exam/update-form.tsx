@@ -65,7 +65,6 @@ export function UpdateForm(props: Props) {
     <form onSubmit={handleSubmit} class="space-y-4 w-100">
       <p class="pb-2 font-bold text-2xl">更新考试</p>
       <Input
-        id="name"
         label="名称"
         name="name"
         value={form.name}
@@ -74,7 +73,6 @@ export function UpdateForm(props: Props) {
         onChange={(e) => setForm({ name: e.target.value })}
       />
       <DatePicker
-        id="heldAt"
         label="日期"
         name="heldAt"
         value={form.heldAt}

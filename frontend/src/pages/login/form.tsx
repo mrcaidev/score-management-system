@@ -50,7 +50,6 @@ export function Form() {
     >
       <h1 class="pb-4 font-bold text-3xl text-center">登录</h1>
       <Input
-        id="id"
         label="学工号"
         name="id"
         value={form.id}
@@ -59,7 +58,6 @@ export function Form() {
         onChange={(e) => setForm({ id: e.target.value })}
       />
       <PasswordInput
-        id="password"
         label="密码"
         name="password"
         value={form.password}

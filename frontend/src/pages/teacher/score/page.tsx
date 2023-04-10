@@ -44,7 +44,6 @@ export function Page() {
         历次成绩
       </Title>
       <Select
-        id="exam"
         label="考试"
         name="exam"
         value={selectedExamId()}

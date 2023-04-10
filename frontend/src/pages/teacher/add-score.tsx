@@ -70,7 +70,6 @@ export default function TeacherAddScore() {
           class="space-y-4 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-3/5 w-100"
         >
           <Select
-            id="exam"
             label="考试"
             name="exam"
             value={form.examId}
@@ -84,7 +83,6 @@ export default function TeacherAddScore() {
             </For>
           </Select>
           <Select
-            id="course"
             label="课程"
             name="course"
             value={form.courseId}
@@ -98,7 +96,6 @@ export default function TeacherAddScore() {
             </For>
           </Select>
           <Input
-            id="student"
             label="学号"
             name="student"
             value={form.studentId}
@@ -109,7 +106,6 @@ export default function TeacherAddScore() {
             onChange={(e) => setForm({ studentId: e.target.value })}
           />
           <Input
-            id="score"
             label="成绩"
             type="number"
             name="score"
@@ -122,7 +118,6 @@ export default function TeacherAddScore() {
             onChange={(e) => setForm({ score: +e.target.value })}
           />
           <Checkbox
-            id="isAbsent"
             label="是否缺席"
             name="isAbsent"
             checked={form.isAbsent}
