@@ -14,7 +14,7 @@ export const scoreRepository = {
 };
 
 async function findAll(dto: FindAllReq["query"]) {
-  const { examId } = dto;
+  const { examId, studentId } = dto;
 
   const { rows } = await database.query<Score>(
     `
@@ -36,16 +36,17 @@ async function findAll(dto: FindAllReq["query"]) {
           LIMIT 1
         )
         ELSE $1
-        END;
+        END
+      AND ($2::TEXT IS NULL OR student_id = $2);
     `,
-    [examId]
+    [examId, studentId]
   );
 
   return rows;
 }
 
 async function findAllAsFull(dto: FindAllReq["query"]) {
-  const { examId } = dto;
+  const { examId, studentId } = dto;
 
   const { rows } = await database.query<FullScore>(
     `
@@ -67,16 +68,17 @@ async function findAllAsFull(dto: FindAllReq["query"]) {
           LIMIT 1
         )
         ELSE $1
-        END;
+        END
+      AND ($2::TEXT IS NULL OR (student->>'id')::TEXT = $2);
     `,
-    [examId]
+    [examId, studentId]
   );
 
   return rows;
 }
 
-async function findAllWithReviewAsFull(dto: { studentId?: string } = {}) {
-  const { studentId } = dto;
+async function findAllWithReviewAsFull(dto: FindAllReq["query"] = {}) {
+  const { examId, studentId } = dto;
 
   const { rows } = await database.query<FullScore>(
     `
@@ -89,10 +91,20 @@ async function findAllWithReviewAsFull(dto: { studentId?: string } = {}) {
         is_absent "isAbsent",
         review_status "reviewStatus"
       FROM full_score
-      WHERE ($1::TEXT IS NULL OR (student->>'id')::TEXT = $1)
+      WHERE (exam->>'id')::UUID =
+          CASE WHEN $1::UUID IS NULL
+          THEN (
+            SELECT id
+            FROM exam
+            ORDER BY held_at DESC
+            LIMIT 1
+          )
+          ELSE $1
+          END
+        AND ($1::TEXT IS NULL OR (student->>'id')::TEXT = $1)
         AND review_status != 1
     `,
-    [studentId]
+    [examId, studentId]
   );
 
   return rows;
