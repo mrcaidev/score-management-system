@@ -36,9 +36,7 @@ export const fullScoreSchema = scoreSchema
 export type FullScore = z.infer<typeof fullScoreSchema>;
 
 export const findAllReqSchema = z.object({
-  query: scoreSchema
-    .pick({ examId: true, courseId: true, studentId: true, reviewStatus: true })
-    .partial(),
+  query: scoreSchema.pick({ examId: true }).partial(),
 });
 
 export type FindAllReq = z.infer<typeof findAllReqSchema>;

@@ -14,7 +14,7 @@ export const scoreRepository = {
 };
 
 async function findAll(dto: FindAllReq["query"]) {
-  const { examId, courseId, studentId, reviewStatus } = dto;
+  const { examId } = dto;
 
   const { rows } = await database.query<Score>(
     `
@@ -27,19 +27,25 @@ async function findAll(dto: FindAllReq["query"]) {
         is_absent "isAbsent",
         review_status "reviewStatus"
       FROM score
-      WHERE ($1::UUID IS NULL OR exam_id = $1)
-        AND ($2::SMALLINT IS NULL OR course_id = $2)
-        AND ($3::TEXT IS NULL OR student_id = $3)
-        AND ($4::SMALLINT IS NULL OR review_status = $4)
+      WHERE exam_id =
+        CASE WHEN $1::UUID IS NULL
+        THEN (
+          SELECT id
+          FROM exam
+          ORDER BY held_at DESC
+          LIMIT 1
+        )
+        ELSE $1
+        END;
     `,
-    [examId, courseId, studentId, reviewStatus]
+    [examId]
   );
 
   return rows;
 }
 
 async function findAllAsFull(dto: FindAllReq["query"]) {
-  const { examId, courseId, studentId, reviewStatus } = dto;
+  const { examId } = dto;
 
   const { rows } = await database.query<FullScore>(
     `
@@ -52,20 +58,24 @@ async function findAllAsFull(dto: FindAllReq["query"]) {
         is_absent "isAbsent",
         review_status "reviewStatus"
       FROM full_score
-      WHERE ($1::UUID IS NULL OR (exam->>'id')::UUID = $1)
-        AND ($2::SMALLINT IS NULL OR (course->>'id')::SMALLINT = $2)
-        AND ($3::TEXT IS NULL OR (student->>'id')::TEXT = $3)
-        AND ($4::SMALLINT IS NULL OR review_status = $4)
+      WHERE (exam->>'id')::UUID =
+        CASE WHEN $1::UUID IS NULL
+        THEN (
+          SELECT id
+          FROM exam
+          ORDER BY held_at DESC
+          LIMIT 1
+        )
+        ELSE $1
+        END;
     `,
-    [examId, courseId, studentId, reviewStatus]
+    [examId]
   );
 
   return rows;
 }
 
-async function findAllWithReviewAsFull(
-  dto: Pick<FindAllReq["query"], "studentId"> = {}
-) {
+async function findAllWithReviewAsFull(dto: { studentId?: string } = {}) {
   const { studentId } = dto;
 
   const { rows } = await database.query<FullScore>(
