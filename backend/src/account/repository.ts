@@ -78,9 +78,9 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
     `
       UPDATE account
       SET
-        name = CASE WHEN $2 IS NULL THEN name ELSE $2 END,
-        role = CASE WHEN $3 IS NULL THEN role ELSE $3 END,
-        password = CASE WHEN $4 IS NULL THEN password ELSE CRYPT($4, GEN_SALT('bf')) END
+        name = CASE WHEN $2::TEXT IS NULL THEN name ELSE $2 END,
+        role = CASE WHEN $3::SMALLINT IS NULL THEN role ELSE $3 END,
+        password = CASE WHEN $4::TEXT IS NULL THEN password ELSE CRYPT($4, GEN_SALT('bf')) END
       WHERE id = $1
     `,
     [id, name, role, password]
