@@ -19,6 +19,7 @@ async function findAll(dto: FindAllReq["query"]) {
       SELECT id, name, role
       FROM account
       WHERE $1::SMALLINT IS NULL OR role = $1
+      ORDER BY id ASC
     `,
     [role]
   );
