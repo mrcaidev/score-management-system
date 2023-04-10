@@ -19,7 +19,7 @@ export const accountSchema = secretAccountSchema.omit({ password: true });
 export type Account = z.infer<typeof accountSchema>;
 
 export const findAllReqSchema = z.object({
-  query: secretAccountSchema.pick({ role: true }).partial(),
+  query: z.object({ role: z.coerce.number().positive().int() }).partial(),
 });
 
 export type FindAllReq = z.infer<typeof findAllReqSchema>;
