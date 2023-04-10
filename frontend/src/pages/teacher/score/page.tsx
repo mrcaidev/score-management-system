@@ -38,10 +38,7 @@ export function Page() {
 
   return (
     <div class="space-y-8 px-12 pt-8">
-      <Title>
-        <FiFileText />
-        历次成绩
-      </Title>
+      <Title icon={FiFileText}>历次成绩</Title>
       <Select
         label="考试"
         name="exam"

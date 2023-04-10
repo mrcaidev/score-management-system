@@ -56,10 +56,7 @@ export default function TeacherAddScore() {
 
   return (
     <div class="space-y-8 flex flex-col h-full px-12 pt-8">
-      <Title>
-        <FiEdit />
-        成绩录入
-      </Title>
+      <Title icon={FiEdit}>成绩录入</Title>
       <div class="grow relative">
         <form
           onSubmit={handleSubmit}

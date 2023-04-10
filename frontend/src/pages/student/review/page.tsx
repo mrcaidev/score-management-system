@@ -6,10 +6,7 @@ import { ReviewTable } from "./table";
 export function Page() {
   return (
     <div class="space-y-8 px-12 pt-8">
-      <Title>
-        <FiSearch />
-        查分申请
-      </Title>
+      <Title icon={FiSearch}>查分申请</Title>
       <CreateButton />
       <ReviewTable />
     </div>

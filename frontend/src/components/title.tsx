@@ -1,7 +1,15 @@
+import { IconTypes } from "solid-icons";
 import { ParentProps } from "solid-js";
 
-export function Title(props: ParentProps) {
+type Props = ParentProps<{
+  icon?: IconTypes;
+}>;
+
+export function Title(props: Props) {
   return (
-    <h1 class="flex items-center gap-3 font-bold text-3xl">{props.children}</h1>
+    <h1 class="flex items-center gap-3 font-bold text-3xl">
+      {props.icon && <props.icon />}
+      {props.children}
+    </h1>
   );
 }
