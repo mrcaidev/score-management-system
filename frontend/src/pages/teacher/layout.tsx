@@ -1,10 +1,15 @@
 import { Outlet } from "@solidjs/router";
 import { RoleGuard } from "components/auth/guards";
 import { Sidebar } from "components/sidebar";
-import { FiEdit, FiFileText, FiSearch } from "solid-icons/fi";
+import { FiBookOpen, FiEdit, FiFileText, FiSearch } from "solid-icons/fi";
 import { Role } from "utils/types";
 
 const navigation = [
+  {
+    text: "考试管理",
+    link: "/teacher/exam",
+    icon: FiBookOpen,
+  },
   {
     text: "历次成绩",
     link: "/teacher/score",

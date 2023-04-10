@@ -19,6 +19,7 @@ const TeacherHome = lazy(() => import("pages/teacher/home"));
 const TeacherScore = lazy(() => import("pages/teacher/score"));
 const TeacherAddScore = lazy(() => import("pages/teacher/add-score"));
 const TeacherReview = lazy(() => import("pages/teacher/review"));
+const TeacherExam = lazy(() => import("pages/teacher/exam"));
 
 export const App = () => {
   return (
@@ -39,6 +40,7 @@ export const App = () => {
             </Route>
             <Route path="teacher" component={TeacherLayout}>
               <Route path="/" component={TeacherHome} />
+              <Route path="exam" component={TeacherExam} data={examsData} />
               <Route path="score" component={TeacherScore} data={examsData} />
               <Route path="add-score" component={TeacherAddScore} />
               <Route

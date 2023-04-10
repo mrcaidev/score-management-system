@@ -1,0 +1,28 @@
+import { Button } from "components/form/button";
+import { Modal } from "components/modal";
+import { FiEdit2 } from "solid-icons/fi";
+import { createSignal } from "solid-js";
+import { Exam } from "utils/types";
+import { UpdateForm } from "./update-form";
+
+type Props = {
+  exam: Exam;
+};
+
+export function UpdateButton(props: Props) {
+  const [isModalOpen, setIsModalOpen] = createSignal(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  return (
+    <>
+      <Button size="small" icon={FiEdit2} onClick={openModal}>
+        更新
+      </Button>
+      <Modal title="更新考试" isOpen={isModalOpen()} onClose={closeModal}>
+        <UpdateForm exam={props.exam} onClose={closeModal} />
+      </Modal>
+    </>
+  );
+}
