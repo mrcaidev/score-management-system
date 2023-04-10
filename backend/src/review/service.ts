@@ -6,102 +6,73 @@ import {
   NotFoundError,
   UnprocessableContentError,
 } from "utils/http-error";
-import { CreateReq, UpdateReq } from "./types";
+import { CreateRequest, UpdateByIdRequest } from "./types";
 
 export const reviewService = {
   findAll,
   create,
   updateById,
-  deleteById,
+  removeById,
 };
 
 async function findAll(auth: Account) {
   if (auth.role === Role.STUDENT) {
-    return scoreRepository.findAllWithReviewAsFull({ studentId: auth.id });
+    return scoreRepository.findWithReviewAsFull({ studentId: auth.id });
   }
 
-  return scoreRepository.findAllWithReviewAsFull();
+  return scoreRepository.findWithReviewAsFull();
 }
 
-async function create(dto: CreateReq["body"], auth: Account) {
-  const { examId, courseId } = dto;
+async function create(body: CreateRequest["body"], auth: Account) {
+  const { examId, courseId } = body;
 
-  const oldScores = await scoreRepository.findAll({
+  const oldScore = await scoreRepository.findOne({
     examId,
     courseId,
     studentId: auth.id,
   });
 
-  if (!oldScores[0]) {
+  if (!oldScore) {
     throw new NotFoundError("成绩不存在");
   }
-
-  const oldScore = oldScores[0];
 
   if (oldScore.reviewStatus !== ReviewStatus.NONE) {
     throw new UnprocessableContentError("已经申请过复查");
   }
 
-  await scoreRepository.updateById(oldScore.id, {
+  await scoreRepository.update(oldScore.id, {
     reviewStatus: ReviewStatus.PENDING,
   });
 
-  return scoreRepository.findByIdAsFull(oldScore.id);
+  return scoreRepository.findOneAsFull({ id: oldScore.id });
 }
 
-async function updateById(id: string, dto: UpdateReq["body"]) {
-  const { reviewStatus } = dto;
+async function updateById(id: string, body: UpdateByIdRequest["body"]) {
+  const { reviewStatus } = body;
 
-  if (reviewStatus === ReviewStatus.NONE) {
-    throw new UnprocessableContentError("教师不能取消复查");
-  }
-
-  if (reviewStatus === ReviewStatus.PENDING) {
-    throw new UnprocessableContentError("教师不能主动申请复查");
-  }
-
-  const oldScore = await scoreRepository.findById(id);
+  const oldScore = await scoreRepository.findOne({ id });
 
   if (!oldScore) {
     throw new NotFoundError("成绩不存在");
   }
 
-  if (oldScore.reviewStatus === ReviewStatus.NONE) {
-    throw new UnprocessableContentError("学生未申请复查");
+  const stateMachine: Record<ReviewStatus, ReviewStatus[]> = {
+    [ReviewStatus.NONE]: [],
+    [ReviewStatus.PENDING]: [ReviewStatus.REJECTED, ReviewStatus.ACCEPTED],
+    [ReviewStatus.REJECTED]: [ReviewStatus.ACCEPTED],
+    [ReviewStatus.ACCEPTED]: [ReviewStatus.REJECTED, ReviewStatus.FINISHED],
+    [ReviewStatus.FINISHED]: [],
+  };
+
+  if (stateMachine[oldScore.reviewStatus].includes(reviewStatus)) {
+    throw new UnprocessableContentError("无法如此更改复查状态");
   }
 
-  if (
-    oldScore.reviewStatus === ReviewStatus.PENDING &&
-    reviewStatus !== ReviewStatus.REJECTED &&
-    reviewStatus !== ReviewStatus.ACCEPTED
-  ) {
-    throw new UnprocessableContentError("待受理的复查只能变更为已受理或已驳回");
-  }
-
-  if (
-    oldScore.reviewStatus === ReviewStatus.REJECTED &&
-    reviewStatus !== ReviewStatus.ACCEPTED
-  ) {
-    throw new UnprocessableContentError("已驳回的复查只能变更为已受理");
-  }
-
-  if (
-    oldScore.reviewStatus === ReviewStatus.ACCEPTED &&
-    reviewStatus !== ReviewStatus.REJECTED &&
-    reviewStatus !== ReviewStatus.FINISHED
-  ) {
-    throw new UnprocessableContentError("已受理的复查只能变更为已驳回或已完成");
-  }
-
-  if (oldScore.reviewStatus === ReviewStatus.FINISHED) {
-    throw new UnprocessableContentError("已完成的复查不能再变更状态");
-  }
-
-  await scoreRepository.updateById(id, { reviewStatus });
+  await scoreRepository.update(id, { reviewStatus });
 }
 
-async function deleteById(id: string, auth: Account) {
-  const oldScore = await scoreRepository.findById(id);
+async function removeById(id: string, auth: Account) {
+  const oldScore = await scoreRepository.findOne({ id });
 
   if (!oldScore) {
     throw new NotFoundError("成绩不存在");
@@ -115,5 +86,5 @@ async function deleteById(id: string, auth: Account) {
     throw new UnprocessableContentError("复查已经被受理");
   }
 
-  await scoreRepository.updateById(id, { reviewStatus: ReviewStatus.NONE });
+  await scoreRepository.update(id, { reviewStatus: ReviewStatus.NONE });
 }

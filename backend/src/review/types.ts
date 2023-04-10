@@ -1,26 +1,21 @@
-import { courseSchema } from "course/types";
-import { examSchema } from "exam/types";
 import { scoreSchema } from "score/types";
 import { z } from "zod";
 
-export const createReqSchema = z.object({
-  body: z.object({
-    examId: examSchema.shape.id,
-    courseId: courseSchema.shape.id,
-  }),
+export const createRequestSchema = z.object({
+  body: scoreSchema.pick({ examId: true, courseId: true }),
 });
 
-export type CreateReq = z.infer<typeof createReqSchema>;
+export type CreateRequest = z.infer<typeof createRequestSchema>;
 
-export const updateReqSchema = z.object({
+export const updateByIdRequestSchema = z.object({
   params: scoreSchema.pick({ id: true }),
   body: scoreSchema.pick({ reviewStatus: true }),
 });
 
-export type UpdateReq = z.infer<typeof updateReqSchema>;
+export type UpdateByIdRequest = z.infer<typeof updateByIdRequestSchema>;
 
-export const deleteReqSchema = z.object({
+export const removeByIdRequestSchema = z.object({
   params: scoreSchema.pick({ id: true }),
 });
 
-export type DeleteReq = z.infer<typeof deleteReqSchema>;
+export type RemoveByIdRequest = z.infer<typeof removeByIdRequestSchema>;

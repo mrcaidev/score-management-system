@@ -1,15 +1,20 @@
 import { NextFunction, Response } from "express";
 import { accountService } from "./service";
-import { CreateReq, DeleteReq, FindAllReq, UpdateReq } from "./types";
+import {
+  CreateRequest,
+  FindAllRequest,
+  RemoveByIdRequest,
+  UpdateByIdRequest,
+} from "./types";
 
 export const accountController = {
   findAll,
   create,
   updateById,
-  deleteById,
+  removeById,
 };
 
-async function findAll(req: FindAllReq, res: Response, next: NextFunction) {
+async function findAll(req: FindAllRequest, res: Response, next: NextFunction) {
   try {
     const accounts = await accountService.findAll(req.query);
     return res.status(200).json({ data: accounts });
@@ -18,7 +23,7 @@ async function findAll(req: FindAllReq, res: Response, next: NextFunction) {
   }
 }
 
-async function create(req: CreateReq, res: Response, next: NextFunction) {
+async function create(req: CreateRequest, res: Response, next: NextFunction) {
   try {
     const account = await accountService.create(req.body);
     return res.status(201).json({ data: account });
@@ -27,7 +32,11 @@ async function create(req: CreateReq, res: Response, next: NextFunction) {
   }
 }
 
-async function updateById(req: UpdateReq, res: Response, next: NextFunction) {
+async function updateById(
+  req: UpdateByIdRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     await accountService.updateById(req.params.id, req.body);
     return res.status(204).end();
@@ -36,9 +45,13 @@ async function updateById(req: UpdateReq, res: Response, next: NextFunction) {
   }
 }
 
-async function deleteById(req: DeleteReq, res: Response, next: NextFunction) {
+async function removeById(
+  req: RemoveByIdRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
-    await accountService.deleteById(req.params.id);
+    await accountService.removeById(req.params.id);
     return res.status(204).end();
   } catch (error) {
     return next(error);

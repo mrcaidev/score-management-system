@@ -8,21 +8,21 @@ export const examSchema = z.object({
 
 export type Exam = z.infer<typeof examSchema>;
 
-export const createReqSchema = z.object({
+export const createRequestSchema = z.object({
   body: examSchema.omit({ id: true }),
 });
 
-export type CreateReq = z.infer<typeof createReqSchema>;
+export type CreateRequest = z.infer<typeof createRequestSchema>;
 
-export const updateReqSchema = z.object({
+export const updateByIdRequestSchema = z.object({
   params: examSchema.pick({ id: true }),
   body: examSchema.omit({ id: true }).partial(),
 });
 
-export type UpdateReq = z.infer<typeof updateReqSchema>;
+export type UpdateByIdRequest = z.infer<typeof updateByIdRequestSchema>;
 
-export const deleteReqSchema = z.object({
+export const removeByIdRequestSchema = z.object({
   params: examSchema.pick({ id: true }),
 });
 
-export type DeleteReq = z.infer<typeof deleteReqSchema>;
+export type RemoveByIdRequest = z.infer<typeof removeByIdRequestSchema>;

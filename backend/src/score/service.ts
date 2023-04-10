@@ -4,58 +4,82 @@ import { courseRepository } from "course/repository";
 import { examRepository } from "exam/repository";
 import { NotFoundError, UnprocessableContentError } from "utils/http-error";
 import { scoreRepository } from "./repository";
-import { CreateReq, FindAllReq, UpdateReq } from "./types";
+import {
+  CreateRequest,
+  FindAllRequest,
+  Score,
+  UpdateByIdRequest,
+} from "./types";
 
 export const scoreService = {
   findAll,
   create,
   updateById,
-  deleteById,
+  removeById,
 };
 
-async function findAll(dto: FindAllReq["query"], auth: Account) {
+async function findAll(query: FindAllRequest["query"], auth: Account) {
   if (auth.role === Role.STUDENT) {
-    return scoreRepository.findAllAsFull({ ...dto, studentId: auth.id });
+    return scoreRepository.findAsFull({
+      ...query,
+      studentId: auth.id,
+    } as Partial<Score>);
   }
 
-  return scoreRepository.findAllAsFull(dto);
+  return scoreRepository.findAsFull(query as Partial<Score>);
 }
 
-async function create(dto: CreateReq["body"]) {
-  const { courseId, examId, studentId, score } = dto;
+async function create(body: CreateRequest["body"]) {
+  const { courseId, examId, studentId, score } = body;
 
-  const course = await courseRepository.findById(courseId);
+  const course = await courseRepository.findOne({ id: courseId });
+
   if (!course) {
     throw new NotFoundError("课程不存在");
   }
 
-  const exam = await examRepository.findById(examId);
+  const exam = await examRepository.findOne({ id: examId });
+
   if (!exam) {
     throw new NotFoundError("考试不存在");
   }
 
-  const student = await accountRepository.findById(studentId);
-  if (!student || student.role !== Role.STUDENT) {
+  const student = await accountRepository.findOne({
+    id: studentId,
+    role: Role.STUDENT,
+  });
+
+  if (!student) {
     throw new NotFoundError("学生不存在");
+  }
+
+  const oldScore = await scoreRepository.findOne({
+    courseId,
+    examId,
+    studentId,
+  });
+
+  if (oldScore) {
+    throw new UnprocessableContentError("成绩已存在");
   }
 
   if (score > course.maxScore) {
     throw new UnprocessableContentError("分数超出最高分");
   }
 
-  return scoreRepository.create(dto);
+  return scoreRepository.create(body);
 }
 
-async function updateById(id: string, dto: UpdateReq["body"]) {
-  const { score } = dto;
+async function updateById(id: string, body: UpdateByIdRequest["body"]) {
+  const { score } = body;
 
-  const oldScore = await scoreRepository.findById(id);
+  const oldScore = await scoreRepository.findOne({ id });
 
   if (!oldScore) {
     throw new NotFoundError("成绩不存在");
   }
 
-  const course = await courseRepository.findById(oldScore.courseId);
+  const course = await courseRepository.findOne({ id: oldScore.courseId });
 
   if (!course) {
     throw new NotFoundError("课程不存在");
@@ -65,15 +89,15 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
     throw new UnprocessableContentError("分数超出最高分");
   }
 
-  await scoreRepository.updateById(id, dto);
+  await scoreRepository.update(id, body as Partial<Score>);
 }
 
-async function deleteById(id: string) {
-  const oldScore = await scoreRepository.findById(id);
+async function removeById(id: string) {
+  const oldScore = await scoreRepository.findOne({ id });
 
   if (!oldScore) {
     throw new NotFoundError("成绩不存在");
   }
 
-  await scoreRepository.deleteById(id);
+  await scoreRepository.remove(id);
 }

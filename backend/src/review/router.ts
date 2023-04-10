@@ -3,7 +3,11 @@ import { Router } from "express";
 import { authenticate } from "middlewares/authenticate";
 import { validate } from "middlewares/validate";
 import { reviewController } from "./controller";
-import { createReqSchema, deleteReqSchema, updateReqSchema } from "./types";
+import {
+  createRequestSchema,
+  removeByIdRequestSchema,
+  updateByIdRequestSchema,
+} from "./types";
 
 export const reviewRouter: Router = Router();
 
@@ -12,20 +16,20 @@ reviewRouter.get("/", authenticate(), reviewController.findAll);
 reviewRouter.post(
   "/",
   authenticate(Role.STUDENT),
-  validate(createReqSchema),
+  validate(createRequestSchema),
   reviewController.create
 );
 
 reviewRouter.patch(
   "/:id",
   authenticate(Role.TEACHER),
-  validate(updateReqSchema),
+  validate(updateByIdRequestSchema),
   reviewController.updateById
 );
 
 reviewRouter.delete(
   "/:id",
   authenticate(Role.STUDENT),
-  validate(deleteReqSchema),
-  reviewController.deleteById
+  validate(removeByIdRequestSchema),
+  reviewController.removeById
 );

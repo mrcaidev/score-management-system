@@ -1,46 +1,51 @@
 import { ConflictError, NotFoundError } from "utils/http-error";
 import { accountRepository } from "./repository";
-import { CreateReq, FindAllReq, UpdateReq } from "./types";
+import {
+  CreateRequest,
+  FindAllRequest,
+  SecretAccount,
+  UpdateByIdRequest,
+} from "./types";
 
 export const accountService = {
   findAll,
   create,
   updateById,
-  deleteById,
+  removeById,
 };
 
-async function findAll(dto: FindAllReq["query"]) {
-  return accountRepository.findAll(dto);
+async function findAll(query: FindAllRequest["query"]) {
+  return accountRepository.find(query as Partial<SecretAccount>);
 }
 
-async function create(dto: CreateReq["body"]) {
-  const { id } = dto;
+async function create(body: CreateRequest["body"]) {
+  const { id } = body;
 
-  const oldAccount = await accountRepository.findById(id);
+  const oldAccount = await accountRepository.findOne({ id });
 
   if (oldAccount) {
     throw new ConflictError("用户已存在");
   }
 
-  return accountRepository.create(dto);
+  return accountRepository.create(body);
 }
 
-async function updateById(id: string, dto: UpdateReq["body"]) {
-  const oldAccount = await accountRepository.findById(id);
+async function updateById(id: string, body: UpdateByIdRequest["body"]) {
+  const oldAccount = await accountRepository.findOne({ id });
 
   if (!oldAccount) {
     throw new NotFoundError("用户不存在");
   }
 
-  await accountRepository.updateById(id, dto);
+  await accountRepository.update(id, body as Partial<SecretAccount>);
 }
 
-async function deleteById(id: string) {
-  const oldAccount = await accountRepository.findById(id);
+async function removeById(id: string) {
+  const oldAccount = await accountRepository.findOne({ id });
 
   if (!oldAccount) {
     throw new NotFoundError("用户不存在");
   }
 
-  await accountRepository.deleteById(id);
+  await accountRepository.remove(id);
 }

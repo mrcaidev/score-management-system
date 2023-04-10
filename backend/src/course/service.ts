@@ -5,5 +5,5 @@ export const courseService = {
 };
 
 async function findAll() {
-  return courseRepository.findAll();
+  return courseRepository.find();
 }

@@ -1,16 +1,16 @@
 import { accountRepository } from "account/repository";
 import { UnauthorizedError } from "utils/http-error";
 import { generateJwt } from "utils/jwt";
-import { LoginReq } from "./types";
+import { LoginRequest } from "./types";
 
 export const authService = {
   login,
 };
 
-async function login(dto: LoginReq["body"]) {
-  const { id, password } = dto;
+async function login(body: LoginRequest["body"]) {
+  const { id, password } = body;
 
-  const account = await accountRepository.findByIdAndPassword(id, password);
+  const account = await accountRepository.findOne({ id, password });
 
   if (!account) {
     throw new UnauthorizedError("账号或密码错误");

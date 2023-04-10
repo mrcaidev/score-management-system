@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { examService } from "./service";
-import { CreateReq, DeleteReq, UpdateReq } from "./types";
+import { CreateRequest, RemoveByIdRequest, UpdateByIdRequest } from "./types";
 
 export const examController = {
   findAll,
   create,
   updateById,
-  deleteById,
+  removeById,
 };
 
 async function findAll(_: Request, res: Response, next: NextFunction) {
@@ -18,7 +18,7 @@ async function findAll(_: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function create(req: CreateReq, res: Response, next: NextFunction) {
+async function create(req: CreateRequest, res: Response, next: NextFunction) {
   try {
     const exam = await examService.create(req.body);
     return res.status(201).json({ data: exam });
@@ -27,7 +27,11 @@ async function create(req: CreateReq, res: Response, next: NextFunction) {
   }
 }
 
-async function updateById(req: UpdateReq, res: Response, next: NextFunction) {
+async function updateById(
+  req: UpdateByIdRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     await examService.updateById(req.params.id, req.body);
     return res.status(204).end();
@@ -36,9 +40,13 @@ async function updateById(req: UpdateReq, res: Response, next: NextFunction) {
   }
 }
 
-async function deleteById(req: DeleteReq, res: Response, next: NextFunction) {
+async function removeById(
+  req: RemoveByIdRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
-    await examService.deleteById(req.params.id);
+    await examService.removeById(req.params.id);
     return res.status(204).end();
   } catch (error) {
     return next(error);

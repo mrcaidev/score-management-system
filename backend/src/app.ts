@@ -17,8 +17,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/", rootRouter);
-app.use("/auth", authRouter);
 app.use("/accounts", accountRouter);
+app.use("/auth", authRouter);
 app.use("/courses", courseRouter);
 app.use("/exams", examRouter);
 app.use("/scores", scoreRouter);

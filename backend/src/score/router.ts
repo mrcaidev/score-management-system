@@ -4,10 +4,10 @@ import { authenticate } from "middlewares/authenticate";
 import { validate } from "middlewares/validate";
 import { scoreController } from "./controller";
 import {
-  createReqSchema,
-  deleteReqSchema,
-  findAllReqSchema,
-  updateReqSchema,
+  createRequestSchema,
+  findAllRequestSchema,
+  removeByIdRequestSchema,
+  updateByIdRequestSchema,
 } from "./types";
 
 export const scoreRouter: Router = Router();
@@ -15,27 +15,27 @@ export const scoreRouter: Router = Router();
 scoreRouter.get(
   "/",
   authenticate(),
-  validate(findAllReqSchema),
+  validate(findAllRequestSchema),
   scoreController.findAll
 );
 
 scoreRouter.post(
   "/",
   authenticate(Role.TEACHER),
-  validate(createReqSchema),
+  validate(createRequestSchema),
   scoreController.create
 );
 
 scoreRouter.patch(
   "/:id",
   authenticate(Role.TEACHER),
-  validate(updateReqSchema),
+  validate(updateByIdRequestSchema),
   scoreController.updateById
 );
 
 scoreRouter.delete(
   "/:id",
   authenticate(Role.TEACHER),
-  validate(deleteReqSchema),
-  scoreController.deleteById
+  validate(removeByIdRequestSchema),
+  scoreController.removeById
 );

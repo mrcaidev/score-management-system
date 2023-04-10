@@ -4,10 +4,10 @@ import { validate } from "middlewares/validate";
 import { accountController } from "./controller";
 import {
   Role,
-  createReqSchema,
-  deleteReqSchema,
-  findAllReqSchema,
-  updateReqSchema,
+  createRequestSchema,
+  findAllRequestSchema,
+  removeByIdRequestSchema,
+  updateByIdRequestSchema,
 } from "./types";
 
 export const accountRouter: Router = Router();
@@ -15,27 +15,27 @@ export const accountRouter: Router = Router();
 accountRouter.get(
   "/",
   authenticate(Role.TEACHER),
-  validate(findAllReqSchema),
+  validate(findAllRequestSchema),
   accountController.findAll
 );
 
 accountRouter.post(
   "/",
   authenticate(Role.TEACHER),
-  validate(createReqSchema),
+  validate(createRequestSchema),
   accountController.create
 );
 
 accountRouter.patch(
   "/:id",
   authenticate(Role.TEACHER),
-  validate(updateReqSchema),
+  validate(updateByIdRequestSchema),
   accountController.updateById
 );
 
 accountRouter.delete(
   "/:id",
   authenticate(Role.TEACHER),
-  validate(deleteReqSchema),
-  accountController.deleteById
+  validate(removeByIdRequestSchema),
+  accountController.removeById
 );

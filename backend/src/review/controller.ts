@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { reviewService } from "./service";
-import { CreateReq, DeleteReq, UpdateReq } from "./types";
+import { CreateRequest, RemoveByIdRequest, UpdateByIdRequest } from "./types";
 
 export const reviewController = {
   findAll,
   create,
   updateById,
-  deleteById,
+  removeById,
 };
 
 async function findAll(_: Request, res: Response, next: NextFunction) {
@@ -18,7 +18,7 @@ async function findAll(_: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function create(req: CreateReq, res: Response, next: NextFunction) {
+async function create(req: CreateRequest, res: Response, next: NextFunction) {
   try {
     const score = await reviewService.create(req.body, res.locals.auth);
     return res.status(201).json({ data: score });
@@ -27,7 +27,11 @@ async function create(req: CreateReq, res: Response, next: NextFunction) {
   }
 }
 
-async function updateById(req: UpdateReq, res: Response, next: NextFunction) {
+async function updateById(
+  req: UpdateByIdRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
     await reviewService.updateById(req.params.id, req.body);
     return res.status(204).end();
@@ -36,9 +40,13 @@ async function updateById(req: UpdateReq, res: Response, next: NextFunction) {
   }
 }
 
-async function deleteById(req: DeleteReq, res: Response, next: NextFunction) {
+async function removeById(
+  req: RemoveByIdRequest,
+  res: Response,
+  next: NextFunction
+) {
   try {
-    await reviewService.deleteById(req.params.id, res.locals.auth);
+    await reviewService.removeById(req.params.id, res.locals.auth);
     return res.status(204).end();
   } catch (error) {
     return next(error);

@@ -1,7 +1,7 @@
 import { Account } from "account/types";
 import { NextFunction, Request, Response } from "express";
 import { authService } from "./service";
-import { LoginReq } from "./types";
+import { LoginRequest } from "./types";
 
 export const authController = {
   getAccount,
@@ -17,7 +17,7 @@ async function getAccount(_: Request, res: Response, next: NextFunction) {
   }
 }
 
-async function login(req: LoginReq, res: Response, next: NextFunction) {
+async function login(req: LoginRequest, res: Response, next: NextFunction) {
   try {
     const token = await authService.login(req.body);
     return res.status(200).json({ data: token });

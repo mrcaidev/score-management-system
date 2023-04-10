@@ -18,27 +18,27 @@ export const accountSchema = secretAccountSchema.omit({ password: true });
 
 export type Account = z.infer<typeof accountSchema>;
 
-export const findAllReqSchema = z.object({
+export const findAllRequestSchema = z.object({
   query: z.object({ role: z.coerce.number().positive().int() }).partial(),
 });
 
-export type FindAllReq = z.infer<typeof findAllReqSchema>;
+export type FindAllRequest = z.infer<typeof findAllRequestSchema>;
 
-export const createReqSchema = z.object({
-  body: secretAccountSchema.pick({ id: true, name: true }),
+export const createRequestSchema = z.object({
+  body: secretAccountSchema.omit({ role: true, password: true }),
 });
 
-export type CreateReq = z.infer<typeof createReqSchema>;
+export type CreateRequest = z.infer<typeof createRequestSchema>;
 
-export const updateReqSchema = z.object({
+export const updateByIdRequestSchema = z.object({
   params: secretAccountSchema.pick({ id: true }),
   body: secretAccountSchema.omit({ id: true }).partial(),
 });
 
-export type UpdateReq = z.infer<typeof updateReqSchema>;
+export type UpdateByIdRequest = z.infer<typeof updateByIdRequestSchema>;
 
-export const deleteReqSchema = z.object({
+export const removeByIdRequestSchema = z.object({
   params: secretAccountSchema.pick({ id: true }),
 });
 
-export type DeleteReq = z.infer<typeof deleteReqSchema>;
+export type RemoveByIdRequest = z.infer<typeof removeByIdRequestSchema>;

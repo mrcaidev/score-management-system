@@ -19,7 +19,7 @@ export function authenticate(expectation?: Role | Role[]) {
 
       const { id } = await decodeJwt(token);
 
-      const account = await accountRepository.findById(id);
+      const account = await accountRepository.findOne({ id });
 
       if (!account) {
         throw new NotFoundError("用户不存在");

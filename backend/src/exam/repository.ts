@@ -1,56 +1,40 @@
 import { database } from "utils/database";
-import { InternalServerError } from "utils/http-error";
-import { CreateReq, Exam, UpdateReq } from "./types";
+import { ServiceUnavailableError } from "utils/http-error";
+import { Exam } from "./types";
 
 export const examRepository = {
-  findAll,
-  findById,
-  findByName,
+  find,
+  findOne,
   create,
-  updateById,
-  deleteById,
+  update,
+  remove,
 };
 
-async function findAll() {
+async function find(filter: Partial<Exam> = {}) {
+  const { id, name, heldAt } = filter;
+
   const { rows } = await database.query<Exam>(
     `
       SELECT id, name, held_at "heldAt"
       FROM exam
+      WHERE ($1::UUID IS NULL OR id = $1)
+      AND ($2::TEXT IS NULL OR name = $2)
+      AND ($3::TIMESTAMPTZ IS NULL OR held_at = $3)
       ORDER BY held_at DESC
-    `
+    `,
+    [id, name, heldAt]
   );
 
   return rows;
 }
 
-async function findById(id: string) {
-  const { rows } = await database.query<Exam>(
-    `
-      SELECT id, name, held_at "heldAt"
-      FROM exam
-      WHERE id = $1
-    `,
-    [id]
-  );
-
+async function findOne(filter: Partial<Exam> = {}) {
+  const rows = await find(filter);
   return rows[0];
 }
 
-async function findByName(name: string) {
-  const { rows } = await database.query<Exam>(
-    `
-      SELECT id, name, held_at "heldAt"
-      FROM exam
-      WHERE name = $1
-    `,
-    [name]
-  );
-
-  return rows[0];
-}
-
-async function create(dto: CreateReq["body"]) {
-  const { name, heldAt } = dto;
+async function create(creator: Omit<Exam, "id">) {
+  const { name, heldAt } = creator;
 
   const { rows } = await database.query<Exam>(
     `
@@ -62,14 +46,14 @@ async function create(dto: CreateReq["body"]) {
   );
 
   if (!rows[0]) {
-    throw new InternalServerError("添加考试失败，请稍后再试");
+    throw new ServiceUnavailableError("添加失败，请稍后再试");
   }
 
   return rows[0];
 }
 
-async function updateById(id: string, dto: UpdateReq["body"]) {
-  const { name, heldAt } = dto;
+async function update(id: string, updater: Partial<Exam> = {}) {
+  const { name, heldAt } = updater;
 
   const { rowCount } = await database.query(
     `
@@ -82,11 +66,11 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
   );
 
   if (rowCount !== 1) {
-    throw new InternalServerError("更新考试失败，请稍后再试");
+    throw new ServiceUnavailableError("更新失败，请稍后再试");
   }
 }
 
-async function deleteById(id: string) {
+async function remove(id: string) {
   const { rowCount } = await database.query(
     `
       DELETE FROM exam
@@ -96,6 +80,6 @@ async function deleteById(id: string) {
   );
 
   if (rowCount !== 1) {
-    throw new InternalServerError("删除考试失败，请稍后再试");
+    throw new ServiceUnavailableError("删除失败，请稍后再试");
   }
 }

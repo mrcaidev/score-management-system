@@ -1,8 +1,8 @@
 import { secretAccountSchema } from "account/types";
 import { z } from "zod";
 
-export const loginReqSchema = z.object({
+export const loginRequestSchema = z.object({
   body: secretAccountSchema.pick({ id: true, password: true }),
 });
 
-export type LoginReq = z.infer<typeof loginReqSchema>;
+export type LoginRequest = z.infer<typeof loginRequestSchema>;

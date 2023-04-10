@@ -1,79 +1,60 @@
 import { database } from "utils/database";
-import { InternalServerError } from "utils/http-error";
-import { Account, CreateReq, FindAllReq, UpdateReq } from "./types";
+import { ServiceUnavailableError } from "utils/http-error";
+import { Account, SecretAccount } from "./types";
 
 export const accountRepository = {
-  findAll,
-  findById,
-  findByIdAndPassword,
+  find,
+  findOne,
   create,
-  updateById,
-  deleteById,
+  update,
+  remove,
 };
 
-async function findAll(dto: FindAllReq["query"]) {
-  const { role } = dto;
+async function find(filter: Partial<SecretAccount> = {}) {
+  const { id, name, role, password } = filter;
 
   const { rows } = await database.query<Account>(
     `
       SELECT id, name, role
       FROM account
-      WHERE $1::SMALLINT IS NULL OR role = $1
+      WHERE ($1::TEXT IS NULL OR id = $1)
+      AND ($2::TEXT IS NULL OR name = $2)
+      AND ($3::SMALLINT IS NULL OR role = $3)
+      AND ($4::TEXT IS NULL OR password = CRYPT($4, password))
       ORDER BY id ASC
     `,
-    [role]
+    [id, name, role, password]
   );
 
   return rows;
 }
 
-async function findById(id: string) {
-  const { rows } = await database.query<Account>(
-    `
-      SELECT id, name, role
-      FROM account
-      WHERE id = $1
-    `,
-    [id]
-  );
-
+async function findOne(filter: Partial<SecretAccount> = {}) {
+  const rows = await find(filter);
   return rows[0];
 }
 
-async function findByIdAndPassword(id: string, password: string) {
-  const { rows } = await database.query<Account>(
-    `
-      SELECT id, name, role
-      FROM account
-      WHERE id = $1 AND password = CRYPT($2, password)
-    `,
-    [id, password]
-  );
-
-  return rows[0];
-}
-
-async function create(dto: CreateReq["body"]) {
-  const { id, name } = dto;
+async function create(creator: Omit<SecretAccount, "role" | "password">) {
+  const { id, name } = creator;
 
   const { rows } = await database.query<Account>(
     `
       INSERT INTO account (id, name, password)
-      VALUES ($1, $2, CRYPT($3, GEN_SALT('bf')))
+      VALUES ($1, $2, CRYPT($1, GEN_SALT('bf')))
       RETURNING id, name, role
     `,
-    [id, name, id]
+    [id, name]
   );
 
   if (!rows[0]) {
-    throw new InternalServerError("添加用户失败，请稍后再试");
+    throw new ServiceUnavailableError("添加失败，请稍后再试");
   }
 
   return rows[0];
 }
 
-async function updateById(id: string, dto: UpdateReq["body"]) {
-  const { name, role, password } = dto;
+async function update(id: string, updater: Partial<SecretAccount> = {}) {
+  const { name, role, password } = updater;
 
   const { rowCount } = await database.query<Account>(
     `
@@ -88,11 +69,11 @@ async function updateById(id: string, dto: UpdateReq["body"]) {
   );
 
   if (rowCount !== 1) {
-    throw new InternalServerError("更新用户失败，请稍后再试");
+    throw new ServiceUnavailableError("更新失败，请稍后再试");
   }
 }
 
-async function deleteById(id: string) {
+async function remove(id: string) {
   const { rowCount } = await database.query<Account>(
     `
       DELETE FROM account
@@ -102,6 +83,6 @@ async function deleteById(id: string) {
   );
 
   if (rowCount !== 1) {
-    throw new InternalServerError("删除用户失败，请稍后再试");
+    throw new ServiceUnavailableError("删除失败，请稍后再试");
   }
 }

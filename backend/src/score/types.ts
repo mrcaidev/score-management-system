@@ -35,27 +35,27 @@ export const fullScoreSchema = scoreSchema
 
 export type FullScore = z.infer<typeof fullScoreSchema>;
 
-export const findAllReqSchema = z.object({
+export const findAllRequestSchema = z.object({
   query: scoreSchema.pick({ examId: true, studentId: true }).partial(),
 });
 
-export type FindAllReq = z.infer<typeof findAllReqSchema>;
+export type FindAllRequest = z.infer<typeof findAllRequestSchema>;
 
-export const createReqSchema = z.object({
+export const createRequestSchema = z.object({
   body: scoreSchema.omit({ id: true, reviewStatus: true }),
 });
 
-export type CreateReq = z.infer<typeof createReqSchema>;
+export type CreateRequest = z.infer<typeof createRequestSchema>;
 
-export const updateReqSchema = z.object({
+export const updateByIdRequestSchema = z.object({
   params: scoreSchema.pick({ id: true }),
   body: scoreSchema.pick({ isAbsent: true, score: true }).partial(),
 });
 
-export type UpdateReq = z.infer<typeof updateReqSchema>;
+export type UpdateByIdRequest = z.infer<typeof updateByIdRequestSchema>;
 
-export const deleteReqSchema = z.object({
+export const removeByIdRequestSchema = z.object({
   params: scoreSchema.pick({ id: true }),
 });
 
-export type DeleteReq = z.infer<typeof deleteReqSchema>;
+export type RemoveByIdRequest = z.infer<typeof removeByIdRequestSchema>;
