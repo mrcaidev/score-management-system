@@ -1,4 +1,4 @@
-import { PageLoading } from "components/loading/page";
+import { Loading } from "components/loading";
 import {
   createContext,
   createResource,
@@ -20,7 +20,7 @@ export function AuthProvider(props: ParentProps) {
   return (
     <AuthContext.Provider value={authResource}>
       <Show when={authResource[0].loading} fallback={props.children}>
-        <PageLoading />
+        <Loading />
       </Show>
     </AuthContext.Provider>
   );
