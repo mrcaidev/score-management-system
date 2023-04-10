@@ -26,7 +26,7 @@ accountRouter.post(
   accountController.create
 );
 
-accountRouter.put(
+accountRouter.patch(
   "/:id",
   authenticate(Role.TEACHER),
   validate(updateReqSchema),
