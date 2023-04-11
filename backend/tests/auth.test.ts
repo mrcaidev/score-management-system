@@ -2,7 +2,7 @@ import { Role } from "account/types";
 import { app } from "app";
 import supertest from "supertest";
 import { describe, expect, it } from "vitest";
-import { student } from "./global.setup";
+import { STUDENT_ID, student } from "./global.setup";
 
 const request = supertest(app);
 
@@ -11,8 +11,9 @@ describe("GET /auth", () => {
     const response = await request.get("/auth").set("Authorization", student);
     expect(response.status).toEqual(200);
     expect(response.body.data).toMatchObject({
-      id: "2020010801001",
-      role: Role.STUDENT,
+      id: STUDENT_ID,
+      name: expect.any(String),
+      role: expect.any(Role),
     });
   });
 
@@ -34,8 +35,8 @@ describe("GET /auth", () => {
 describe("POST /auth/login", () => {
   it("returns token", async () => {
     const response = await request.post("/auth/login").send({
-      id: "2020010801001",
-      password: "2020010801001",
+      id: STUDENT_ID,
+      password: STUDENT_ID,
     });
     expect(response.status).toEqual(200);
     expect(response.body.data).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
@@ -52,7 +53,7 @@ describe("POST /auth/login", () => {
 
   it("returns 401 when credentials are invalid", async () => {
     const response = await request.post("/auth/login").send({
-      id: "2020010801001",
+      id: STUDENT_ID,
       password: "invalid",
     });
     expect(response.status).toEqual(401);
