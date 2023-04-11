@@ -21,7 +21,8 @@ describe("GET /accounts", () => {
 
   it("finds all accounts with specific role", async () => {
     const response = await request
-      .get("/accounts?role=1")
+      .get("/accounts")
+      .query({ role: 1 })
       .set("Authorization", teacher);
     for (const item of response.body.data) {
       expect(item).toMatchObject({
