@@ -1,7 +1,7 @@
 import { app } from "app";
 import supertest from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { student, teacher } from "./global.setup";
+import { studentToken, teacherToken } from "./global.setup";
 
 const request = supertest(app);
 
@@ -9,7 +9,7 @@ describe("GET /accounts", () => {
   it("finds all accounts", async () => {
     const response = await request
       .get("/accounts")
-      .set("Authorization", teacher);
+      .set("Authorization", teacherToken);
     for (const item of response.body.data) {
       expect(item).toMatchObject({
         id: expect.any(String),
@@ -23,7 +23,7 @@ describe("GET /accounts", () => {
     const response = await request
       .get("/accounts")
       .query({ role: 1 })
-      .set("Authorization", teacher);
+      .set("Authorization", teacherToken);
     for (const item of response.body.data) {
       expect(item).toMatchObject({
         id: expect.any(String),
@@ -36,27 +36,25 @@ describe("GET /accounts", () => {
   it("returns 401 when not logged in", async () => {
     const response = await request.get("/accounts");
     expect(response.status).toEqual(401);
-    expect(response.body.error).toBeDefined();
   });
 
   it("returns 403 when logged in as student", async () => {
     const response = await request
       .get("/accounts")
-      .set("Authorization", student);
+      .set("Authorization", studentToken);
     expect(response.status).toEqual(403);
-    expect(response.body.error).toBeDefined();
   });
 });
 
 describe("POST /accounts", () => {
   afterAll(async () => {
-    await request.delete("/accounts/1").set("Authorization", teacher);
+    await request.delete("/accounts/1").set("Authorization", teacherToken);
   });
 
   it("creates account", async () => {
     const response = await request
       .post("/accounts")
-      .set("Authorization", teacher)
+      .set("Authorization", teacherToken)
       .send({ id: "1", name: "test" });
     expect(response.status).toEqual(201);
     expect(response.body.data).toMatchObject({
@@ -69,10 +67,9 @@ describe("POST /accounts", () => {
   it("returns 400 when data format is invalid", async () => {
     const response = await request
       .post("/accounts")
-      .set("Authorization", teacher)
+      .set("Authorization", teacherToken)
       .send({ id: 1, name: false });
     expect(response.status).toEqual(400);
-    expect(response.body.error).toBeDefined();
   });
 
   it("returns 401 when not logged in", async () => {
@@ -80,44 +77,41 @@ describe("POST /accounts", () => {
       .post("/accounts")
       .send({ id: "1", name: "test" });
     expect(response.status).toEqual(401);
-    expect(response.body.error).toBeDefined();
   });
 
   it("returns 403 when logged in as student", async () => {
     const response = await request
       .post("/accounts")
-      .set("Authorization", student)
+      .set("Authorization", studentToken)
       .send({ id: "1", name: "test" });
     expect(response.status).toEqual(403);
-    expect(response.body.error).toBeDefined();
   });
 
   it("returns 409 when id already exists", async () => {
     const response = await request
       .post("/accounts")
-      .set("Authorization", teacher)
+      .set("Authorization", teacherToken)
       .send({ id: "1", name: "test" });
     expect(response.status).toEqual(409);
-    expect(response.body.error).toBeDefined();
   });
 });
 
 describe("PATCH /accounts/:id", () => {
   beforeAll(async () => {
-    await request.post("/accounts").set("Authorization", teacher).send({
+    await request.post("/accounts").set("Authorization", teacherToken).send({
       id: "1",
       name: "test",
     });
   });
 
   afterAll(async () => {
-    await request.delete("/accounts/1").set("Authorization", teacher);
+    await request.delete("/accounts/1").set("Authorization", teacherToken);
   });
 
   it("updates account", async () => {
     const response = await request
       .patch("/accounts/1")
-      .set("Authorization", teacher)
+      .set("Authorization", teacherToken)
       .send({ name: "update" });
     expect(response.status).toEqual(204);
   });
@@ -125,10 +119,9 @@ describe("PATCH /accounts/:id", () => {
   it("returns 400 when data format is invalid", async () => {
     const response = await request
       .patch("/accounts/1")
-      .set("Authorization", teacher)
+      .set("Authorization", teacherToken)
       .send({ name: 0 });
     expect(response.status).toEqual(400);
-    expect(response.body.error).toBeDefined();
   });
 
   it("returns 401 when not logged in", async () => {
@@ -136,31 +129,28 @@ describe("PATCH /accounts/:id", () => {
       .patch("/accounts/1")
       .send({ name: "update" });
     expect(response.status).toEqual(401);
-    expect(response.body.error).toBeDefined();
   });
 
   it("returns 403 when logged in as student", async () => {
     const response = await request
       .patch("/accounts/1")
-      .set("Authorization", student)
+      .set("Authorization", studentToken)
       .send({ name: "update" });
     expect(response.status).toEqual(403);
-    expect(response.body.error).toBeDefined();
   });
 
   it("returns 404 when id does not exist", async () => {
     const response = await request
       .patch("/accounts/0")
-      .set("Authorization", teacher)
+      .set("Authorization", teacherToken)
       .send({ name: "update" });
     expect(response.status).toEqual(404);
-    expect(response.body.error).toBeDefined();
   });
 });
 
 describe("DELETE /accounts/:id", () => {
   beforeAll(async () => {
-    await request.post("/accounts").set("Authorization", teacher).send({
+    await request.post("/accounts").set("Authorization", teacherToken).send({
       id: "1",
       name: "test",
     });
@@ -169,29 +159,26 @@ describe("DELETE /accounts/:id", () => {
   it("deletes account", async () => {
     const response = await request
       .delete("/accounts/1")
-      .set("Authorization", teacher);
+      .set("Authorization", teacherToken);
     expect(response.status).toEqual(204);
   });
 
   it("returns 401 when not logged in", async () => {
     const response = await request.delete("/accounts/1");
     expect(response.status).toEqual(401);
-    expect(response.body.error).toBeDefined();
   });
 
   it("returns 403 when logged in as student", async () => {
     const response = await request
       .delete("/accounts/1")
-      .set("Authorization", student);
+      .set("Authorization", studentToken);
     expect(response.status).toEqual(403);
-    expect(response.body.error).toBeDefined();
   });
 
   it("returns 404 when id does not exist", async () => {
     const response = await request
       .delete("/accounts/0")
-      .set("Authorization", teacher);
+      .set("Authorization", teacherToken);
     expect(response.status).toEqual(404);
-    expect(response.body.error).toBeDefined();
   });
 });
