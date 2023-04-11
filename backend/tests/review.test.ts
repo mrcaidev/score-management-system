@@ -1,13 +1,7 @@
 import { app } from "app";
 import supertest from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import {
-  course,
-  exam,
-  studentId,
-  studentToken,
-  teacherToken,
-} from "./global.setup";
+import { exam, studentId, studentToken, teacherToken } from "./global.setup";
 
 const request = supertest(app);
 
@@ -87,7 +81,7 @@ describe("POST /reviews", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 4,
         studentId: studentId,
         score: 100,
         isAbsent: false,
@@ -107,12 +101,12 @@ describe("POST /reviews", () => {
       .set("Authorization", studentToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 4,
       });
     expect(response.status).toEqual(201);
     expect(response.body.data).toMatchObject({
       exam: { id: exam.id },
-      course: { id: course.id },
+      course: { id: 4 },
       student: { id: studentId },
       reviewStatus: 2,
     });
@@ -124,7 +118,7 @@ describe("POST /reviews", () => {
       .set("Authorization", studentToken)
       .send({
         examId: 0,
-        courseId: "0",
+        courseId: "4",
       });
     expect(response.status).toEqual(400);
   });
@@ -132,7 +126,7 @@ describe("POST /reviews", () => {
   it("returns 401 when not logged in", async () => {
     const response = await request.post("/reviews").send({
       examId: exam.id,
-      courseId: course.id,
+      courseId: 4,
     });
     expect(response.status).toEqual(401);
   });
@@ -143,7 +137,7 @@ describe("POST /reviews", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 4,
       });
     expect(response.status).toEqual(403);
   });
@@ -154,7 +148,7 @@ describe("POST /reviews", () => {
       .set("Authorization", studentToken)
       .send({
         examId: "00000000-0000-0000-0000-000000000000",
-        courseId: 1,
+        courseId: 4,
       });
     expect(response.status).toEqual(404);
   });
@@ -165,7 +159,7 @@ describe("POST /reviews", () => {
       .set("Authorization", studentToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 4,
       });
     expect(response.status).toEqual(422);
   });
@@ -180,7 +174,7 @@ describe("PATCH /reviews/:id", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id + 1,
+        courseId: 5,
         studentId,
         score: 100,
         isAbsent: false,
@@ -243,20 +237,17 @@ describe("DELETE /reviews/:id", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id + 2,
+        courseId: 6,
         studentId,
         score: 100,
         isAbsent: false,
       });
     scoreId = response.body.data.id;
 
-    await request
-      .post("/reviews")
-      .set("Authorization", studentToken)
-      .send({
-        examId: exam.id,
-        courseId: course.id + 2,
-      });
+    await request.post("/reviews").set("Authorization", studentToken).send({
+      examId: exam.id,
+      courseId: 6,
+    });
   });
 
   afterAll(async () => {

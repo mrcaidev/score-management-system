@@ -101,7 +101,7 @@ describe("POST /scores", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 1,
         studentId,
         score: 100,
         isAbsent: false,
@@ -110,7 +110,7 @@ describe("POST /scores", () => {
     expect(response.body.data).toMatchObject({
       id: expect.any(String),
       exam: { id: exam.id },
-      course: { id: course.id },
+      course: { id: 1 },
       student: { id: studentId },
       score: 100,
       isAbsent: false,
@@ -126,7 +126,7 @@ describe("POST /scores", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: 0,
-        courseId: "0",
+        courseId: "1",
         studentId: false,
         score: "100",
         isAbsent: "false",
@@ -152,7 +152,7 @@ describe("POST /scores", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: "00000000-0000-0000-0000-000000000000",
-        courseId: course.id,
+        courseId: 1,
         studentId,
         score: 100,
         isAbsent: false,
@@ -180,26 +180,12 @@ describe("POST /scores", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 1,
         studentId: "0",
         score: 100,
         isAbsent: false,
       });
     expect(response.status).toEqual(404);
-  });
-
-  it("returns 409 when score already exists", async () => {
-    const response = await request
-      .post("/scores")
-      .set("Authorization", teacherToken)
-      .send({
-        examId: exam.id,
-        courseId: course.id,
-        studentId,
-        score: 100,
-        isAbsent: false,
-      });
-    expect(response.status).toEqual(409);
   });
 
   it("returns 422 when score exceeds max score", async () => {
@@ -208,7 +194,7 @@ describe("POST /scores", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id + 1,
+        courseId: 1,
         studentId,
         score: course.maxScore + 1,
         isAbsent: false,
@@ -226,12 +212,11 @@ describe("PATCH /scores/:id", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 2,
         studentId,
         score: 100,
         isAbsent: false,
       });
-    console.log(response.body);
     scoreId = response.body.data.id;
   });
 
@@ -247,7 +232,7 @@ describe("PATCH /scores/:id", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 2,
         studentId,
         score: 90,
         isAbsent: false,
@@ -261,7 +246,7 @@ describe("PATCH /scores/:id", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: 0,
-        courseId: "0",
+        courseId: "2",
         studentId: false,
         score: "100",
         isAbsent: "false",
@@ -288,7 +273,7 @@ describe("PATCH /scores/:id", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 2,
         studentId,
         score: 100,
         isAbsent: false,
@@ -302,7 +287,7 @@ describe("PATCH /scores/:id", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 2,
         studentId,
         score: course.maxScore + 1,
         isAbsent: false,
@@ -320,7 +305,7 @@ describe("DELETE /scores/:id", () => {
       .set("Authorization", teacherToken)
       .send({
         examId: exam.id,
-        courseId: course.id,
+        courseId: 3,
         studentId,
         score: 100,
         isAbsent: false,

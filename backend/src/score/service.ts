@@ -42,6 +42,10 @@ async function create(body: CreateRequest["body"]) {
     throw new NotFoundError("课程不存在");
   }
 
+  if (score > course.maxScore) {
+    throw new UnprocessableContentError("分数超出最高分");
+  }
+
   const exam = await examRepository.findOne({ id: examId });
 
   if (!exam) {
@@ -65,10 +69,6 @@ async function create(body: CreateRequest["body"]) {
 
   if (oldScore) {
     throw new ConflictError("成绩已存在");
-  }
-
-  if (score > course.maxScore) {
-    throw new UnprocessableContentError("分数超出最高分");
   }
 
   return scoreRepository.create(body);
