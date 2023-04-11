@@ -2,7 +2,11 @@ import { accountRepository } from "account/repository";
 import { Account, Role } from "account/types";
 import { courseRepository } from "course/repository";
 import { examRepository } from "exam/repository";
-import { NotFoundError, UnprocessableContentError } from "utils/http-error";
+import {
+  ConflictError,
+  NotFoundError,
+  UnprocessableContentError,
+} from "utils/http-error";
 import { scoreRepository } from "./repository";
 import {
   CreateRequest,
@@ -60,7 +64,7 @@ async function create(body: CreateRequest["body"]) {
   });
 
   if (oldScore) {
-    throw new UnprocessableContentError("成绩已存在");
+    throw new ConflictError("成绩已存在");
   }
 
   if (score > course.maxScore) {
