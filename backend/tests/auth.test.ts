@@ -1,4 +1,3 @@
-import { Role } from "account/types";
 import { app } from "app";
 import supertest from "supertest";
 import { describe, expect, it } from "vitest";
@@ -13,7 +12,7 @@ describe("GET /auth", () => {
     expect(response.body.data).toMatchObject({
       id: STUDENT_ID,
       name: expect.any(String),
-      role: expect.any(Role),
+      role: expect.any(Number),
     });
   });
 
