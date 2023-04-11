@@ -59,7 +59,7 @@ async function findAsFull(filter: Partial<Score> = {}) {
       FROM full_score
       WHERE ($1::UUID IS NULL OR id = $1)
       AND ($2::UUID IS NULL OR (exam->>'id')::UUID = $2)
-      AND ($3::SMALLINT IS NULL OR（course->>'id'::SMALLINT = $3)
+      AND ($3::SMALLINT IS NULL OR (course->>'id')::SMALLINT = $3)
       AND ($4::TEXT IS NULL OR (student->>'id')::TEXT = $4)
       AND ($5::SMALLINT IS NULL OR score = $5)
       AND ($6::BOOLEAN IS NULL OR is_absent = $6)
@@ -87,7 +87,7 @@ async function findWithReviewAsFull(filter: Partial<Score> = {}) {
       FROM full_score
       WHERE ($1::UUID IS NULL OR id = $1)
       AND ($2::UUID IS NULL OR (exam->>'id')::UUID = $2)
-      AND ($3::SMALLINT IS NULL OR（course->>'id'::SMALLINT = $3)
+      AND ($3::SMALLINT IS NULL OR (course->>'id')::SMALLINT = $3)
       AND ($4::TEXT IS NULL OR (student->>'id')::TEXT = $4)
       AND ($5::SMALLINT IS NULL OR score = $5)
       AND ($6::BOOLEAN IS NULL OR is_absent = $6)
