@@ -1,3 +1,4 @@
+import { Infer } from "utils/types";
 import { z } from "zod";
 
 export enum Role {
@@ -12,33 +13,33 @@ export const secretAccountSchema = z.object({
   password: z.string().nonempty(),
 });
 
-export type SecretAccount = z.infer<typeof secretAccountSchema>;
+export type SecretAccount = Infer<typeof secretAccountSchema>;
 
 export const accountSchema = secretAccountSchema.omit({ password: true });
 
-export type Account = z.infer<typeof accountSchema>;
+export type Account = Infer<typeof accountSchema>;
 
 export const findAllRequestSchema = z.object({
   query: z.object({ role: z.coerce.number().positive().int() }).partial(),
 });
 
-export type FindAllRequest = z.infer<typeof findAllRequestSchema>;
+export type FindAllRequest = Infer<typeof findAllRequestSchema>;
 
 export const createRequestSchema = z.object({
   body: secretAccountSchema.omit({ role: true, password: true }),
 });
 
-export type CreateRequest = z.infer<typeof createRequestSchema>;
+export type CreateRequest = Infer<typeof createRequestSchema>;
 
 export const updateByIdRequestSchema = z.object({
   params: secretAccountSchema.pick({ id: true }),
   body: secretAccountSchema.omit({ id: true }).partial(),
 });
 
-export type UpdateByIdRequest = z.infer<typeof updateByIdRequestSchema>;
+export type UpdateByIdRequest = Infer<typeof updateByIdRequestSchema>;
 
 export const removeByIdRequestSchema = z.object({
   params: secretAccountSchema.pick({ id: true }),
 });
 
-export type RemoveByIdRequest = z.infer<typeof removeByIdRequestSchema>;
+export type RemoveByIdRequest = Infer<typeof removeByIdRequestSchema>;

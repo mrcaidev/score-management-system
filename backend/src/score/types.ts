@@ -1,6 +1,7 @@
 import { accountSchema } from "account/types";
 import { courseSchema } from "course/types";
 import { examSchema } from "exam/types";
+import { Infer } from "utils/types";
 import { z } from "zod";
 
 export enum ReviewStatus {
@@ -21,7 +22,7 @@ export const scoreSchema = z.object({
   reviewStatus: z.nativeEnum(ReviewStatus),
 });
 
-export type Score = z.infer<typeof scoreSchema>;
+export type Score = Infer<typeof scoreSchema>;
 
 export const fullScoreSchema = scoreSchema
   .omit({ examId: true, courseId: true, studentId: true })
@@ -33,29 +34,29 @@ export const fullScoreSchema = scoreSchema
     })
   );
 
-export type FullScore = z.infer<typeof fullScoreSchema>;
+export type FullScore = Infer<typeof fullScoreSchema>;
 
 export const findAllRequestSchema = z.object({
   query: scoreSchema.pick({ examId: true, studentId: true }).partial(),
 });
 
-export type FindAllRequest = z.infer<typeof findAllRequestSchema>;
+export type FindAllRequest = Infer<typeof findAllRequestSchema>;
 
 export const createRequestSchema = z.object({
   body: scoreSchema.omit({ id: true, reviewStatus: true }),
 });
 
-export type CreateRequest = z.infer<typeof createRequestSchema>;
+export type CreateRequest = Infer<typeof createRequestSchema>;
 
 export const updateByIdRequestSchema = z.object({
   params: scoreSchema.pick({ id: true }),
   body: scoreSchema.pick({ isAbsent: true, score: true }).partial(),
 });
 
-export type UpdateByIdRequest = z.infer<typeof updateByIdRequestSchema>;
+export type UpdateByIdRequest = Infer<typeof updateByIdRequestSchema>;
 
 export const removeByIdRequestSchema = z.object({
   params: scoreSchema.pick({ id: true }),
 });
 
-export type RemoveByIdRequest = z.infer<typeof removeByIdRequestSchema>;
+export type RemoveByIdRequest = Infer<typeof removeByIdRequestSchema>;

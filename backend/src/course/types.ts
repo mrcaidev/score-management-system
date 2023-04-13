@@ -1,3 +1,4 @@
+import { Infer } from "utils/types";
 import { z } from "zod";
 
 export const courseSchema = z.object({
@@ -6,4 +7,4 @@ export const courseSchema = z.object({
   maxScore: z.number().positive(),
 });
 
-export type Course = z.infer<typeof courseSchema>;
+export type Course = Infer<typeof courseSchema>;

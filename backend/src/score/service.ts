@@ -8,12 +8,7 @@ import {
   UnprocessableContentError,
 } from "utils/http-error";
 import { scoreRepository } from "./repository";
-import {
-  CreateRequest,
-  FindAllRequest,
-  Score,
-  UpdateByIdRequest,
-} from "./types";
+import { CreateRequest, FindAllRequest, UpdateByIdRequest } from "./types";
 
 export const scoreService = {
   findAll,
@@ -24,13 +19,10 @@ export const scoreService = {
 
 async function findAll(query: FindAllRequest["query"], auth: Account) {
   if (auth.role === Role.STUDENT) {
-    return scoreRepository.findAsFull({
-      ...query,
-      studentId: auth.id,
-    } as Partial<Score>);
+    return scoreRepository.findAsFull({ ...query, studentId: auth.id });
   }
 
-  return scoreRepository.findAsFull(query as Partial<Score>);
+  return scoreRepository.findAsFull(query);
 }
 
 async function create(body: CreateRequest["body"]) {
@@ -93,7 +85,7 @@ async function updateById(id: string, body: UpdateByIdRequest["body"]) {
     throw new UnprocessableContentError("分数超出最高分");
   }
 
-  await scoreRepository.update(id, body as Partial<Score>);
+  await scoreRepository.update(id, body);
 }
 
 async function removeById(id: string) {

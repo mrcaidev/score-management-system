@@ -1,11 +1,6 @@
 import { ConflictError, NotFoundError } from "utils/http-error";
 import { accountRepository } from "./repository";
-import {
-  CreateRequest,
-  FindAllRequest,
-  SecretAccount,
-  UpdateByIdRequest,
-} from "./types";
+import { CreateRequest, FindAllRequest, UpdateByIdRequest } from "./types";
 
 export const accountService = {
   findAll,
@@ -15,7 +10,7 @@ export const accountService = {
 };
 
 async function findAll(query: FindAllRequest["query"]) {
-  return accountRepository.find(query as Partial<SecretAccount>);
+  return accountRepository.find(query);
 }
 
 async function create(body: CreateRequest["body"]) {
@@ -37,7 +32,7 @@ async function updateById(id: string, body: UpdateByIdRequest["body"]) {
     throw new NotFoundError("用户不存在");
   }
 
-  await accountRepository.update(id, body as Partial<SecretAccount>);
+  await accountRepository.update(id, body);
 }
 
 async function removeById(id: string) {

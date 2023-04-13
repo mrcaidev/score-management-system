@@ -1,6 +1,6 @@
 import { ConflictError, NotFoundError } from "utils/http-error";
 import { examRepository } from "./repository";
-import { CreateRequest, Exam, UpdateByIdRequest } from "./types";
+import { CreateRequest, UpdateByIdRequest } from "./types";
 
 export const examService = {
   findAll,
@@ -32,7 +32,7 @@ async function updateById(id: string, body: UpdateByIdRequest["body"]) {
     throw new NotFoundError("考试不存在");
   }
 
-  await examRepository.update(id, body as Partial<Exam>);
+  await examRepository.update(id, body);
 }
 
 async function removeById(id: string) {

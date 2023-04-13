@@ -1,13 +1,13 @@
 import { accountSchema } from "account/types";
 import { IncomingHttpHeaders } from "http";
 import { sign, verify } from "jsonwebtoken";
-import { z } from "zod";
 import { JWT_SECRET } from "./env";
 import { InternalServerError, UnauthorizedError } from "./http-error";
+import { Infer } from "./types";
 
 const payloadSchema = accountSchema.pick({ id: true });
 
-type Payload = z.infer<typeof payloadSchema>;
+type Payload = Infer<typeof payloadSchema>;
 
 export async function generateJwt(payload: Payload) {
   try {
