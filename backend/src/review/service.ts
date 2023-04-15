@@ -64,7 +64,7 @@ async function updateById(id: string, body: UpdateByIdRequest["body"]) {
     [ReviewStatus.FINISHED]: [],
   };
 
-  if (stateMachine[oldScore.reviewStatus].includes(reviewStatus)) {
+  if (!stateMachine[oldScore.reviewStatus].includes(reviewStatus)) {
     throw new UnprocessableContentError("无法如此更改复查状态");
   }
 
