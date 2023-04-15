@@ -180,6 +180,11 @@ describe("PATCH /reviews/:id", () => {
         isAbsent: false,
       });
     scoreId = response.body.data.id;
+
+    await request.post("/reviews").set("Authorization", studentToken).send({
+      examId: exam.id,
+      courseId: 5,
+    });
   });
 
   afterAll(async () => {
@@ -192,7 +197,7 @@ describe("PATCH /reviews/:id", () => {
     const response = await request
       .patch("/reviews/" + scoreId)
       .set("Authorization", teacherToken)
-      .send({ reviewStatus: 2 });
+      .send({ reviewStatus: 3 });
     expect(response.status).toEqual(204);
   });
 
@@ -200,14 +205,14 @@ describe("PATCH /reviews/:id", () => {
     const response = await request
       .patch("/reviews/" + scoreId)
       .set("Authorization", teacherToken)
-      .send({ reviewStatus: "2" });
+      .send({ reviewStatus: "3" });
     expect(response.status).toEqual(400);
   });
 
   it("returns 401 when not logged in", async () => {
     const response = await request
       .patch("/reviews/" + scoreId)
-      .send({ reviewStatus: 2 });
+      .send({ reviewStatus: 3 });
     expect(response.status).toEqual(401);
   });
 
@@ -215,7 +220,7 @@ describe("PATCH /reviews/:id", () => {
     const response = await request
       .patch("/reviews/" + scoreId)
       .set("Authorization", studentToken)
-      .send({ reviewStatus: 2 });
+      .send({ reviewStatus: 3 });
     expect(response.status).toEqual(403);
   });
 
@@ -223,7 +228,7 @@ describe("PATCH /reviews/:id", () => {
     const response = await request
       .patch("/reviews/00000000-0000-0000-0000-000000000000")
       .set("Authorization", teacherToken)
-      .send({ reviewStatus: 2 });
+      .send({ reviewStatus: 3 });
     expect(response.status).toEqual(404);
   });
 });
