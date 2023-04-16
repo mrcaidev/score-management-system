@@ -32,6 +32,7 @@ export function ExamSelect() {
       label="考试"
       name="exam"
       value={selectedExamId()}
+      placeholder={exams.loading ? "加载考试中..." : undefined}
       onChange={(e) => setSelectedExamId(e.target.value)}
       class="max-w-md"
     >

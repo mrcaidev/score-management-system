@@ -4,7 +4,7 @@ import { Option } from "./option";
 
 type Props = JSX.SelectHTMLAttributes<HTMLSelectElement> & {
   label: string;
-  placeholder?: string;
+  placeholder?: string | undefined;
 };
 
 export function Select(props: Props) {
