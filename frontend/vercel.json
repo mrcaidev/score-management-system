@@ -5,11 +5,6 @@
       "destination": "/"
     }
   ],
-  "git": {
-    "deploymentEnabled": {
-      "master": false
-    }
-  },
   "github": {
     "silent": true
   }
