@@ -2,10 +2,14 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -----------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS account_role (
-  id SMALLINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name TEXT UNIQUE NOT NULL
+DROP TABLE IF EXISTS account_role CASCADE;
+
+CREATE TABLE account_role (
+  id SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE
 );
+
+ALTER TABLE account_role ENABLE ROW LEVEL SECURITY;
 
 INSERT INTO account_role (name) VALUES
 ('学生'),
@@ -13,33 +17,58 @@ INSERT INTO account_role (name) VALUES
 
 -----------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS account (
+DROP TABLE IF EXISTS account CASCADE;
+
+CREATE TABLE account (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
-  role SMALLINT NOT NULL DEFAULT 1 REFERENCES account_role(id),
+  role SMALLINT DEFAULT 1 NOT NULL REFERENCES account_role(id),
   password TEXT NOT NULL
 );
 
-INSERT INTO account (id, name, role, password) VALUES
-('2020010801001','蔚怡香', 1, CRYPT('2020010801001', GEN_SALT('bf'))),
-('2020010801002','巫睿杰', 1, CRYPT('2020010801002', GEN_SALT('bf'))),
-('2020010801003','桑月婵', 1, CRYPT('2020010801003', GEN_SALT('bf'))),
-('2020010801004','廉俊誉', 1, CRYPT('2020010801004', GEN_SALT('bf'))),
-('2020010801005','翁思宏', 1, CRYPT('2020010801005', GEN_SALT('bf'))),
-('2020010801006','国哲恒', 1, CRYPT('2020010801006', GEN_SALT('bf'))),
-('2020010801007','越睿杰', 1, CRYPT('2020010801007', GEN_SALT('bf'))),
-('2020010801008','符鑫蕾', 1, CRYPT('2020010801008', GEN_SALT('bf'))),
-('2020010801009','舒萧然', 1, CRYPT('2020010801009', GEN_SALT('bf'))),
-('2020010801010','濮晧宇', 1, CRYPT('2020010801010', GEN_SALT('bf'))),
-('101', '朱震', 2, CRYPT('101', GEN_SALT('bf')));
+ALTER TABLE account ENABLE ROW LEVEL SECURITY;
+
+DROP FUNCTION IF EXISTS init_password CASCADE;
+
+CREATE FUNCTION init_password()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.password := CRYPT(NEW.id, GEN_SALT('bf'));
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS init_password ON account;
+
+CREATE TRIGGER init_password
+BEFORE INSERT ON account
+FOR EACH ROW
+EXECUTE FUNCTION init_password();
+
+INSERT INTO account (id, name, role) VALUES
+('101', '朱震', 2),
+('2020010801001','蔚怡香', 1),
+('2020010801002','巫睿杰', 1),
+('2020010801003','桑月婵', 1),
+('2020010801004','廉俊誉', 1),
+('2020010801005','翁思宏', 1),
+('2020010801006','国哲恒', 1),
+('2020010801007','越睿杰', 1),
+('2020010801008','符鑫蕾', 1),
+('2020010801009','舒萧然', 1),
+('2020010801010','濮晧宇', 1);
 
 -----------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS course (
-  id SMALLINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name TEXT UNIQUE NOT NULL,
+DROP TABLE IF EXISTS course CASCADE;
+
+CREATE TABLE course (
+  id SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
   max_score SMALLINT NOT NULL
 );
+
+ALTER TABLE course ENABLE ROW LEVEL SECURITY;
 
 INSERT INTO course (name, max_score) VALUES
 ('语文', 150),
@@ -51,11 +80,15 @@ INSERT INTO course (name, max_score) VALUES
 
 -----------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS exam (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT UNIQUE NOT NULL,
+DROP TABLE IF EXISTS exam CASCADE;
+
+CREATE TABLE exam (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  name TEXT NOT NULL,
   held_at TIMESTAMPTZ NOT NULL
 );
+
+ALTER TABLE exam ENABLE ROW LEVEL SECURITY;
 
 INSERT INTO exam (name, held_at) VALUES
 ('2023年3月月考', '2023-03-27 08:00:00'),
@@ -63,10 +96,14 @@ INSERT INTO exam (name, held_at) VALUES
 
 -----------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS review_status (
-  id SMALLINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-  name TEXT UNIQUE NOT NULL
+DROP TABLE IF EXISTS review_status CASCADE;
+
+CREATE TABLE review_status (
+  id SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE
 );
+
+ALTER TABLE review_status ENABLE ROW LEVEL SECURITY;
 
 INSERT INTO review_status (name) VALUES
 ('无'),
@@ -77,19 +114,25 @@ INSERT INTO review_status (name) VALUES
 
 -----------------------------------------------------------
 
-CREATE TABLE IF NOT EXISTS score (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+DROP TABLE IF EXISTS score CASCADE;
+
+CREATE TABLE score (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   exam_id UUID NOT NULL REFERENCES exam(id),
   course_id SMALLINT NOT NULL REFERENCES course(id),
   student_id TEXT NOT NULL REFERENCES account(id),
   score SMALLINT NOT NULL,
   is_absent BOOLEAN NOT NULL,
-  review_status SMALLINT NOT NULL DEFAULT 1 REFERENCES review_status(id)
+  review_status SMALLINT DEFAULT 1 NOT NULL REFERENCES review_status(id)
 );
+
+ALTER TABLE score ENABLE ROW LEVEL SECURITY;
 
 -----------------------------------------------------------
 
-CREATE OR REPLACE VIEW full_score AS (
+DROP VIEW IF EXISTS full_score CASCADE;
+
+CREATE VIEW full_score AS (
   WITH json_exam AS (
     SELECT id, name, held_at "heldAt"
     FROM exam
