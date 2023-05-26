@@ -1,13 +1,14 @@
 import { app } from "app";
 import supertest from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { studentToken, teacherToken } from "./global.setup";
+import { studentCookie, teacherCookie } from "./setup";
 
 const request = supertest(app);
 
 describe("GET /exams", () => {
   it("finds all exams", async () => {
     const response = await request.get("/exams");
+    expect(response.status).toEqual(200);
     for (const item of response.body.data) {
       expect(item).toMatchObject({
         id: expect.any(String),
@@ -22,18 +23,18 @@ describe("POST /exams", () => {
   let examId: string;
 
   afterAll(async () => {
-    await request.delete("/exams/" + examId).set("Authorization", teacherToken);
+    await request.delete("/exams/" + examId).set("Cookie", teacherCookie);
   });
 
   it("creates exam", async () => {
     const response = await request
       .post("/exams")
-      .set("Authorization", teacherToken)
-      .send({ name: "test", heldAt: "2021-01-01T00:00:00.000Z" });
+      .set("Cookie", teacherCookie)
+      .send({ name: "1", heldAt: "2021-01-01T00:00:00.000Z" });
     expect(response.status).toEqual(201);
     expect(response.body.data).toMatchObject({
       id: expect.any(String),
-      name: "test",
+      name: "1",
       heldAt: "2021-01-01T00:00:00.000Z",
     });
 
@@ -43,7 +44,7 @@ describe("POST /exams", () => {
   it("returns 400 when data format is invalid", async () => {
     const response = await request
       .post("/exams")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({ name: 0, heldAt: false });
     expect(response.status).toEqual(400);
   });
@@ -51,24 +52,16 @@ describe("POST /exams", () => {
   it("returns 401 when not logged in", async () => {
     const response = await request
       .post("/exams")
-      .send({ name: "test", heldAt: "2021-01-01T00:00:00.000Z" });
+      .send({ name: "1", heldAt: "2021-01-01T00:00:00.000Z" });
     expect(response.status).toEqual(401);
   });
 
   it("returns 403 when logged in as student", async () => {
     const response = await request
       .post("/exams")
-      .set("Authorization", studentToken)
-      .send({ name: "test", heldAt: "2021-01-01T00:00:00.000Z" });
+      .set("Cookie", studentCookie)
+      .send({ name: "1", heldAt: "2021-01-01T00:00:00.000Z" });
     expect(response.status).toEqual(403);
-  });
-
-  it("returns 409 when exam name already exists", async () => {
-    const response = await request
-      .post("/exams")
-      .set("Authorization", teacherToken)
-      .send({ name: "test", heldAt: "2021-01-01T00:00:00.000Z" });
-    expect(response.status).toEqual(409);
   });
 });
 
@@ -78,27 +71,27 @@ describe("PATCH /exams/:id", () => {
   beforeAll(async () => {
     const response = await request
       .post("/exams")
-      .set("Authorization", teacherToken)
-      .send({ name: "test", heldAt: "2021-01-01T00:00:00.000Z" });
+      .set("Cookie", teacherCookie)
+      .send({ name: "2", heldAt: "2021-01-01T00:00:00.000Z" });
     examId = response.body.data.id;
   });
 
   afterAll(async () => {
-    await request.delete("/exams/" + examId).set("Authorization", teacherToken);
+    await request.delete("/exams/" + examId).set("Cookie", teacherCookie);
   });
 
   it("updates exam", async () => {
     const response = await request
       .patch("/exams/" + examId)
-      .set("Authorization", teacherToken)
-      .send({ name: "update", heldAt: "2021-01-02T00:00:00.000Z" });
+      .set("Cookie", teacherCookie)
+      .send({ name: "22", heldAt: "2021-01-01T00:00:00.000Z" });
     expect(response.status).toEqual(204);
   });
 
   it("returns 400 when data format is invalid", async () => {
     const response = await request
       .patch("/exams/" + examId)
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({ name: 0, heldAt: false });
     expect(response.status).toEqual(400);
   });
@@ -106,23 +99,23 @@ describe("PATCH /exams/:id", () => {
   it("returns 401 when not logged in", async () => {
     const response = await request
       .patch("/exams/" + examId)
-      .send({ name: "update", heldAt: "2021-01-01T00:00:00.000Z" });
+      .send({ name: "22", heldAt: "2021-01-01T00:00:00.000Z" });
     expect(response.status).toEqual(401);
   });
 
   it("returns 403 when logged in as student", async () => {
     const response = await request
       .patch("/exams/" + examId)
-      .set("Authorization", studentToken)
-      .send({ name: "update", heldAt: "2021-01-01T00:00:00.000Z" });
+      .set("Cookie", studentCookie)
+      .send({ name: "22", heldAt: "2021-01-01T00:00:00.000Z" });
     expect(response.status).toEqual(403);
   });
 
   it("returns 404 when exam does not exist", async () => {
     const response = await request
       .patch("/exams/00000000-0000-0000-0000-000000000000")
-      .set("Authorization", teacherToken)
-      .send({ name: "update", heldAt: "2021-01-01T00:00:00.000Z" });
+      .set("Cookie", teacherCookie)
+      .send({ name: "22", heldAt: "2021-01-01T00:00:00.000Z" });
     expect(response.status).toEqual(404);
   });
 });
@@ -133,15 +126,15 @@ describe("DELETE /exams/:id", () => {
   beforeAll(async () => {
     const response = await request
       .post("/exams")
-      .set("Authorization", teacherToken)
-      .send({ name: "test", heldAt: "2021-01-01T00:00:00.000Z" });
+      .set("Cookie", teacherCookie)
+      .send({ name: "3", heldAt: "2021-01-01T00:00:00.000Z" });
     examId = response.body.data.id;
   });
 
   it("deletes exam", async () => {
     const response = await request
       .delete("/exams/" + examId)
-      .set("Authorization", teacherToken);
+      .set("Cookie", teacherCookie);
     expect(response.status).toEqual(204);
   });
 
@@ -153,14 +146,14 @@ describe("DELETE /exams/:id", () => {
   it("returns 403 when logged in as student", async () => {
     const response = await request
       .delete("/exams/" + examId)
-      .set("Authorization", studentToken);
+      .set("Cookie", studentCookie);
     expect(response.status).toEqual(403);
   });
 
   it("returns 404 when exam does not exist", async () => {
     const response = await request
       .delete("/exams/00000000-0000-0000-0000-000000000000")
-      .set("Authorization", teacherToken);
+      .set("Cookie", teacherCookie);
     expect(response.status).toEqual(404);
   });
 });

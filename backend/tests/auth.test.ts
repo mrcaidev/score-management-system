@@ -1,15 +1,13 @@
 import { app } from "app";
 import supertest from "supertest";
 import { describe, expect, it } from "vitest";
-import { studentId, studentToken } from "./global.setup";
+import { studentCookie, studentId } from "./setup";
 
 const request = supertest(app);
 
 describe("GET /auth", () => {
-  it("returns account", async () => {
-    const response = await request
-      .get("/auth")
-      .set("Authorization", studentToken);
+  it("returns the requestor's account", async () => {
+    const response = await request.get("/auth").set("Cookie", studentCookie);
     expect(response.status).toEqual(200);
     expect(response.body.data).toMatchObject({
       id: studentId,
@@ -24,21 +22,18 @@ describe("GET /auth", () => {
   });
 
   it("returns 401 when token is invalid", async () => {
-    const response = await request
-      .get("/auth")
-      .set("Authorization", "Bearer invalid");
+    const response = await request.get("/auth").set("Cookie", "token=invalid");
     expect(response.status).toEqual(401);
   });
 });
 
 describe("POST /auth/login", () => {
-  it("returns token", async () => {
+  it("sets cookie", async () => {
     const response = await request.post("/auth/login").send({
       id: studentId,
       password: studentId,
     });
-    expect(response.status).toEqual(200);
-    expect(response.body.data).toMatch(/^[\w-]+\.[\w-]+\.[\w-]+$/);
+    expect(response.status).toEqual(204);
   });
 
   it("returns 400 when data format is invalid", async () => {

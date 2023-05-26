@@ -12,11 +12,9 @@ const sql = `
     name TEXT NOT NULL UNIQUE
   );
 
-  ALTER TABLE account_role ENABLE ROW LEVEL SECURITY;
-
   INSERT INTO account_role (name) VALUES
   ('学生'),
-  ('班主任');
+  ('教师');
 
   -----------------------------------------------------------
 
@@ -28,8 +26,6 @@ const sql = `
     role SMALLINT DEFAULT 1 NOT NULL REFERENCES account_role(id),
     password TEXT NOT NULL
   );
-
-  ALTER TABLE account ENABLE ROW LEVEL SECURITY;
 
   DROP FUNCTION IF EXISTS init_password CASCADE;
 
@@ -71,8 +67,6 @@ const sql = `
     max_score SMALLINT NOT NULL
   );
 
-  ALTER TABLE course ENABLE ROW LEVEL SECURITY;
-
   INSERT INTO course (name, max_score) VALUES
   ('语文', 150),
   ('数学', 150),
@@ -91,8 +85,6 @@ const sql = `
     held_at TIMESTAMPTZ NOT NULL
   );
 
-  ALTER TABLE exam ENABLE ROW LEVEL SECURITY;
-
   INSERT INTO exam (name, held_at) VALUES
   ('2023年3月月考', '2023-03-27 08:00:00'),
   ('2023年4月月考', '2023-04-24 08:00:00');
@@ -105,8 +97,6 @@ const sql = `
     id SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name TEXT NOT NULL UNIQUE
   );
-
-  ALTER TABLE review_status ENABLE ROW LEVEL SECURITY;
 
   INSERT INTO review_status (name) VALUES
   ('无'),
@@ -129,36 +119,34 @@ const sql = `
     review_status SMALLINT DEFAULT 1 NOT NULL REFERENCES review_status(id)
   );
 
-  ALTER TABLE score ENABLE ROW LEVEL SECURITY;
-
   -----------------------------------------------------------
 
-  DROP VIEW IF EXISTS full_score CASCADE;
+  DROP VIEW IF EXISTS joined_score CASCADE;
 
-  CREATE VIEW full_score AS (
-    WITH json_exam AS (
-      SELECT id, name, held_at "heldAt"
-      FROM exam
-    ), json_course AS (
-      SELECT id, name, max_score "maxScore"
-      FROM course
-    ), json_student AS (
+  CREATE VIEW joined_score AS (
+    WITH student AS (
       SELECT id, name, role
       FROM account
-      WHERE account.role = 1
+      WHERE role = 1
     )
     SELECT
       score.id,
-      ROW_TO_JSON(json_exam) exam,
-      ROW_TO_JSON(json_course) course,
-      ROW_TO_JSON(json_student) student,
+      exam.id exam_id,
+      exam.name exam_name,
+      exam.held_at exam_held_at,
+      course.id course_id,
+      course.name course_name,
+      course.max_score course_max_score,
+      student.id student_id,
+      student.name student_name,
+      student.role student_role,
       score.score,
       score.is_absent,
       score.review_status
     FROM score
-    LEFT OUTER JOIN json_exam ON json_exam.id = score.exam_id
-    LEFT OUTER JOIN json_course ON json_course.id = score.course_id
-    LEFT OUTER JOIN json_student ON json_student.id = score.student_id
+    LEFT OUTER JOIN exam ON exam.id = score.exam_id
+    LEFT OUTER JOIN course ON course.id = score.course_id
+    LEFT OUTER JOIN student ON student.id = score.student_id
   );
 `;
 

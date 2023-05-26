@@ -1,21 +1,14 @@
 import { app } from "app";
 import supertest from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import {
-  course,
-  exam,
-  studentId,
-  studentToken,
-  teacherToken,
-} from "./global.setup";
+import { exam, studentCookie, studentId, teacherCookie } from "./setup";
 
 const request = supertest(app);
 
 describe("GET /scores", () => {
   it("finds his own scores when logged in as student", async () => {
-    const response = await request
-      .get("/scores")
-      .set("Authorization", studentToken);
+    const response = await request.get("/scores").set("Cookie", studentCookie);
+    expect(response.status).toEqual(200);
     for (const item of response.body.data) {
       expect(item).toMatchObject({
         id: expect.any(String),
@@ -42,9 +35,8 @@ describe("GET /scores", () => {
   });
 
   it("finds all scores when logged in as teacher", async () => {
-    const response = await request
-      .get("/scores")
-      .set("Authorization", teacherToken);
+    const response = await request.get("/scores").set("Cookie", teacherCookie);
+    expect(response.status).toEqual(200);
     for (const item of response.body.data) {
       expect(item).toMatchObject({
         id: expect.any(String),
@@ -70,11 +62,11 @@ describe("GET /scores", () => {
     }
   });
 
-  it("finds all score with specified exam id", async () => {
+  it("finds all scores with specified exam id", async () => {
     const response = await request
       .get("/scores")
       .query({ examId: exam.id })
-      .set("Authorization", teacherToken);
+      .set("Cookie", teacherCookie);
     for (const item of response.body.data) {
       expect(item).toMatchObject({ exam: { id: exam.id } });
     }
@@ -90,15 +82,13 @@ describe("POST /scores", () => {
   let scoreId: string;
 
   afterAll(async () => {
-    await request
-      .delete("/scores/" + scoreId)
-      .set("Authorization", teacherToken);
+    await request.delete("/scores/" + scoreId).set("Cookie", teacherCookie);
   });
 
   it("creates score", async () => {
     const response = await request
       .post("/scores")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: exam.id,
         courseId: 1,
@@ -123,7 +113,7 @@ describe("POST /scores", () => {
   it("returns 400 when data format is invalid", async () => {
     const response = await request
       .post("/scores")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: 0,
         courseId: "1",
@@ -140,16 +130,14 @@ describe("POST /scores", () => {
   });
 
   it("returns 403 when logged in as student", async () => {
-    const response = await request
-      .post("/scores")
-      .set("Authorization", studentToken);
+    const response = await request.post("/scores").set("Cookie", studentCookie);
     expect(response.status).toEqual(403);
   });
 
   it("returns 404 when exam id is not found", async () => {
     const response = await request
       .post("/scores")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: "00000000-0000-0000-0000-000000000000",
         courseId: 1,
@@ -163,7 +151,7 @@ describe("POST /scores", () => {
   it("returns 404 when course id is not found", async () => {
     const response = await request
       .post("/scores")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: exam.id,
         courseId: 100,
@@ -177,7 +165,7 @@ describe("POST /scores", () => {
   it("returns 404 when student id is not found", async () => {
     const response = await request
       .post("/scores")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: exam.id,
         courseId: 1,
@@ -191,12 +179,12 @@ describe("POST /scores", () => {
   it("returns 422 when score exceeds max score", async () => {
     const response = await request
       .post("/scores")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: exam.id,
         courseId: 1,
         studentId,
-        score: course.maxScore + 1,
+        score: 1000,
         isAbsent: false,
       });
     expect(response.status).toEqual(422);
@@ -209,7 +197,7 @@ describe("PATCH /scores/:id", () => {
   beforeAll(async () => {
     const response = await request
       .post("/scores")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: exam.id,
         courseId: 2,
@@ -221,15 +209,13 @@ describe("PATCH /scores/:id", () => {
   });
 
   afterAll(async () => {
-    await request
-      .delete("/scores/" + scoreId)
-      .set("Authorization", teacherToken);
+    await request.delete("/scores/" + scoreId).set("Cookie", teacherCookie);
   });
 
   it("updates score", async () => {
     const response = await request
       .patch("/scores/" + scoreId)
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: exam.id,
         courseId: 2,
@@ -243,7 +229,7 @@ describe("PATCH /scores/:id", () => {
   it("returns 400 when data format is invalid", async () => {
     const response = await request
       .patch("/scores/" + scoreId)
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: 0,
         courseId: "2",
@@ -263,14 +249,14 @@ describe("PATCH /scores/:id", () => {
   it("returns 403 when logged in as student", async () => {
     const response = await request
       .patch("/scores/" + scoreId)
-      .set("Authorization", studentToken);
+      .set("Cookie", studentCookie);
     expect(response.status).toEqual(403);
   });
 
   it("returns 404 when score id is not found", async () => {
     const response = await request
       .patch("/scores/00000000-0000-0000-0000-000000000000")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: exam.id,
         courseId: 2,
@@ -284,12 +270,12 @@ describe("PATCH /scores/:id", () => {
   it("returns 422 when score exceeds max score", async () => {
     const response = await request
       .patch("/scores/" + scoreId)
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: exam.id,
         courseId: 2,
         studentId,
-        score: course.maxScore + 1,
+        score: 1000,
         isAbsent: false,
       });
     expect(response.status).toEqual(422);
@@ -302,7 +288,7 @@ describe("DELETE /scores/:id", () => {
   beforeAll(async () => {
     const response = await request
       .post("/scores")
-      .set("Authorization", teacherToken)
+      .set("Cookie", teacherCookie)
       .send({
         examId: exam.id,
         courseId: 3,
@@ -316,7 +302,7 @@ describe("DELETE /scores/:id", () => {
   it("deletes score", async () => {
     const response = await request
       .delete("/scores/" + scoreId)
-      .set("Authorization", teacherToken);
+      .set("Cookie", teacherCookie);
     expect(response.status).toEqual(204);
   });
 
@@ -328,14 +314,14 @@ describe("DELETE /scores/:id", () => {
   it("returns 403 when logged in as student", async () => {
     const response = await request
       .delete("/scores/" + scoreId)
-      .set("Authorization", studentToken);
+      .set("Cookie", studentCookie);
     expect(response.status).toEqual(403);
   });
 
   it("returns 404 when score id is not found", async () => {
     const response = await request
       .delete("/scores/00000000-0000-0000-0000-000000000000")
-      .set("Authorization", teacherToken);
+      .set("Cookie", teacherCookie);
     expect(response.status).toEqual(404);
   });
 });

@@ -7,6 +7,7 @@ const request = supertest(app);
 describe("GET /courses", () => {
   it("finds all courses", async () => {
     const response = await request.get("/courses");
+    expect(response.status).toEqual(200);
     for (const item of response.body.data) {
       expect(item).toMatchObject({
         id: expect.any(Number),
