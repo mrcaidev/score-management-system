@@ -80,7 +80,7 @@ async function updateById(id: string, updater: Partial<Account> = {}) {
       UPDATE account
       SET
         name = CASE WHEN $2::TEXT IS NULL THEN name ELSE $2 END,
-        role = CASE WHEN $3::SMALLINT IS NULL THEN role ELSE $3 END,
+        role = CASE WHEN $3::SMALLINT IS NULL THEN role ELSE $3 END
       WHERE id = $1
     `,
     [id, name, role]
