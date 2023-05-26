@@ -9,11 +9,9 @@ CREATE TABLE account_role (
   name TEXT NOT NULL UNIQUE
 );
 
-ALTER TABLE account_role ENABLE ROW LEVEL SECURITY;
-
 INSERT INTO account_role (name) VALUES
 ('学生'),
-('班主任');
+('教师');
 
 -----------------------------------------------------------
 
@@ -25,8 +23,6 @@ CREATE TABLE account (
   role SMALLINT DEFAULT 1 NOT NULL REFERENCES account_role(id),
   password TEXT NOT NULL
 );
-
-ALTER TABLE account ENABLE ROW LEVEL SECURITY;
 
 DROP FUNCTION IF EXISTS init_password CASCADE;
 
@@ -68,8 +64,6 @@ CREATE TABLE course (
   max_score SMALLINT NOT NULL
 );
 
-ALTER TABLE course ENABLE ROW LEVEL SECURITY;
-
 INSERT INTO course (name, max_score) VALUES
 ('语文', 150),
 ('数学', 150),
@@ -88,8 +82,6 @@ CREATE TABLE exam (
   held_at TIMESTAMPTZ NOT NULL
 );
 
-ALTER TABLE exam ENABLE ROW LEVEL SECURITY;
-
 INSERT INTO exam (name, held_at) VALUES
 ('2023年3月月考', '2023-03-27 08:00:00'),
 ('2023年4月月考', '2023-04-24 08:00:00');
@@ -102,8 +94,6 @@ CREATE TABLE review_status (
   id SMALLINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
   name TEXT NOT NULL UNIQUE
 );
-
-ALTER TABLE review_status ENABLE ROW LEVEL SECURITY;
 
 INSERT INTO review_status (name) VALUES
 ('无'),
@@ -125,8 +115,6 @@ CREATE TABLE score (
   is_absent BOOLEAN NOT NULL,
   review_status SMALLINT DEFAULT 1 NOT NULL REFERENCES review_status(id)
 );
-
-ALTER TABLE score ENABLE ROW LEVEL SECURITY;
 
 -----------------------------------------------------------
 
