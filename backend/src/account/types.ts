@@ -7,9 +7,9 @@ export enum Role {
 }
 
 export const accountSchema = z.object({
-  id: z.string().regex(/^\d{3}(?:\d{10})?$/),
+  id: z.string().regex(/\d+/),
   name: z.string().nonempty(),
-  role: z.nativeEnum(Role),
+  role: z.coerce.number().min(1).max(2),
 });
 
 export type Account = Infer<typeof accountSchema>;
