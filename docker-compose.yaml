@@ -4,7 +4,7 @@ services:
     build: ./backend
     env_file: .env
     ports:
-      - ${PORT}:${PORT}
+      - 3000:3000
     networks:
       - master
     restart: always

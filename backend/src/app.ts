@@ -2,6 +2,7 @@ import "utils/env";
 
 import { accountRouter } from "account/router";
 import { authRouter } from "auth/router";
+import cookieParser from "cookie-parser";
 import cors from "cors";
 import { courseRouter } from "course/router";
 import { examRouter } from "exam/router";
@@ -24,6 +25,7 @@ app.use(
     standardHeaders: true,
   })
 );
+app.use(cookieParser());
 app.use(express.json());
 
 app.use("/", rootRouter);
@@ -31,7 +33,7 @@ app.use("/accounts", accountRouter);
 app.use("/auth", authRouter);
 app.use("/courses", courseRouter);
 app.use("/exams", examRouter);
-app.use("/scores", scoreRouter);
 app.use("/reviews", reviewRouter);
+app.use("/scores", scoreRouter);
 
 app.use(handleError);

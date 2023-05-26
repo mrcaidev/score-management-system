@@ -8,21 +8,21 @@ import {
   UnprocessableContentError,
 } from "utils/http-error";
 import { scoreRepository } from "./repository";
-import { CreateRequest, FindAllRequest, UpdateByIdRequest } from "./types";
+import { CreateRequest, FindRequest, UpdateByIdRequest } from "./types";
 
 export const scoreService = {
-  findAll,
+  find,
   create,
   updateById,
   removeById,
 };
 
-async function findAll(query: FindAllRequest["query"], auth: Account) {
+async function find(query: FindRequest["query"], auth: Account) {
   if (auth.role === Role.STUDENT) {
-    return scoreRepository.findAsFull({ ...query, studentId: auth.id });
+    return scoreRepository.find({ ...query, studentId: auth.id });
   }
 
-  return scoreRepository.findAsFull(query);
+  return scoreRepository.find(query);
 }
 
 async function create(body: CreateRequest["body"]) {
@@ -75,17 +75,11 @@ async function updateById(id: string, body: UpdateByIdRequest["body"]) {
     throw new NotFoundError("成绩不存在");
   }
 
-  const course = await courseRepository.findOne({ id: oldScore.courseId });
-
-  if (!course) {
-    throw new NotFoundError("课程不存在");
-  }
-
-  if (score && score > course.maxScore) {
+  if (score && score > oldScore.course.maxScore) {
     throw new UnprocessableContentError("分数超出最高分");
   }
 
-  await scoreRepository.update(id, body);
+  await scoreRepository.updateById(id, body);
 }
 
 async function removeById(id: string) {
@@ -95,5 +89,5 @@ async function removeById(id: string) {
     throw new NotFoundError("成绩不存在");
   }
 
-  await scoreRepository.remove(id);
+  await scoreRepository.removeById(id);
 }

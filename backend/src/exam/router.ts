@@ -11,7 +11,7 @@ import {
 
 export const examRouter: Router = Router();
 
-examRouter.get("/", examController.findAll);
+examRouter.get("/", examController.find);
 
 examRouter.post(
   "/",

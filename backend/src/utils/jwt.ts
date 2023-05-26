@@ -1,5 +1,4 @@
 import { accountSchema } from "account/types";
-import { IncomingHttpHeaders } from "http";
 import { sign, verify } from "jsonwebtoken";
 import { JWT_SECRET } from "./env";
 import { InternalServerError, UnauthorizedError } from "./http-error";
@@ -37,20 +36,4 @@ export async function decodeJwt(token: string) {
   } catch {
     throw new UnauthorizedError("登录信息无效，请重新登录");
   }
-}
-
-export function extractJwtFromHeaders(headers: IncomingHttpHeaders) {
-  const { authorization } = headers;
-
-  if (!authorization) {
-    return;
-  }
-
-  const [type, token] = authorization.split(" ");
-
-  if (type !== "Bearer") {
-    return;
-  }
-
-  return token;
 }

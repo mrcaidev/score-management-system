@@ -5,7 +5,7 @@ import { accountController } from "./controller";
 import {
   Role,
   createRequestSchema,
-  findAllRequestSchema,
+  findRequestSchema,
   removeByIdRequestSchema,
   updateByIdRequestSchema,
 } from "./types";
@@ -15,8 +15,8 @@ export const accountRouter: Router = Router();
 accountRouter.get(
   "/",
   authenticate(Role.TEACHER),
-  validate(findAllRequestSchema),
-  accountController.findAll
+  validate(findRequestSchema),
+  accountController.find
 );
 
 accountRouter.post(

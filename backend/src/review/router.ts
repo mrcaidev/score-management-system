@@ -11,7 +11,7 @@ import {
 
 export const reviewRouter: Router = Router();
 
-reviewRouter.get("/", authenticate(), reviewController.findAll);
+reviewRouter.get("/", authenticate(), reviewController.find);
 
 reviewRouter.post(
   "/",

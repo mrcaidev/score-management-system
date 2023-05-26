@@ -1,9 +1,9 @@
 import { courseRepository } from "./repository";
 
 export const courseService = {
-  findAll,
+  find,
 };
 
-async function findAll() {
+async function find() {
   return courseRepository.find();
 }

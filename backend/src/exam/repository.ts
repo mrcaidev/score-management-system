@@ -6,8 +6,8 @@ export const examRepository = {
   find,
   findOne,
   create,
-  update,
-  remove,
+  updateById,
+  removeById,
 };
 
 async function find(filter: Partial<Exam> = {}) {
@@ -17,9 +17,9 @@ async function find(filter: Partial<Exam> = {}) {
     `
       SELECT id, name, held_at "heldAt"
       FROM exam
-      WHERE ($1::UUID IS NULL OR id = $1)
-      AND ($2::TEXT IS NULL OR name = $2)
-      AND ($3::TIMESTAMPTZ IS NULL OR held_at = $3)
+      WHERE CASE WHEN $1::UUID IS NULL THEN TRUE ELSE id = $1 END
+      AND CASE WHEN $2::TEXT IS NULL THEN TRUE ELSE name = $2 END
+      AND CASE WHEN $3::TIMESTAMPTZ IS NULL THEN TRUE ELSE held_at = $3 END
       ORDER BY held_at DESC
     `,
     [id, name, heldAt]
@@ -52,7 +52,7 @@ async function create(creator: Omit<Exam, "id">) {
   return rows[0];
 }
 
-async function update(id: string, updater: Partial<Exam> = {}) {
+async function updateById(id: string, updater: Partial<Exam> = {}) {
   const { name, heldAt } = updater;
 
   const { rowCount } = await database.query(
@@ -70,7 +70,7 @@ async function update(id: string, updater: Partial<Exam> = {}) {
   }
 }
 
-async function remove(id: string) {
+async function removeById(id: string) {
   const { rowCount } = await database.query(
     `
       DELETE FROM exam

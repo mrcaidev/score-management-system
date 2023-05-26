@@ -13,9 +13,9 @@ async function find(filter: Partial<Course> = {}) {
     `
       SELECT id, name, max_score "maxScore"
       FROM course
-      WHERE ($1::SMALLINT IS NULL OR id = $1)
-      AND ($2::TEXT IS NULL OR name = $2)
-      AND ($3::SMALLINT IS NULL OR max_score = $3)
+      WHERE CASE WHEN $1::SMALLINT IS NULL THEN TRUE ELSE id = $1 END
+      AND CASE WHEN $2::TEXT IS NULL THEN TRUE ELSE name = $2 END
+      AND CASE WHEN $3::SMALLINT IS NULL THEN TRUE ELSE max_score = $3 END
       ORDER BY id ASC
     `,
     [id, name, maxScore]

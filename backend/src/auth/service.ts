@@ -8,12 +8,12 @@ export const authService = {
 };
 
 async function login(body: LoginRequest["body"]) {
-  const { id, password } = body;
+  const { id } = body;
 
-  const account = await accountRepository.findOne({ id, password });
+  const account = await accountRepository.findOneByCredentials(body);
 
   if (!account) {
-    throw new UnauthorizedError("账号或密码错误");
+    throw new UnauthorizedError("学工号或密码错误");
   }
 
   return generateJwt({ id });

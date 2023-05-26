@@ -3,15 +3,15 @@ import { examService } from "./service";
 import { CreateRequest, RemoveByIdRequest, UpdateByIdRequest } from "./types";
 
 export const examController = {
-  findAll,
+  find,
   create,
   updateById,
   removeById,
 };
 
-async function findAll(_: Request, res: Response, next: NextFunction) {
+async function find(_: Request, res: Response, next: NextFunction) {
   try {
-    const exams = await examService.findAll();
+    const exams = await examService.find();
     return res.status(200).json({ data: exams });
   } catch (error) {
     return next(error);

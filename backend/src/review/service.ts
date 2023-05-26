@@ -9,18 +9,18 @@ import {
 import { CreateRequest, UpdateByIdRequest } from "./types";
 
 export const reviewService = {
-  findAll,
+  find,
   create,
   updateById,
   removeById,
 };
 
-async function findAll(auth: Account) {
+async function find(auth: Account) {
   if (auth.role === Role.STUDENT) {
-    return scoreRepository.findWithReviewAsFull({ studentId: auth.id });
+    return scoreRepository.findWithReview({ studentId: auth.id });
   }
 
-  return scoreRepository.findWithReviewAsFull();
+  return scoreRepository.findWithReview();
 }
 
 async function create(body: CreateRequest["body"], auth: Account) {
@@ -40,11 +40,11 @@ async function create(body: CreateRequest["body"], auth: Account) {
     throw new UnprocessableContentError("已经申请过复查");
   }
 
-  await scoreRepository.update(oldScore.id, {
+  await scoreRepository.updateById(oldScore.id, {
     reviewStatus: ReviewStatus.PENDING,
   });
 
-  return scoreRepository.findOneAsFull({ id: oldScore.id });
+  return scoreRepository.findOne({ id: oldScore.id });
 }
 
 async function updateById(id: string, body: UpdateByIdRequest["body"]) {
@@ -68,7 +68,7 @@ async function updateById(id: string, body: UpdateByIdRequest["body"]) {
     throw new UnprocessableContentError("无法如此更改复查状态");
   }
 
-  await scoreRepository.update(id, { reviewStatus });
+  await scoreRepository.updateById(id, { reviewStatus });
 }
 
 async function removeById(id: string, auth: Account) {
@@ -78,7 +78,7 @@ async function removeById(id: string, auth: Account) {
     throw new NotFoundError("成绩不存在");
   }
 
-  if (oldScore.studentId !== auth.id) {
+  if (oldScore.student.id !== auth.id) {
     throw new ForbiddenError("只能撤回自己的复查");
   }
 
@@ -86,5 +86,5 @@ async function removeById(id: string, auth: Account) {
     throw new UnprocessableContentError("复查已经被受理");
   }
 
-  await scoreRepository.update(id, { reviewStatus: ReviewStatus.NONE });
+  await scoreRepository.updateById(id, { reviewStatus: ReviewStatus.NONE });
 }

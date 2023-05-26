@@ -1,27 +1,19 @@
-import { ConflictError, NotFoundError } from "utils/http-error";
+import { NotFoundError } from "utils/http-error";
 import { examRepository } from "./repository";
 import { CreateRequest, UpdateByIdRequest } from "./types";
 
 export const examService = {
-  findAll,
+  find,
   create,
   updateById,
   removeById,
 };
 
-async function findAll() {
+async function find() {
   return examRepository.find();
 }
 
 async function create(body: CreateRequest["body"]) {
-  const { name } = body;
-
-  const oldExam = await examRepository.findOne({ name });
-
-  if (oldExam) {
-    throw new ConflictError("考试已存在");
-  }
-
   return examRepository.create(body);
 }
 
@@ -32,7 +24,7 @@ async function updateById(id: string, body: UpdateByIdRequest["body"]) {
     throw new NotFoundError("考试不存在");
   }
 
-  await examRepository.update(id, body);
+  await examRepository.updateById(id, body);
 }
 
 async function removeById(id: string) {
@@ -42,5 +34,5 @@ async function removeById(id: string) {
     throw new NotFoundError("考试不存在");
   }
 
-  await examRepository.remove(id);
+  await examRepository.removeById(id);
 }

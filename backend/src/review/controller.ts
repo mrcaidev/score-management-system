@@ -3,15 +3,15 @@ import { reviewService } from "./service";
 import { CreateRequest, RemoveByIdRequest, UpdateByIdRequest } from "./types";
 
 export const reviewController = {
-  findAll,
+  find,
   create,
   updateById,
   removeById,
 };
 
-async function findAll(_: Request, res: Response, next: NextFunction) {
+async function find(_: Request, res: Response, next: NextFunction) {
   try {
-    const scores = await reviewService.findAll(res.locals.auth);
+    const scores = await reviewService.find(res.locals.auth);
     return res.status(200).json({ data: scores });
   } catch (error) {
     return next(error);

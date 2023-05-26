@@ -2,22 +2,22 @@ import { NextFunction, Response } from "express";
 import { scoreService } from "./service";
 import {
   CreateRequest,
-  FindAllRequest,
+  FindRequest,
   RemoveByIdRequest,
   UpdateByIdRequest,
 } from "./types";
 
 export const scoreController = {
-  findAll,
+  find,
   create,
   updateById,
   removeById,
 };
 
-async function findAll(req: FindAllRequest, res: Response, next: NextFunction) {
+async function find(req: FindRequest, res: Response, next: NextFunction) {
   try {
-    const fullScores = await scoreService.findAll(req.query, res.locals.auth);
-    return res.status(200).json({ data: fullScores });
+    const scores = await scoreService.find(req.query, res.locals.auth);
+    return res.status(200).json({ data: scores });
   } catch (error) {
     return next(error);
   }
@@ -25,8 +25,8 @@ async function findAll(req: FindAllRequest, res: Response, next: NextFunction) {
 
 async function create(req: CreateRequest, res: Response, next: NextFunction) {
   try {
-    const fullScore = await scoreService.create(req.body);
-    return res.status(201).json({ data: fullScore });
+    const score = await scoreService.create(req.body);
+    return res.status(201).json({ data: score });
   } catch (error) {
     return next(error);
   }

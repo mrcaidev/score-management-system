@@ -4,11 +4,11 @@ import { authService } from "./service";
 import { LoginRequest } from "./types";
 
 export const authController = {
-  getAccount,
+  getSelf,
   login,
 };
 
-async function getAccount(_: Request, res: Response, next: NextFunction) {
+async function getSelf(_: Request, res: Response, next: NextFunction) {
   try {
     const account = res.locals.auth as Account;
     return res.status(200).json({ data: account });
@@ -20,7 +20,9 @@ async function getAccount(_: Request, res: Response, next: NextFunction) {
 async function login(req: LoginRequest, res: Response, next: NextFunction) {
   try {
     const token = await authService.login(req.body);
-    return res.status(200).json({ data: token });
+    return res
+      .status(204)
+      .cookie("token", token, { maxAge: 86400, httpOnly: true, secure: true });
   } catch (error) {
     return next(error);
   }

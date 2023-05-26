@@ -5,42 +5,61 @@ import { Account, SecretAccount } from "./types";
 export const accountRepository = {
   find,
   findOne,
+  findOneByCredentials,
   create,
-  update,
-  remove,
+  updateById,
+  removeById,
 };
 
-async function find(filter: Partial<SecretAccount> = {}) {
-  const { id, name, role, password } = filter;
+async function find(filter: Partial<Account> = {}) {
+  const { id, name, role } = filter;
 
   const { rows } = await database.query<Account>(
     `
       SELECT id, name, role
       FROM account
-      WHERE ($1::TEXT IS NULL OR id = $1)
-      AND ($2::TEXT IS NULL OR name = $2)
-      AND ($3::SMALLINT IS NULL OR role = $3)
-      AND ($4::TEXT IS NULL OR password = CRYPT($4, password))
+      WHERE CASE WHEN $1::TEXT IS NULL THEN TRUE ELSE id = $1 END
+      AND CASE WHEN $2::TEXT IS NULL THEN TRUE ELSE name = $2 END
+      AND CASE WHEN $3::SMALLINT IS NULL THEN TRUE ELSE role = $3 END
       ORDER BY id ASC
     `,
-    [id, name, role, password]
+    [id, name, role]
   );
 
   return rows;
 }
 
-async function findOne(filter: Partial<SecretAccount> = {}) {
+async function findOne(filter: Partial<Account> = {}) {
   const rows = await find(filter);
   return rows[0];
 }
 
-async function create(creator: Omit<SecretAccount, "role" | "password">) {
+async function findOneByCredentials(
+  filter: Pick<SecretAccount, "id" | "password">
+) {
+  const { id, password } = filter;
+
+  const { rows } = await database.query<Account>(
+    `
+      SELECT id, name, role
+      FROM account
+      WHERE id = $1
+      AND password = CRYPT($2, password)
+      ORDER BY id ASC
+    `,
+    [id, password]
+  );
+
+  return rows[0];
+}
+
+async function create(creator: Omit<Account, "role">) {
   const { id, name } = creator;
 
   const { rows } = await database.query<Account>(
     `
-      INSERT INTO account (id, name, password)
-      VALUES ($1, $2, CRYPT($1, GEN_SALT('bf')))
+      INSERT INTO account (id, name)
+      VALUES ($1, $2)
       RETURNING id, name, role
     `,
     [id, name]
@@ -53,8 +72,8 @@ async function create(creator: Omit<SecretAccount, "role" | "password">) {
   return rows[0];
 }
 
-async function update(id: string, updater: Partial<SecretAccount> = {}) {
-  const { name, role, password } = updater;
+async function updateById(id: string, updater: Partial<Account> = {}) {
+  const { name, role } = updater;
 
   const { rowCount } = await database.query<Account>(
     `
@@ -62,10 +81,9 @@ async function update(id: string, updater: Partial<SecretAccount> = {}) {
       SET
         name = CASE WHEN $2::TEXT IS NULL THEN name ELSE $2 END,
         role = CASE WHEN $3::SMALLINT IS NULL THEN role ELSE $3 END,
-        password = CASE WHEN $4::TEXT IS NULL THEN password ELSE CRYPT($4, GEN_SALT('bf')) END
       WHERE id = $1
     `,
-    [id, name, role, password]
+    [id, name, role]
   );
 
   if (rowCount !== 1) {
@@ -73,7 +91,7 @@ async function update(id: string, updater: Partial<SecretAccount> = {}) {
   }
 }
 
-async function remove(id: string) {
+async function removeById(id: string) {
   const { rowCount } = await database.query<Account>(
     `
       DELETE FROM account

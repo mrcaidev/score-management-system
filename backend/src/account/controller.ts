@@ -2,21 +2,21 @@ import { NextFunction, Response } from "express";
 import { accountService } from "./service";
 import {
   CreateRequest,
-  FindAllRequest,
+  FindRequest,
   RemoveByIdRequest,
   UpdateByIdRequest,
 } from "./types";
 
 export const accountController = {
-  findAll,
+  find,
   create,
   updateById,
   removeById,
 };
 
-async function findAll(req: FindAllRequest, res: Response, next: NextFunction) {
+async function find(req: FindRequest, res: Response, next: NextFunction) {
   try {
-    const accounts = await accountService.findAll(req.query);
+    const accounts = await accountService.find(req.query);
     return res.status(200).json({ data: accounts });
   } catch (error) {
     return next(error);

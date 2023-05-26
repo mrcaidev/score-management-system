@@ -1,11 +1,5 @@
 import { app } from "app";
-import { PORT } from "utils/env";
 
-const server = app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}...`);
-});
-
-process.on("SIGTERM", () => {
-  console.log("Server is shutting down...");
-  server.close(() => console.log("Server shut down successfully."));
+app.listen(3000, () => {
+  console.log("Server is running on port 3000...");
 });

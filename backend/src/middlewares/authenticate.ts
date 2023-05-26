@@ -6,12 +6,12 @@ import {
   NotFoundError,
   UnauthorizedError,
 } from "utils/http-error";
-import { decodeJwt, extractJwtFromHeaders } from "utils/jwt";
+import { decodeJwt } from "utils/jwt";
 
 export function authenticate(expectation?: Role | Role[]) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const token = extractJwtFromHeaders(req.headers);
+      const token = req.cookies.token;
 
       if (!token) {
         throw new UnauthorizedError("未登录");

@@ -6,6 +6,6 @@ import { loginRequestSchema } from "./types";
 
 export const authRouter: Router = Router();
 
-authRouter.get("/", authenticate(), authController.getAccount);
+authRouter.get("/", authenticate(), authController.getSelf);
 
 authRouter.post("/login", validate(loginRequestSchema), authController.login);

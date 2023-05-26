@@ -5,7 +5,7 @@ import { validate } from "middlewares/validate";
 import { scoreController } from "./controller";
 import {
   createRequestSchema,
-  findAllRequestSchema,
+  findRequestSchema,
   removeByIdRequestSchema,
   updateByIdRequestSchema,
 } from "./types";
@@ -15,8 +15,8 @@ export const scoreRouter: Router = Router();
 scoreRouter.get(
   "/",
   authenticate(),
-  validate(findAllRequestSchema),
-  scoreController.findAll
+  validate(findRequestSchema),
+  scoreController.find
 );
 
 scoreRouter.post(
