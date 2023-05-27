@@ -58,8 +58,8 @@ async function create(creator: Omit<Account, "role">) {
 
   const { rows } = await database.query<Account>(
     `
-      INSERT INTO account (id, name)
-      VALUES ($1, $2)
+      INSERT INTO account (id, name, password)
+      VALUES ($1, $2, '')
       RETURNING id, name, role
     `,
     [id, name]
