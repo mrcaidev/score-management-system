@@ -54,5 +54,6 @@ jobs:
       - name: Run Tests
         run: pnpm run test
         env:
+          CORS_ORIGIN: http://localhost:3000
           DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
           JWT_SECRET: test
