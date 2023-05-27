@@ -1,19 +1,11 @@
 import axios, { AxiosRequestConfig, isAxiosError } from "axios";
 import toast from "solid-toast";
-import { getLocalStorage } from "./storage";
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 3000,
   headers: { "Content-Type": "application/json" },
-});
-
-instance.interceptors.request.use((config) => {
-  const token = getLocalStorage<string>("token");
-  if (token) {
-    config.headers.Authorization = "Bearer " + token;
-  }
-  return config;
+  withCredentials: true,
 });
 
 instance.interceptors.response.use(

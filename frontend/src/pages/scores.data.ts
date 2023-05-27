@@ -1,9 +1,9 @@
 import { createResource } from "solid-js";
 import { request } from "utils/request";
-import { FullScore } from "utils/types";
+import { Score } from "utils/types";
 
 export function scoresData() {
-  return createResource<FullScore[]>(
+  return createResource<Score[]>(
     (_: unknown, { value, refetching }) => {
       if (value) {
         const latestExamId = value[0]?.exam.id;
@@ -13,7 +13,7 @@ export function scoresData() {
         }
       }
 
-      return request.get<FullScore[]>("/scores", { params: refetching });
+      return request.get<Score[]>("/scores", { params: refetching });
     },
     { initialValue: [] }
   );

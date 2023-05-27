@@ -31,18 +31,12 @@ export enum ReviewStatus {
 
 export type Score = {
   id: string;
-  examId: string;
-  courseId: number;
-  studentId: string;
-  score: number;
-  isAbsent: boolean;
-  reviewStatus: ReviewStatus;
-};
-
-export type FullScore = Omit<Score, "examId" | "courseId" | "studentId"> & {
   exam: Exam;
   course: Course;
   student: Account;
+  score: number;
+  isAbsent: boolean;
+  reviewStatus: ReviewStatus;
 };
 
 export function mapRoleToText(role: Role) {
@@ -50,7 +44,7 @@ export function mapRoleToText(role: Role) {
     case Role.STUDENT:
       return "学生";
     case Role.TEACHER:
-      return "班主任";
+      return "教师";
   }
 }
 

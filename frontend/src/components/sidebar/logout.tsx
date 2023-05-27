@@ -1,13 +1,12 @@
 import { useAuth } from "components/auth/provider";
 import { FiLogOut } from "solid-icons/fi";
 import toast from "solid-toast";
-import { removeLocalStorage } from "utils/storage";
 
 export function Logout() {
   const [, { refetch }] = useAuth();
 
   const handleClick = async () => {
-    removeLocalStorage("token");
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     await refetch();
     toast.success("已安全退出");
   };

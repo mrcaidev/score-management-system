@@ -5,7 +5,7 @@ import { FiX } from "solid-icons/fi";
 import { createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
-import { FullScore, ReviewStatus } from "utils/types";
+import { ReviewStatus, Score } from "utils/types";
 
 type Props = {
   scoreId: string;
@@ -16,7 +16,7 @@ export function RejectButton(props: Props) {
 
   const [isRejecting, setIsRejecting] = createSignal(false);
 
-  const mutateFn = (scores: FullScore[]) =>
+  const mutateFn = (scores: Score[]) =>
     scores.map((score) => {
       if (score.id === props.scoreId) {
         return { ...score, reviewStatus: ReviewStatus.REJECTED };

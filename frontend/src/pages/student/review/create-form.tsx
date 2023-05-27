@@ -6,7 +6,7 @@ import { For, createResource, createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
-import { Course, Exam, FullScore } from "utils/types";
+import { Course, Exam, Score } from "utils/types";
 
 type Props = {
   onClose: () => void;
@@ -36,7 +36,7 @@ export function CreateForm(props: Props) {
     setIsSubmitting(true);
 
     try {
-      const score = await request.post<FullScore>("/reviews", { ...form });
+      const score = await request.post<Score>("/reviews", { ...form });
       mutate((scores) => [...scores, score]);
       props.onClose();
       toast.success("申请成功，请等待班主任处理");

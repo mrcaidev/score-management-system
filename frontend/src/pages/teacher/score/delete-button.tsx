@@ -5,7 +5,7 @@ import { FiTrash } from "solid-icons/fi";
 import { createSignal } from "solid-js";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
-import { FullScore } from "utils/types";
+import { Score } from "utils/types";
 
 type Props = {
   scoreId: string;
@@ -16,7 +16,7 @@ export function DeleteButton(props: Props) {
 
   const [isDeleting, setIsDeleting] = createSignal(false);
 
-  const mutateFn = (scores: FullScore[]) =>
+  const mutateFn = (scores: Score[]) =>
     scores.filter((score) => score.id !== props.scoreId);
 
   const handleClick = async () => {

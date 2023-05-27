@@ -1,9 +1,9 @@
 import { createResource } from "solid-js";
 import { request } from "utils/request";
-import { FullScore } from "utils/types";
+import { Score } from "utils/types";
 
 export function reviewsData() {
-  return createResource(() => request.get<FullScore[]>("/reviews"), {
+  return createResource(() => request.get<Score[]>("/reviews"), {
     initialValue: [],
   });
 }

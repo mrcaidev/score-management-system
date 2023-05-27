@@ -5,7 +5,6 @@ import { createSignal } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
-import { setLocalStorage } from "utils/storage";
 
 export function Form() {
   const [, { refetch }] = useAuth();
@@ -23,9 +22,7 @@ export function Form() {
     setIsSubmitting(true);
 
     try {
-      const token = await request.post<string>("/auth/login", { ...form });
-
-      setLocalStorage("token", token);
+      await request.post<string>("/auth/login", { ...form });
 
       const account = await refetch();
 

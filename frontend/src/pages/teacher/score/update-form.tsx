@@ -6,7 +6,7 @@ import { createSignal, onMount } from "solid-js";
 import { createStore } from "solid-js/store";
 import toast from "solid-toast";
 import { handleRequestError, request } from "utils/request";
-import { FullScore } from "utils/types";
+import { Score } from "utils/types";
 
 type Props = {
   scoreId: string;
@@ -29,7 +29,7 @@ export function UpdateForm(props: Props) {
     setForm({ isAbsent: score().isAbsent, score: score().score });
   });
 
-  const mutateFn = (scores: FullScore[]) =>
+  const mutateFn = (scores: Score[]) =>
     scores.map((score) => {
       if (score.id === props.scoreId) {
         return {
