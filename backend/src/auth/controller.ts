@@ -22,7 +22,11 @@ async function login(req: LoginRequest, res: Response, next: NextFunction) {
     const token = await authService.login(req.body);
     return res
       .status(204)
-      .cookie("token", token, { maxAge: 86400, httpOnly: true, secure: true })
+      .cookie("token", token, {
+        maxAge: 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: true,
+      })
       .end();
   } catch (error) {
     return next(error);
