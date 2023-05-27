@@ -47,7 +47,7 @@ jobs:
         run: pnpm i
 
       - name: Setup PostgreSQL
-        run: node backend/tests/ci.setup.cjs
+        run: node backend/tests/ci-setup.cjs
         env:
           DATABASE_URL: postgresql://postgres:postgres@postgres:5432/postgres
 
