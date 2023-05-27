@@ -12,10 +12,11 @@ import { handleError } from "middlewares/handle-error";
 import { reviewRouter } from "review/router";
 import { rootRouter } from "root/router";
 import { scoreRouter } from "score/router";
+import { CORS_ORIGIN } from "utils/env";
 
 export const app: Express = express();
 
-app.use(cors());
+app.use(cors({ origin: CORS_ORIGIN, credentials: true }));
 app.use(
   rateLimit({
     windowMs: 60 * 1000,
